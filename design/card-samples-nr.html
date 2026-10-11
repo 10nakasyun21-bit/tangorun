@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ネコカード見本 N・R</title>
+<style>
+  :root { --bg: #fff8ee; --text: #2b2b3a; --sub: #7a7a8c; --line: #f0e3d2; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 28px;
+    padding: 32px 16px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Hiragino Maru Gothic ProN", "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
+  }
+  figure { margin: 0; }
+  figcaption { margin-top: 14px; color: var(--sub); font-size: 13px; text-align: center; }
+
+  .card { position: relative; width: 300px; padding: 6px; border-radius: 22px; overflow: hidden; }
+  .card-inner { border-radius: 17px; background: #fff; overflow: hidden; }
+  .card-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; }
+  .rarity { padding: 2px 10px; border-radius: 999px; font-weight: bold; font-size: 15px; letter-spacing: 0.08em; }
+  .no { color: var(--sub); font-size: 13px; font-weight: bold; }
+  .type { font-size: 12px; font-weight: bold; }
+  .type.cute { color: #e0567f; }
+  .type.cool { color: #6c5ce7; }
+  .art { display: block; width: 100%; height: auto; }
+  .name { margin: 10px 12px 2px; font-size: 21px; font-weight: bold; text-align: center; }
+  .profile { margin: 8px 12px 0; padding: 0; list-style: none; font-size: 14px; line-height: 1.55; }
+  .profile li { display: flex; gap: 6px; padding: 3px 0; border-top: 1px dashed var(--line); }
+  .profile li:first-child { border-top: none; }
+  .profile b { flex-shrink: 0; color: var(--sub); }
+  .quote { margin: 10px 12px 14px; padding: 8px 12px; border-radius: 12px; background: #f4f1ff; font-size: 15px; font-weight: bold; text-align: center; }
+
+  /* N：ふつうのふち */
+  .card.n { background: #e6dccd; box-shadow: 0 4px 12px rgba(120, 100, 70, 0.18); }
+  .card.n .rarity { background: #e6dccd; color: #6b6357; }
+
+  /* R：銀のふち */
+  .card.r {
+    background: linear-gradient(135deg, #f4f6fa, #aab4c3 30%, #ffffff 50%, #8e9aac 70%, #e6ebf2);
+    box-shadow: 0 6px 18px rgba(90, 105, 130, 0.3);
+  }
+  .card.r .rarity { background: linear-gradient(90deg, #aab4c3, #dfe5ee); color: #34404f; }
+</style>
+</head>
+<body>
+
+<!-- N：No.17 ねぼすけのミケ（かわいい系） -->
+<figure>
+  <div class="card n">
+    <div class="card-inner">
+      <div class="card-head">
+        <span class="rarity">N</span>
+        <span class="type cute">かわいい系</span>
+        <span class="no">No.17</span>
+      </div>
+      <svg class="art" viewBox="0 0 240 240" role="img" aria-label="鼻ちょうちんを出して眠っている三毛ネコの絵">
+        <defs>
+          <clipPath id="mike-head"><ellipse cx="120" cy="118" rx="52" ry="42"/></clipPath>
+          <clipPath id="mike-body"><ellipse cx="120" cy="186" rx="40" ry="36"/></clipPath>
+        </defs>
+        <!-- 背景：水玉 -->
+        <rect width="240" height="240" fill="#dcefff"/>
+        <g fill="#fff" opacity="0.8">
+          <circle cx="24" cy="26" r="7"/><circle cx="74" cy="44" r="5"/><circle cx="210" cy="30" r="8"/>
+          <circle cx="30" cy="120" r="6"/><circle cx="214" cy="118" r="5"/><circle cx="20" cy="206" r="8"/>
+          <circle cx="222" cy="200" r="6"/><circle cx="176" cy="18" r="4"/>
+        </g>
+        <!-- しっぽ（茶） -->
+        <path d="M152 206 C196 210 208 170 186 150" fill="none" stroke="#3a3a4a" stroke-width="17" stroke-linecap="round"/>
+        <path d="M152 206 C196 210 208 170 186 150" fill="none" stroke="#f5a35a" stroke-width="11" stroke-linecap="round"/>
+        <!-- からだ＋もよう -->
+        <ellipse cx="120" cy="186" rx="40" ry="36" fill="#fffaf2"/>
+        <g clip-path="url(#mike-body)">
+          <ellipse cx="92" cy="176" rx="22" ry="18" fill="#f5a35a"/>
+          <ellipse cx="150" cy="198" rx="18" ry="14" fill="#3a3a4a"/>
+        </g>
+        <ellipse cx="120" cy="186" rx="40" ry="36" fill="none" stroke="#3a3a4a" stroke-width="3"/>
+        <ellipse cx="104" cy="218" rx="13" ry="8" fill="#fffaf2" stroke="#3a3a4a" stroke-width="3"/>
+        <ellipse cx="136" cy="218" rx="13" ry="8" fill="#fffaf2" stroke="#3a3a4a" stroke-width="3"/>
+        <!-- 耳（左が茶、右が黒） -->
+        <path d="M78 98 L84 56 L112 82 Z" fill="#f5a35a" stroke="#3a3a4a" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M86 88 L88 68 L102 82 Z" fill="#ffb3c1"/>
+        <path d="M162 98 L156 56 L128 82 Z" fill="#3a3a4a" stroke="#3a3a4a" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M154 88 L152 68 L138 82 Z" fill="#ffb3c1"/>
+        <!-- 頭＋もよう -->
+        <ellipse cx="120" cy="118" rx="52" ry="42" fill="#fffaf2"/>
+        <g clip-path="url(#mike-head)">
+          <ellipse cx="82" cy="92" rx="30" ry="22" fill="#f5a35a"/>
+          <ellipse cx="160" cy="86" rx="24" ry="16" fill="#3a3a4a"/>
+        </g>
+        <ellipse cx="120" cy="118" rx="52" ry="42" fill="none" stroke="#3a3a4a" stroke-width="3"/>
+        <!-- ぐっすり眠っている目 -->
+        <path d="M93 115 Q104 124 115 115" fill="none" stroke="#3a3a4a" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M125 115 Q136 124 147 115" fill="none" stroke="#3a3a4a" stroke-width="3.5" stroke-linecap="round"/>
+        <ellipse cx="91" cy="131" rx="8" ry="5" fill="#ffb3c1" opacity="0.75"/>
+        <ellipse cx="149" cy="131" rx="8" ry="5" fill="#ffb3c1" opacity="0.75"/>
+        <path d="M115.5 127 L124.5 127 L120 132 Z" fill="#f28b9b" stroke="#3a3a4a" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M120 132 Q117 138 111 135 M120 132 Q123 138 129 135" fill="none" stroke="#3a3a4a" stroke-width="2.2" stroke-linecap="round"/>
+        <g stroke="#3a3a4a" stroke-width="2" stroke-linecap="round">
+          <path d="M86 127 L62 121"/><path d="M86 133 L61 135"/>
+          <path d="M154 127 L178 121"/><path d="M154 133 L179 135"/>
+        </g>
+        <!-- 鼻ちょうちん -->
+        <circle cx="134" cy="136" r="10" fill="#e3f4ff" stroke="#8ec9ee" stroke-width="2" opacity="0.95"/>
+        <path d="M129 132 Q131 129 134 129" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+        <!-- すやすや -->
+        <text x="168" y="80" fill="#6aa6d6" font-size="16" font-weight="bold" font-family="sans-serif">Zzz</text>
+      </svg>
+      <p class="name">ねぼすけのミケ</p>
+      <ul class="profile">
+        <li><b>好物</b><span>おふとん</span></li>
+        <li><b>特技</b><span>二度寝・三度寝</span></li>
+      </ul>
+      <p class="quote">「あと5分……（3時間後）」</p>
+    </div>
+  </div>
+  <figcaption>N（ふつうのふち）</figcaption>
+</figure>
+
+<!-- R：No.05 疾風のクロ（かっこいい系） -->
+<figure>
+  <div class="card r">
+    <div class="card-inner">
+      <div class="card-head">
+        <span class="rarity">R</span>
+        <span class="type cool">かっこいい系</span>
+        <span class="no">No.05</span>
+      </div>
+      <svg class="art" viewBox="0 0 240 240" role="img" aria-label="ハチマキをしめた黒ネコが、風を切って走り出しそうな絵">
+        <defs>
+          <linearGradient id="kuro-bg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#ffb347"/>
+            <stop offset="1" stop-color="#ff5e3a"/>
+          </linearGradient>
+        </defs>
+        <!-- 背景：スピード線 -->
+        <rect width="240" height="240" fill="url(#kuro-bg)"/>
+        <g stroke="#fff" stroke-linecap="round" opacity="0.55">
+          <path d="M8 60 L70 60" stroke-width="4"/><path d="M20 84 L58 84" stroke-width="3"/>
+          <path d="M4 150 L56 150" stroke-width="4"/><path d="M16 176 L48 176" stroke-width="3"/>
+          <path d="M190 40 L232 40" stroke-width="3"/><path d="M200 190 L236 190" stroke-width="4"/>
+        </g>
+        <!-- ハチマキのはし（頭の後ろでなびく） -->
+        <path d="M160 98 Q190 78 220 70 L216 82 Q190 90 164 106 Z" fill="#fff" stroke="#1b1b22" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M162 104 Q192 100 222 104 L216 114 Q190 110 164 112 Z" fill="#fff" stroke="#1b1b22" stroke-width="2.5" stroke-linejoin="round"/>
+        <!-- しっぽ（ピンと立てる） -->
+        <path d="M152 204 C192 204 206 160 196 128" fill="none" stroke="#1b1b22" stroke-width="17" stroke-linecap="round"/>
+        <path d="M152 204 C192 204 206 160 196 128" fill="none" stroke="#3a3a48" stroke-width="11" stroke-linecap="round"/>
+        <!-- からだ -->
+        <ellipse cx="120" cy="186" rx="40" ry="36" fill="#3a3a48" stroke="#1b1b22" stroke-width="3"/>
+        <ellipse cx="104" cy="218" rx="13" ry="8" fill="#3a3a48" stroke="#1b1b22" stroke-width="3"/>
+        <ellipse cx="136" cy="218" rx="13" ry="8" fill="#3a3a48" stroke="#1b1b22" stroke-width="3"/>
+        <!-- 砂けむり -->
+        <g fill="#fff" opacity="0.8">
+          <circle cx="70" cy="222" r="9"/><circle cx="56" cy="214" r="6"/><circle cx="44" cy="222" r="4"/>
+        </g>
+        <!-- 耳 -->
+        <path d="M78 98 L84 56 L112 82 Z" fill="#3a3a48" stroke="#1b1b22" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M86 88 L88 68 L102 82 Z" fill="#ff8fa3"/>
+        <path d="M162 98 L156 56 L128 82 Z" fill="#3a3a48" stroke="#1b1b22" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M154 88 L152 68 L138 82 Z" fill="#ff8fa3"/>
+        <!-- 頭 -->
+        <ellipse cx="120" cy="118" rx="52" ry="42" fill="#3a3a48" stroke="#1b1b22" stroke-width="3"/>
+        <!-- ハチマキ -->
+        <path d="M69 98 Q120 84 171 98 L170 110 Q120 96 70 110 Z" fill="#fff" stroke="#1b1b22" stroke-width="2.5" stroke-linejoin="round"/>
+        <circle cx="120" cy="96" r="5" fill="#e8343f"/>
+        <!-- キリッとした目 -->
+        <path d="M91 121 Q102 110 115 117 Q104 126 91 121 Z" fill="#ffe14d" stroke="#1b1b22" stroke-width="2"/>
+        <ellipse cx="105" cy="119" rx="2.8" ry="4.5" fill="#1b1b22"/>
+        <path d="M149 121 Q138 110 125 117 Q136 126 149 121 Z" fill="#ffe14d" stroke="#1b1b22" stroke-width="2"/>
+        <ellipse cx="135" cy="119" rx="2.8" ry="4.5" fill="#1b1b22"/>
+        <!-- 鼻と口（八重歯つき） -->
+        <path d="M115.5 129 L124.5 129 L120 134 Z" fill="#ff8fa3" stroke="#1b1b22" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M120 134 Q117 140 111 137 M120 134 Q123 140 129 137" fill="none" stroke="#e8e8f0" stroke-width="2.2" stroke-linecap="round"/>
+        <path d="M124 137 L126 142 L128 137.5 Z" fill="#fff"/>
+        <!-- ひげ（黒ネコなので明るい色） -->
+        <g stroke="#d6d6e4" stroke-width="2" stroke-linecap="round">
+          <path d="M86 129 L62 123"/><path d="M86 135 L61 137"/>
+          <path d="M154 129 L178 123"/><path d="M154 135 L179 137"/>
+        </g>
+      </svg>
+      <p class="name">疾風のクロ</p>
+      <ul class="profile">
+        <li><b>好物</b><span>エネルギーゼリー</span></li>
+        <li><b>特技</b><span>100mを3秒（給食の前だけ）</span></li>
+      </ul>
+      <p class="quote">「廊下は走ってない、速歩きです」</p>
+    </div>
+  </div>
+  <figcaption>R（銀のふち）</figcaption>
+</figure>
+
+</body>
+</html>

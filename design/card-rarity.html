@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ネコカード レア度見本</title>
+<style>
+  :root { --bg: #fff8ee; --text: #2b2b3a; --sub: #7a7a8c; --line: #f0e3d2; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 36px 28px;
+    padding: 40px 16px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Hiragino Maru Gothic ProN", "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
+  }
+  figure { margin: 0; }
+  figcaption { margin-top: 16px; color: var(--sub); font-size: 13px; text-align: center; line-height: 1.6; }
+
+  /* ---------- カード共通 ---------- */
+  .card { position: relative; width: 300px; padding: 6px; border-radius: 22px; isolation: isolate; }
+  .card-inner { position: relative; z-index: 1; border-radius: 17px; background: #fff; overflow: hidden; }
+  .card-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; }
+  .rarity { padding: 2px 12px; border-radius: 999px; font-weight: bold; font-size: 15px; letter-spacing: 0.08em; }
+  .no { color: var(--sub); font-size: 13px; font-weight: bold; }
+  .type { font-size: 12px; font-weight: bold; }
+  .type.cute { color: #e0567f; }
+  .type.cool { color: #6c5ce7; }
+  .art-box { position: relative; overflow: hidden; }
+  .art { display: block; width: 100%; height: auto; }
+  .name { margin: 10px 12px 2px; font-size: 21px; font-weight: bold; text-align: center; }
+  .profile { margin: 8px 12px 0; padding: 0; list-style: none; font-size: 14px; line-height: 1.55; }
+  .profile li { display: flex; gap: 6px; padding: 3px 0; border-top: 1px dashed var(--line); }
+  .profile li:first-child { border-top: none; }
+  .profile b { flex-shrink: 0; color: var(--sub); }
+  .quote { margin: 10px 12px 14px; padding: 8px 12px; border-radius: 12px; background: #f4f1ff; font-size: 15px; font-weight: bold; text-align: center; }
+
+  /* ---------- N：飾りなし ---------- */
+  .card.n { padding: 3px; background: #e2dbd0; }
+  .card.n .card-inner { border-radius: 19px; }
+  .card.n .rarity { background: #eee9e1; color: #8a8276; }
+
+  /* ---------- R：青みの銀＋光がゆっくり流れる ---------- */
+  .card.r {
+    background: linear-gradient(135deg, #eef3fb, #9fb3cf 25%, #ffffff 45%, #7f95b5 65%, #e3ebf7 85%, #a9bbd6);
+    box-shadow: 0 6px 18px rgba(70, 100, 150, 0.3);
+    overflow: hidden;
+  }
+  .card.r .rarity { background: linear-gradient(90deg, #7f95b5, #c9d6ea); color: #fff; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25); }
+  .card.r::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.45) 50%, transparent 60%);
+    transform: translateX(-120%);
+    animation: sweep 5s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  /* ---------- SR：虹色のふち・ホログラム・きらきら ---------- */
+  .card.sr { padding: 7px; }
+  /* カードのまわりにぼんやり広がる虹色の光（ふちと同じ虹をぼかして後ろに置く） */
+  .card.sr .aura {
+    position: absolute;
+    inset: -10px;
+    z-index: -1;
+    border-radius: 32px;
+    overflow: hidden;
+    filter: blur(16px);
+    opacity: 0.9;
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  .card.sr .aura::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(#ff4d6d, #ffb347, #ffe66d, #5ee27a, #4dc9ff, #7b6cff, #ff6ad5, #ff4d6d);
+    transform: translate(-50%, -50%) rotate(0deg);
+    animation: spin 4s linear infinite;
+  }
+  /* ふち：虹色をぐるぐる回す（大きな虹の板を回して、ふちから見える部分だけを使う） */
+  .card.sr .frame {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: 22px;
+    overflow: hidden;
+  }
+  .card.sr .frame::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(#ff4d6d, #ffb347, #ffe66d, #5ee27a, #4dc9ff, #7b6cff, #ff6ad5, #ff4d6d);
+    transform: translate(-50%, -50%) rotate(0deg);
+    animation: spin 4s linear infinite;
+  }
+  .card.sr .rarity {
+    background: linear-gradient(90deg, #ff4d6d, #ffb347, #ffe66d, #5ee27a, #4dc9ff, #7b6cff, #ff6ad5);
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  }
+  .card.sr .name {
+    background: linear-gradient(90deg, #e8344f, #f08a00, #2fb36b, #2f8de0, #8a4dff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* 絵の上のホログラム（虹色の反射がゆっくり動く） */
+  .card.sr .holo {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(125deg,
+      transparent 20%, rgba(255, 90, 140, 0.35) 30%, rgba(255, 230, 110, 0.35) 38%,
+      rgba(90, 230, 150, 0.35) 46%, rgba(80, 190, 255, 0.35) 54%, rgba(150, 110, 255, 0.35) 62%, transparent 72%);
+    background-size: 250% 250%;
+    mix-blend-mode: screen;
+    animation: holo 4.5s ease-in-out infinite;
+    pointer-events: none;
+  }
+  /* 白い光の帯 */
+  .card.sr::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border-radius: 22px;
+    background: linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, 0.7) 48%, transparent 58%);
+    transform: translateX(-120%);
+    animation: sweep 3s ease-in-out infinite;
+    pointer-events: none;
+  }
+  /* まわりでまたたく星 */
+  .sparkle {
+    position: absolute;
+    z-index: 3;
+    width: 30px;
+    height: 30px;
+    pointer-events: none;
+    animation: twinkle 1.8s ease-in-out infinite;
+  }
+  .sparkle svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 0 6px #fff) drop-shadow(0 0 3px rgba(255, 220, 120, 0.9)); }
+  .sparkle.s1 { top: -14px; left: 14px; }
+  .sparkle.s2 { top: 80px; right: -15px; width: 24px; height: 24px; animation-delay: 0.6s; }
+  .sparkle.s3 { bottom: 110px; left: -14px; width: 26px; height: 26px; animation-delay: 1.1s; }
+  .sparkle.s4 { bottom: -13px; right: 36px; animation-delay: 0.3s; }
+  .sparkle.s5 { top: 230px; left: 26px; width: 20px; height: 20px; animation-delay: 0.9s; }
+  .sparkle.s6 { top: 40px; right: 60px; width: 22px; height: 22px; animation-delay: 1.4s; }
+
+  @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+  @keyframes sweep { 0%, 55% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
+  @keyframes holo { 0%, 100% { background-position: 0% 0%; } 50% { background-position: 100% 100%; } }
+  @keyframes twinkle { 0%, 100% { opacity: 0.2; transform: scale(0.5) rotate(0deg); } 50% { opacity: 1; transform: scale(1.1) rotate(20deg); } }
+  @keyframes pulse { 0%, 100% { opacity: 0.65; } 50% { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) {
+    .card *, .card::after, .card { animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<figure>
+  <div class="card n">
+    <div class="card-inner">
+      <div class="card-head"><span class="rarity">N</span><span class="type cute">かわいい系</span><span class="no">No.17</span></div>
+      <div class="art-box"><img class="art" src="cats/17.svg" alt="鼻ちょうちんを出して眠っている三毛ネコ"></div>
+      <p class="name">ねぼすけのミケ</p>
+      <ul class="profile"><li><b>好物</b><span>おふとん</span></li><li><b>特技</b><span>二度寝・三度寝</span></li></ul>
+      <p class="quote">「あと5分……（3時間後）」</p>
+    </div>
+  </div>
+  <figcaption>N：飾りなし</figcaption>
+</figure>
+
+<figure>
+  <div class="card r">
+    <div class="card-inner">
+      <div class="card-head"><span class="rarity">R</span><span class="type cool">かっこいい系</span><span class="no">No.05</span></div>
+      <div class="art-box"><img class="art" src="cats/05.svg" alt="ハチマキをしめた黒ネコ"></div>
+      <p class="name">疾風のクロ</p>
+      <ul class="profile"><li><b>好物</b><span>エネルギーゼリー</span></li><li><b>特技</b><span>100mを3秒（給食の前だけ）</span></li></ul>
+      <p class="quote">「廊下は走ってない、速歩きです」</p>
+    </div>
+  </div>
+  <figcaption>R：青い銀のふち・光がゆっくり流れる</figcaption>
+</figure>
+
+<figure>
+  <div class="card sr">
+    <div class="aura"></div>
+    <div class="frame"></div>
+    <div class="card-inner">
+      <div class="card-head"><span class="rarity">SR</span><span class="type cool">かっこいい系</span><span class="no">No.01</span></div>
+      <div class="art-box"><img class="art" src="cats/01.svg" alt="王冠とマントを身につけた白いネコ"><div class="holo"></div></div>
+      <p class="name">宇宙を旅するネコ王</p>
+      <ul class="profile"><li><b>好物</b><span>流れ星のかけら（たぶん金平糖）</span></li><li><b>特技</b><span>ワープ（行き先はいつもこたつ）</span></li></ul>
+      <p class="quote">「余は眠い」</p>
+    </div>
+    <span class="sparkle s1"><svg viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z" fill="#fff8c4"/></svg></span>
+    <span class="sparkle s2"><svg viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z" fill="#d6f3ff"/></svg></span>
+    <span class="sparkle s3"><svg viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z" fill="#ffd6f0"/></svg></span>
+    <span class="sparkle s4"><svg viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z" fill="#fff8c4"/></svg></span>
+    <span class="sparkle s5"><svg viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z" fill="#ffffff"/></svg></span>
+    <span class="sparkle s6"><svg viewBox="0 0 24 24"><path d="M12 0 L14.5 9.5 L24 12 L14.5 14.5 L12 24 L9.5 14.5 L0 12 L9.5 9.5 Z" fill="#fff8c4"/></svg></span>
+  </div>
+  <figcaption>SR：虹色のふちが回る・ホログラム・<br>星がまたたく・まわりが虹色に光る</figcaption>
+</figure>
+
+<script>
+  // 画像として保存するとき用（?still を付けて開くと、光がいちばんきれいな瞬間で止める）
+  if (location.search.includes('still')) {
+    const s = document.createElement('style');
+    s.textContent = `
+      .sparkle { animation-delay: -0.9s !important; animation-play-state: paused !important; }
+      .card.sr::after { animation-delay: -2.55s !important; animation-play-state: paused !important; }
+      .card.r::after { animation-delay: -4.3s !important; animation-play-state: paused !important; }
+      .card.sr .holo { animation-delay: -1.6s !important; animation-play-state: paused !important; }
+      .card.sr .frame::before { animation-delay: -0.7s !important; animation-play-state: paused !important; }
+      .card.sr .aura, .card.sr .aura::before { animation-delay: -1.2s !important; animation-play-state: paused !important; }`;
+    document.head.append(s);
+  }
+</script>
+</body>
+</html>

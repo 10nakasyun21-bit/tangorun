@@ -1,0 +1,53 @@
+rules_version = '2';
+
+// たんごラン の Firestore セキュリティルール
+// Firebase コンソール → Firestore Database →「ルール」に貼りつけて「公開」する。
+// 管理者（先生）のユーザーUIDは isAdmin() の中に書いてある。
+//
+// ・生徒は自分のデータだけ読み書きできる（利用停止された生徒は書き込めない）
+// ・管理者は全員のデータを読み書きできる
+// ・生徒の名簿（users）を書けるのは管理者だけ
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null && request.auth.uid == 'Gx1Ng1H1yoYZY1zbZ0aeQoYgOR03';
+    }
+
+    function isSelf(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    function isActiveStudent(uid) {
+      return isSelf(uid)
+        && get(/databases/$(database)/documents/users/$(uid)).data.active == true;
+    }
+
+    match /users/{uid} {
+      allow read: if isAdmin() || isSelf(uid);
+      allow write: if isAdmin();
+    }
+
+    match /progress/{uid} {
+      allow read: if isAdmin() || isSelf(uid);
+      allow write: if isAdmin() || isActiveStudent(uid);
+    }
+
+    match /summary/{uid} {
+      allow read: if isAdmin() || isSelf(uid);
+      allow write: if isAdmin() || isActiveStudent(uid);
+    }
+
+    match /usage/{uid}/days/{day} {
+      allow read: if isAdmin() || isSelf(uid);
+      allow write: if isAdmin() || isActiveStudent(uid);
+    }
+
+    // 期間限定ガチャの設定：ログインしていればだれでも読める、書けるのは管理者だけ
+    match /config/{doc} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
+  }
+}

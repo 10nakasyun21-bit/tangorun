@@ -1,0 +1,111 @@
+/* ネコカード（N / R / SR）。見本 design/card-rarity.html と同じ見た目 */
+
+.card { position: relative; width: min(300px, 100%); margin: 0 auto; padding: 6px; border-radius: 22px; isolation: isolate; text-align: left; }
+.card-inner { position: relative; z-index: 1; border-radius: 17px; background: #fff; overflow: hidden; }
+.card-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; }
+.rarity { padding: 2px 12px; border-radius: 999px; font-weight: bold; font-size: 15px; letter-spacing: 0.08em; }
+.card .no { color: var(--sub); font-size: 13px; font-weight: bold; }
+.card .type { font-size: 12px; font-weight: bold; }
+.card .type.cute { color: #e0567f; }
+.card .type.cool { color: #6c5ce7; }
+.art-box { position: relative; overflow: hidden; line-height: 0; }
+.art-box svg { display: block; width: 100%; height: auto; }
+.card .name { margin: 10px 12px 2px; font-size: 20px; font-weight: bold; text-align: center; line-height: 1.3; }
+.card .profile { margin: 8px 12px 0; padding: 0; list-style: none; font-size: 14px; line-height: 1.55; }
+.card .profile li { display: flex; gap: 6px; padding: 3px 0; border-top: 1px dashed var(--line); }
+.card .profile li:first-child { border-top: none; }
+.card .profile b { flex-shrink: 0; color: var(--sub); }
+.card .quote { margin: 10px 12px 14px; padding: 8px 12px; border-radius: 12px; background: #f4f1ff; font-size: 15px; font-weight: bold; text-align: center; }
+
+/* N：飾りなし */
+.card.n { padding: 3px; background: #e2dbd0; }
+.card.n .card-inner { border-radius: 19px; }
+.card.n .rarity { background: #eee9e1; color: #8a8276; }
+
+/* R：青みの銀＋光がゆっくり流れる */
+.card.r {
+  background: linear-gradient(135deg, #eef3fb, #9fb3cf 25%, #ffffff 45%, #7f95b5 65%, #e3ebf7 85%, #a9bbd6);
+  box-shadow: 0 6px 18px rgba(70, 100, 150, 0.3);
+  overflow: hidden;
+}
+.card.r .rarity { background: linear-gradient(90deg, #7f95b5, #c9d6ea); color: #fff; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25); }
+.card.r::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.45) 50%, transparent 60%);
+  transform: translateX(-120%);
+  animation: card-sweep 5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* SR：虹色のふち・まわりの虹の光・ホログラム・きらきら */
+.card.sr { padding: 7px; }
+.card.sr .aura,
+.card.sr .frame { position: absolute; overflow: hidden; }
+.card.sr .aura { inset: -10px; z-index: -1; border-radius: 32px; filter: blur(16px); opacity: 0.9; animation: card-pulse 2.4s ease-in-out infinite; }
+.card.sr .frame { inset: 0; z-index: 0; border-radius: 22px; }
+.card.sr .aura::before,
+.card.sr .frame::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(#ff4d6d, #ffb347, #ffe66d, #5ee27a, #4dc9ff, #7b6cff, #ff6ad5, #ff4d6d);
+  transform: translate(-50%, -50%) rotate(0deg);
+  animation: card-spin 4s linear infinite;
+}
+.card.sr .rarity {
+  background: linear-gradient(90deg, #ff4d6d, #ffb347, #ffe66d, #5ee27a, #4dc9ff, #7b6cff, #ff6ad5);
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+.card.sr .name {
+  background: linear-gradient(90deg, #e8344f, #f08a00, #2fb36b, #2f8de0, #8a4dff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.card.sr .holo {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(125deg,
+    transparent 20%, rgba(255, 90, 140, 0.35) 30%, rgba(255, 230, 110, 0.35) 38%,
+    rgba(90, 230, 150, 0.35) 46%, rgba(80, 190, 255, 0.35) 54%, rgba(150, 110, 255, 0.35) 62%, transparent 72%);
+  background-size: 250% 250%;
+  mix-blend-mode: screen;
+  animation: card-holo 4.5s ease-in-out infinite;
+  pointer-events: none;
+}
+.card.sr::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: 22px;
+  background: linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, 0.7) 48%, transparent 58%);
+  transform: translateX(-120%);
+  animation: card-sweep 3s ease-in-out infinite;
+  pointer-events: none;
+}
+.card .sparkle { position: absolute; z-index: 3; width: 30px; height: 30px; pointer-events: none; animation: card-twinkle 1.8s ease-in-out infinite; }
+.card .sparkle svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 0 6px #fff) drop-shadow(0 0 3px rgba(255, 220, 120, 0.9)); }
+.card .sparkle.s1 { top: -14px; left: 14px; }
+.card .sparkle.s2 { top: 80px; right: -15px; width: 24px; height: 24px; animation-delay: 0.6s; }
+.card .sparkle.s3 { bottom: 110px; left: -14px; width: 26px; height: 26px; animation-delay: 1.1s; }
+.card .sparkle.s4 { bottom: -13px; right: 36px; animation-delay: 0.3s; }
+.card .sparkle.s5 { top: 230px; left: 26px; width: 20px; height: 20px; animation-delay: 0.9s; }
+.card .sparkle.s6 { top: 40px; right: 60px; width: 22px; height: 22px; animation-delay: 1.4s; }
+
+@keyframes card-spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+@keyframes card-sweep { 0%, 55% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
+@keyframes card-holo { 0%, 100% { background-position: 0% 0%; } 50% { background-position: 100% 100%; } }
+@keyframes card-twinkle { 0%, 100% { opacity: 0.2; transform: scale(0.5) rotate(0deg); } 50% { opacity: 1; transform: scale(1.1) rotate(20deg); } }
+@keyframes card-pulse { 0%, 100% { opacity: 0.65; } 50% { opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .card, .card *, .card::after { animation: none !important; }
+}

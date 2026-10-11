@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ff8a3d">
+  <meta name="description" content="高校受験に向けた中学生向けの英単語アプリ">
+  <title>たんごラン</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="たんごラン">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/cards.css">
+</head>
+<body>
+  <!-- ログイン（最初の1回だけ） -->
+  <section id="screen-login" class="screen">
+    <form id="login-form" class="login-main" autocomplete="on">
+      <h1 class="logo">たんご<span>ラン</span></h1>
+      <label class="field">
+        <span class="field-label">ログインID</span>
+        <input id="login-id" class="field-input" type="text" name="username" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" required>
+      </label>
+      <label class="field">
+        <span class="field-label">パスワード</span>
+        <input id="login-password" class="field-input" type="password" name="password" autocomplete="current-password" required>
+      </label>
+      <p id="login-error" class="error" hidden></p>
+      <button id="btn-login" class="btn btn-primary btn-big" type="submit">はじめる</button>
+      <p class="login-note">IDとパスワードは先生に聞いてね</p>
+    </form>
+  </section>
+
+  <!-- ホーム -->
+  <section id="screen-home" class="screen">
+    <div class="topbar">
+      <div id="streak" class="streak">
+        <span class="streak-fire" aria-hidden="true">🔥</span>
+        <span><strong id="streak-days">0</strong>日連続</span>
+      </div>
+      <button id="btn-coins" class="coin-pill" aria-label="コイン（ガチャへ）"><span class="coin" aria-hidden="true"></span><strong id="coin-count">0</strong></button>
+      <button id="btn-settings" class="icon-btn" aria-label="設定">
+        <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="currentColor" d="M19.4 13a7.6 7.6 0 0 0 0-2l2.1-1.6a.5.5 0 0 0 .1-.6l-2-3.5a.5.5 0 0 0-.6-.2l-2.5 1a7.3 7.3 0 0 0-1.7-1l-.4-2.6a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 0-.5.4l-.4 2.7a7.3 7.3 0 0 0-1.7 1l-2.5-1a.5.5 0 0 0-.6.2l-2 3.5a.5.5 0 0 0 .1.6L4.6 11a7.6 7.6 0 0 0 0 2l-2.1 1.6a.5.5 0 0 0-.1.6l2 3.5a.5.5 0 0 0 .6.2l2.5-1a7.3 7.3 0 0 0 1.7 1l.4 2.6a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.4l.4-2.7a7.3 7.3 0 0 0 1.7-1l2.5 1a.5.5 0 0 0 .6-.2l2-3.5a.5.5 0 0 0-.1-.6zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg>
+      </button>
+    </div>
+
+    <div class="home-main">
+      <h1 id="home-logo" class="logo">たんご<span>ラン</span></h1>
+      <button id="partner-box" class="partner" hidden aria-label="相棒ネコ（図鑑へ）">
+        <span id="partner-art" class="partner-art"></span>
+        <span id="partner-bubble" class="partner-bubble"></span>
+      </button>
+
+      <div class="meter">
+        <div class="meter-label">覚えた単語 <strong id="mastered-count">0</strong> 語</div>
+        <div class="meter-bar"><div id="meter-fill" class="meter-fill"></div></div>
+        <div class="meter-sub">目標<span id="goal-count">800</span>語まで あと<strong id="remaining-count">800</strong>語</div>
+      </div>
+
+      <div class="missions">
+        <div class="missions-head"><span>今日のミッション</span><span id="mission-count" class="mission-count">0/3</span></div>
+        <ul id="mission-list" class="mission-list"></ul>
+      </div>
+
+      <button id="btn-start" class="btn btn-primary btn-big" disabled>読み込み中…</button>
+
+      <div class="home-modes">
+        <button id="btn-start-story" class="mode-card" disabled>
+          <span class="mode-title">📖 ストーリー</span>
+          <span id="story-chapter" class="mode-sub">第1章</span>
+        </button>
+        <button id="btn-challenge" class="mode-card" disabled>
+          <span class="mode-title">⏱ 1分チャレンジ</span>
+          <span id="challenge-sub" class="mode-sub">自己ベスト 0問</span>
+        </button>
+      </div>
+      <div class="home-links">
+        <button id="btn-wordlist" class="story-cards-link">単語一覧</button>
+        <button id="btn-cards" class="story-cards-link">文カード</button>
+        <button id="btn-zukan" class="story-cards-link">ネコ図鑑</button>
+        <button id="btn-gacha" class="story-cards-link">ガチャ</button>
+      </div>
+      <p id="home-error" class="error" hidden></p>
+    </div>
+  </section>
+
+  <!-- クイズ -->
+  <section id="screen-quiz" class="screen">
+    <header class="quiz-header">
+      <button id="btn-quit" class="icon-btn" aria-label="やめてホームへ">
+        <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+      <div class="progress-text"><span id="q-num">1</span><span id="q-sep">/</span><span id="q-total">10</span></div>
+    </header>
+
+    <div class="combo-area"><div id="combo" class="combo" hidden><strong id="combo-num">0</strong> コンボ！</div></div>
+
+    <div class="question">
+      <p id="q-task" class="task"></p>
+      <p id="q-pos" class="pos"></p>
+      <div class="prompt-row">
+        <p id="q-prompt" class="prompt"></p>
+      </div>
+      <p id="s-line" class="s-line" hidden></p>
+      <button id="btn-speak" class="speak-btn" aria-label="発音を聞く" hidden>
+        <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>
+      </button>
+    </div>
+
+    <div id="choices" class="choices"></div>
+
+    <!-- 文章：タイルを並べる -->
+    <div id="s-build" class="s-build" hidden></div>
+    <div id="s-bank" class="s-bank" hidden></div>
+
+    <form id="spell-form" class="spell-form" autocomplete="off" hidden>
+      <p id="spell-hint" class="spell-hint"></p>
+      <input id="spell-input" class="spell-input" type="text" inputmode="latin" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" aria-label="英単語を入力">
+      <button id="btn-spell" class="btn btn-primary" type="submit">こたえる</button>
+    </form>
+
+    <div id="feedback" class="feedback" hidden>
+      <p class="feedback-answer"><span id="fb-word"></span><span id="fb-meaning"></span></p>
+      <p id="fb-example" class="feedback-example"></p>
+      <p id="fb-example-ja" class="feedback-example-ja"></p>
+    </div>
+
+    <!-- 文章：答えたあとの文法ポイント -->
+    <div id="s-feedback" class="feedback s-feedback" hidden>
+      <p class="s-grammar"><span id="sf-grammar"></span></p>
+      <p id="sf-en" class="sf-en"></p>
+      <p id="sf-note" class="sf-note"></p>
+    </div>
+
+    <div class="next-area">
+      <button id="btn-next" class="btn btn-primary" hidden>次へ</button>
+    </div>
+  </section>
+
+  <!-- 結果 -->
+  <section id="screen-result" class="screen">
+    <div class="result-main">
+      <p class="result-quota">今日のノルマ達成！</p>
+      <p class="result-score"><span id="r-correct">0</span><small id="r-score-unit"> / 10 問正解</small></p>
+      <p id="r-unlock" class="result-unlock" hidden></p>
+      <p id="r-growth" class="result-growth" hidden></p>
+      <ul id="r-missions" class="result-missions" hidden></ul>
+      <div class="result-stats">
+        <div class="result-stat"><span class="result-stat-label">最高コンボ</span><strong id="r-combo">0</strong></div>
+        <div class="result-stat"><span id="r-stat2-label" class="result-stat-label">🔥 連続</span><strong id="r-stat2">1日</strong></div>
+        <div class="result-stat"><span class="result-stat-label"><span class="coin coin-small" aria-hidden="true"></span>コイン</span><strong id="r-coins">+0</strong></div>
+      </div>
+    </div>
+    <div class="result-buttons">
+      <button id="btn-again" class="btn btn-primary btn-big">もう1セット</button>
+      <button id="btn-home" class="btn btn-ghost">ホームへ</button>
+    </div>
+  </section>
+
+  <!-- ガチャ -->
+  <section id="screen-gacha" class="screen">
+    <div class="topbar">
+      <button id="btn-gacha-back" class="icon-btn" aria-label="もどる">
+        <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <h2 class="screen-title">ネコガチャ</h2>
+      <span class="coin-pill is-static"><span class="coin" aria-hidden="true"></span><strong id="gacha-coins">0</strong></span>
+    </div>
+    <div class="gacha-main">
+      <div id="gacha-tabs" class="gacha-tabs" hidden></div>
+      <p id="gacha-series-name" class="gacha-series-name">通常シリーズ（全40匹）</p>
+      <svg class="gacha-machine" viewBox="0 0 200 220" aria-hidden="true">
+        <circle cx="100" cy="80" r="70" fill="#e8f6ff" stroke="#3a3a4a" stroke-width="4"/>
+        <g stroke="#3a3a4a" stroke-width="2.5">
+          <circle cx="70" cy="100" r="16" fill="#ff8fa3"/><circle cx="106" cy="112" r="16" fill="#ffe66d"/><circle cx="138" cy="96" r="16" fill="#7bc4ff"/>
+          <circle cx="86" cy="70" r="16" fill="#9be37a"/><circle cx="122" cy="62" r="16" fill="#c8b6ff"/><circle cx="60" cy="62" r="14" fill="#ffb347"/>
+        </g>
+        <path d="M54 46 Q70 28 92 24" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+        <path d="M30 140 H170 L160 210 H40 Z" fill="#ff6b6b" stroke="#3a3a4a" stroke-width="4" stroke-linejoin="round"/>
+        <circle cx="100" cy="172" r="18" fill="#fff" stroke="#3a3a4a" stroke-width="4"/>
+        <path d="M88 172 H112" stroke="#3a3a4a" stroke-width="6" stroke-linecap="round"/>
+        <rect x="128" y="190" width="28" height="14" rx="4" fill="#3a3a4a"/>
+      </svg>
+      <button id="btn-draw" class="btn btn-primary btn-big">1回引く（30コイン）</button>
+      <p id="gacha-need" class="gacha-need"></p>
+      <p class="gacha-rates">出る確率：<span id="gacha-rate-text">SR 2%・R 25%・N 73%</span><br>ダブったカードは同じレア度の「かけら」になるよ<br>N・R・SR それぞれのかけらで、同じレア度のネコと交換できる</p>
+    </div>
+  </section>
+
+  <!-- ネコ図鑑 -->
+  <section id="screen-zukan" class="screen">
+    <div class="topbar">
+      <button id="btn-zukan-back" class="icon-btn" aria-label="もどる">
+        <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <h2 class="screen-title">ネコ図鑑</h2>
+      <span class="icon-btn-spacer"></span>
+    </div>
+    <p class="cards-summary">集めた <strong id="zk-owned">0</strong> / <span id="zk-total">40</span>　かけら <span id="zk-fragments">0</span></p>
+    <div id="zukan-list" class="zukan-list"></div>
+  </section>
+
+  <!-- 単語一覧 -->
+  <section id="screen-wordlist" class="screen">
+    <div class="topbar">
+      <button id="btn-wordlist-back" class="icon-btn" aria-label="もどる">
+        <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <h2 class="screen-title">単語一覧</h2>
+      <span class="icon-btn-spacer"></span>
+    </div>
+    <p class="cards-summary">全<strong id="wl-total">800</strong>語　覚えた <span id="wl-mastered">0</span>・学習中 <span id="wl-learning">0</span></p>
+    <input id="wl-search" class="field-input wl-search" type="search" placeholder="英語か日本語でさがす" autocapitalize="off" autocorrect="off" spellcheck="false">
+    <div class="wl-filters" role="tablist">
+      <button class="wl-filter is-active" data-filter="all">すべて</button>
+      <button class="wl-filter" data-filter="mastered">覚えた</button>
+      <button class="wl-filter" data-filter="learning">学習中</button>
+      <button class="wl-filter" data-filter="new">まだ</button>
+    </div>
+    <p class="wl-hint">単語をタップすると発音が聞けます</p>
+    <div id="wl-list" class="wl-list"></div>
+  </section>
+
+  <!-- 文カード -->
+  <section id="screen-cards" class="screen">
+    <div class="topbar">
+      <button id="btn-cards-back" class="icon-btn" aria-label="もどる">
+        <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <h2 class="screen-title">文カード</h2>
+      <span class="icon-btn-spacer"></span>
+    </div>
+    <p class="cards-summary">覚えた文 <strong id="cards-mastered">0</strong> / <span id="cards-total">100</span></p>
+    <div id="cards-list" class="cards-list"></div>
+  </section>
+
+  <!-- 設定 -->
+  <section id="screen-settings" class="screen">
+    <div class="topbar">
+      <button id="btn-settings-back" class="icon-btn" aria-label="もどる">
+        <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <h2 class="screen-title">設定</h2>
+      <span class="icon-btn-spacer"></span>
+    </div>
+
+    <div class="settings-list">
+      <label class="setting-row">
+        <span>効果音</span>
+        <input id="set-sound" type="checkbox" class="switch">
+      </label>
+      <label class="setting-row">
+        <span>発音の自動再生</span>
+        <input id="set-speak" type="checkbox" class="switch">
+      </label>
+    </div>
+
+    <div id="account-box" class="account-box" hidden>
+      <p class="account-name"><span id="account-name"></span> さんでログイン中</p>
+      <button id="btn-logout" class="btn btn-ghost">ログアウト</button>
+    </div>
+
+    <button id="btn-reset" class="btn btn-danger-ghost">学習データをリセット</button>
+  </section>
+
+  <!-- リセット確認 -->
+  <div id="reset-dialog" class="dialog-backdrop" hidden>
+    <div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="reset-title">
+      <p id="reset-title" class="dialog-title">学習データを消しますか？</p>
+      <p class="dialog-text">覚えた単語やストリークがすべて消えます。もとには戻せません。</p>
+      <div class="dialog-buttons">
+        <button id="btn-reset-cancel" class="btn btn-ghost">やめる</button>
+        <button id="btn-reset-ok" class="btn btn-danger">消す</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ガチャの結果 -->
+  <div id="gacha-overlay" class="gacha-overlay" hidden>
+    <div id="gacha-capsule" class="gacha-capsule"><span class="capsule-top"></span><span class="capsule-bottom"></span></div>
+    <div id="gacha-reveal" class="gacha-reveal" hidden>
+      <p id="gacha-label" class="gacha-label"></p>
+      <div id="gacha-card"></div>
+      <div class="gacha-buttons">
+        <button id="btn-draw-again" class="btn btn-primary">もう1回（30コイン）</button>
+        <div class="gacha-buttons-row">
+          <button id="btn-gacha-to-zukan" class="btn btn-ghost btn-light">図鑑を見る</button>
+          <button id="btn-gacha-close" class="btn btn-ghost btn-light">とじる</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 図鑑のカード -->
+  <div id="card-dialog" class="dialog-backdrop card-dialog" hidden>
+    <div class="card-dialog-body" role="dialog" aria-modal="true" aria-label="ネコのカード">
+      <div id="card-view"></div>
+      <p id="card-note" class="card-note"></p>
+      <div class="card-dialog-buttons">
+        <button id="btn-card-action" class="btn btn-primary"></button>
+        <button id="btn-card-close" class="btn btn-ghost btn-light">とじる</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ログアウト確認 -->
+  <div id="logout-dialog" class="dialog-backdrop" hidden>
+    <div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="logout-title">
+      <p id="logout-title" class="dialog-title">ログアウトしますか？</p>
+      <p class="dialog-text">学習の記録は消えません。もう一度ログインすると続きから始められます。</p>
+      <div class="dialog-buttons">
+        <button id="btn-logout-cancel" class="btn btn-ghost">やめる</button>
+        <button id="btn-logout-ok" class="btn btn-primary">ログアウト</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/cloud.js"></script>
+  <script src="js/quiz.js"></script>
+  <script src="js/missions.js"></script>
+  <script src="js/catart.js"></script>
+  <script src="js/cats.js"></script>
+  <script src="js/gacha.js"></script>
+  <script src="js/sound.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

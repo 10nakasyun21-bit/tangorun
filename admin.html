@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>たんごラン 管理者</title>
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin">
+  <header class="admin-header">
+    <h1 class="admin-title">たんご<span>ラン</span> 管理者</h1>
+    <button id="btn-admin-logout" class="btn btn-ghost btn-small" hidden>ログアウト</button>
+  </header>
+
+  <main class="admin-main">
+    <p id="admin-message" class="admin-message" hidden></p>
+
+    <!-- ログイン -->
+    <section id="view-login" class="admin-card login-card" hidden>
+      <h2>管理者ログイン</h2>
+      <form id="admin-login-form" class="admin-form">
+        <label class="field">
+          <span class="field-label">メールアドレス</span>
+          <input id="admin-email" class="field-input" type="email" autocomplete="username" required>
+        </label>
+        <label class="field">
+          <span class="field-label">パスワード</span>
+          <input id="admin-password" class="field-input" type="password" autocomplete="current-password" required>
+        </label>
+        <p id="admin-login-error" class="error" hidden></p>
+        <button id="btn-admin-login" class="btn btn-primary" type="submit">ログイン</button>
+      </form>
+    </section>
+
+    <!-- 生徒一覧 -->
+    <section id="view-list" hidden>
+      <div class="kpis">
+        <div class="kpi"><span class="kpi-label">生徒</span><strong id="kpi-students">0</strong><span class="kpi-unit">人</span></div>
+        <div class="kpi"><span class="kpi-label">今日使った生徒</span><strong id="kpi-active">0</strong><span class="kpi-unit">人</span></div>
+        <div class="kpi"><span class="kpi-label">今日の合計</span><strong id="kpi-time">0分</strong></div>
+      </div>
+
+      <div class="admin-card">
+        <h3>期間限定ガチャ</h3>
+        <div id="series-options" class="series-options"></div>
+        <p id="series-status" class="series-status"></p>
+      </div>
+
+      <div class="toolbar">
+        <h2>生徒一覧</h2>
+        <div class="toolbar-buttons">
+          <button id="btn-refresh" class="btn btn-ghost btn-small">更新</button>
+          <button id="btn-add" class="btn btn-primary btn-small">＋ 生徒を追加</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table class="students">
+          <thead>
+            <tr>
+              <th>名前</th>
+              <th>最後に使った日</th>
+              <th class="num">連続</th>
+              <th class="num">覚えた語</th>
+              <th class="num">文章</th>
+              <th class="num">今日</th>
+              <th class="num">7日間</th>
+              <th class="num">正答率</th>
+            </tr>
+          </thead>
+          <tbody id="student-rows"></tbody>
+        </table>
+      </div>
+      <p id="empty-list" class="empty" hidden>まだ生徒がいません。「＋ 生徒を追加」から作ってください。</p>
+
+      <details id="stopped-box" class="stopped" hidden>
+        <summary>利用停止中の生徒（<span id="stopped-count">0</span>人）</summary>
+        <ul id="stopped-list"></ul>
+      </details>
+    </section>
+
+    <!-- 生徒の詳細 -->
+    <section id="view-detail" hidden>
+      <button id="btn-back" class="btn btn-ghost btn-small">← 一覧にもどる</button>
+      <div class="detail-head">
+        <h2 id="d-name"></h2>
+        <span id="d-login" class="detail-login"></span>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi"><span class="kpi-label">覚えた単語</span><strong id="d-mastered">0</strong><span class="kpi-unit">語</span></div>
+        <div class="kpi"><span class="kpi-label">学習した単語</span><strong id="d-studied">0</strong><span class="kpi-unit">語</span></div>
+        <div class="kpi"><span class="kpi-label">文章ストーリー</span><strong id="d-chapter">1</strong><span class="kpi-unit">章</span></div>
+        <div class="kpi"><span class="kpi-label">覚えた文</span><strong id="d-sentences">0</strong><span class="kpi-unit">/ 100文</span></div>
+        <div class="kpi"><span class="kpi-label">連続日数</span><strong id="d-streak">0</strong><span class="kpi-unit">日</span></div>
+        <div class="kpi"><span class="kpi-label">1分チャレンジ最高</span><strong id="d-challenge">0</strong><span class="kpi-unit">問</span></div>
+        <div class="kpi"><span class="kpi-label">ネコ図鑑</span><strong id="d-cats">0</strong><span class="kpi-unit">/ 40匹</span></div>
+        <div class="kpi"><span class="kpi-label">正答率</span><strong id="d-rate">-</strong></div>
+      </div>
+
+      <div class="admin-card">
+        <h3>1日の使用時間（最近30日・分）</h3>
+        <p id="usage-max" class="usage-max"></p>
+        <div id="usage-chart" class="usage-chart" role="img" aria-label="最近30日の1日ごとの使用時間"></div>
+        <div id="usage-axis" class="usage-axis"></div>
+        <details class="usage-table-box">
+          <summary>日ごとの数字を見る</summary>
+          <table class="usage-table">
+            <thead><tr><th>日付</th><th class="num">使用時間</th><th class="num">セット</th><th class="num">解いた問題</th><th class="num">正答率</th></tr></thead>
+            <tbody id="usage-rows"></tbody>
+          </table>
+        </details>
+      </div>
+
+      <div class="admin-card">
+        <h3>よく間違える単語</h3>
+        <ol id="weak-words" class="weak-words"></ol>
+        <p id="weak-empty" class="empty" hidden>まだ間違えた単語はありません。</p>
+      </div>
+
+      <div class="admin-card danger-zone">
+        <h3>アカウント</h3>
+        <div class="detail-actions">
+          <button id="btn-reissue" class="btn btn-ghost btn-small">パスワードを忘れた（新しいIDに引き継ぐ）</button>
+          <button id="btn-toggle-active" class="btn btn-danger-ghost btn-small">利用停止にする</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 生徒の追加・引き継ぎ -->
+  <div id="student-dialog" class="dialog-backdrop" hidden>
+    <form id="student-form" class="dialog admin-form" role="dialog" aria-modal="true" aria-labelledby="student-dialog-title">
+      <p id="student-dialog-title" class="dialog-title">生徒を追加</p>
+      <p id="student-dialog-note" class="dialog-text" hidden></p>
+      <label class="field">
+        <span class="field-label">名前（生徒の画面に出ます）</span>
+        <input id="s-name" class="field-input" type="text" maxlength="20" required>
+      </label>
+      <label class="field">
+        <span class="field-label">ログインID（半角英数字 3〜20文字）</span>
+        <input id="s-login" class="field-input" type="text" maxlength="20" autocapitalize="off" autocorrect="off" spellcheck="false" required>
+      </label>
+      <label class="field">
+        <span class="field-label">パスワード（6文字以上）</span>
+        <div class="password-row">
+          <input id="s-password" class="field-input" type="text" minlength="6" autocomplete="off" spellcheck="false" required>
+          <button id="btn-gen-password" class="btn btn-ghost btn-small" type="button">自動で作る</button>
+        </div>
+      </label>
+      <p id="student-error" class="error" hidden></p>
+      <div class="dialog-buttons">
+        <button id="btn-student-cancel" class="btn btn-ghost" type="button">やめる</button>
+        <button id="btn-student-ok" class="btn btn-primary" type="submit">作成</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- 作成したIDとパスワードの表示 -->
+  <div id="created-dialog" class="dialog-backdrop" hidden>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="created-title">
+      <p id="created-title" class="dialog-title">作成しました</p>
+      <p class="dialog-text">この内容を生徒に伝えてください。パスワードはこの画面を閉じると二度と表示されません。</p>
+      <pre id="created-text" class="created-text"></pre>
+      <div class="dialog-buttons">
+        <button id="btn-copy-created" class="btn btn-ghost" type="button">コピー</button>
+        <button id="btn-created-ok" class="btn btn-primary" type="button">閉じる</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 利用停止の確認 -->
+  <div id="confirm-dialog" class="dialog-backdrop" hidden>
+    <div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title">
+      <p id="confirm-title" class="dialog-title"></p>
+      <p id="confirm-text" class="dialog-text"></p>
+      <div class="dialog-buttons">
+        <button id="btn-confirm-cancel" class="btn btn-ghost" type="button">やめる</button>
+        <button id="btn-confirm-ok" class="btn btn-danger" type="button">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="chart-tooltip" class="chart-tooltip" hidden></div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/cloud.js"></script>
+  <script src="js/catart.js"></script>
+  <script src="js/cats.js"></script>
+  <script src="js/gacha.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

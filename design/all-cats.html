@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ネコ40匹 一覧</title>
+<style>
+  body { margin: 0; padding: 16px; background: #fff8ee; font-family: "Noto Sans JP", "Yu Gothic", sans-serif; color: #2b2b3a; }
+  .grid { display: grid; grid-template-columns: repeat(8, 180px); gap: 12px; }
+  .cell { background: #fff; border-radius: 12px; padding: 6px; border: 3px solid #e2dbd0; }
+  .cell.R { border-color: #9fb3cf; }
+  .cell.SR { border-color: #ff6ad5; }
+  .cell svg { display: block; width: 100%; height: auto; border-radius: 8px; }
+  .label { margin: 4px 0 0; font-size: 12px; font-weight: bold; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+</style>
+</head>
+<body>
+<div id="grid" class="grid"></div>
+<script src="../js/catart.js"></script>
+<script src="../js/cats.js"></script>
+<script>
+  const grid = document.getElementById('grid');
+  // ?ids=4,6,27 で一部だけ、?size=300 で大きく表示
+  const params = new URLSearchParams(location.search);
+  const ids = params.get('ids') ? params.get('ids').split(',').map(Number) : null;
+  if (params.get('size')) grid.style.gridTemplateColumns = `repeat(${params.get('cols') || 4}, ${params.get('size')}px)`;
+  for (const c of CATS.filter(c => !ids || ids.includes(c.id))) {
+    const cell = document.createElement('div');
+    cell.className = 'cell ' + c.rarity;
+    cell.innerHTML = buildCatSVG(c) + `<p class="label">${c.id}. ${c.rarity} ${c.name}</p>`;
+    grid.append(cell);
+  }
+</script>
+</body>
+</html>
