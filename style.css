@@ -1,0 +1,940 @@
+:root {
+  --bg: #fff8ee;
+  --card: #ffffff;
+  --text: #2b2b3a;
+  --sub: #7a7a8c;
+  --primary: #ff8a3d;
+  --primary-dark: #e86f20;
+  --accent: #ffc531;
+  --line: #f0e3d2;
+  --correct: #2fb36b;
+  --correct-bg: #e3f7ec;
+  --wrong: #e5484d;
+  --wrong-bg: #fde8e8;
+}
+
+* { box-sizing: border-box; }
+
+/* display を指定した要素でも hidden 属性で確実に隠す */
+[hidden] { display: none !important; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Hiragino Maru Gothic ProN", "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+button { font: inherit; color: inherit; }
+
+/* 画面の切り替え */
+.screen {
+  display: none;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: calc(16px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));
+}
+.screen.is-active { display: flex; }
+
+/* ボタン共通 */
+.btn {
+  min-height: 56px;
+  width: 100%;
+  border: none;
+  border-radius: 16px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.btn:disabled { opacity: 0.5; cursor: default; }
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 4px 0 var(--primary-dark);
+}
+.btn-primary:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: none;
+}
+.btn-big { min-height: 72px; font-size: 26px; }
+.btn-ghost {
+  background: transparent;
+  color: var(--sub);
+  border: 2px solid var(--line);
+}
+.btn-danger { background: var(--wrong); color: #fff; }
+.btn-danger-ghost {
+  background: transparent;
+  color: var(--wrong);
+  border: 2px solid var(--wrong-bg);
+}
+
+.icon-btn {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--sub);
+  cursor: pointer;
+  touch-action: manipulation;
+  flex-shrink: 0;
+}
+.icon-btn:active { background: var(--line); }
+.icon-btn-spacer { width: 48px; flex-shrink: 0; }
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 48px;
+}
+.screen-title { margin: 0; font-size: 22px; }
+
+/* ログイン */
+.login-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+}
+.login-main .logo { text-align: center; margin-bottom: 16px; }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field-label { font-size: 16px; font-weight: bold; color: var(--sub); }
+.field-input {
+  min-height: 56px;
+  padding: 0 16px;
+  border: 3px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--text);
+  font: inherit;
+  font-size: 20px;
+  outline: none;
+}
+.field-input:focus { border-color: var(--primary); }
+.login-note { margin: 0; text-align: center; color: var(--sub); font-size: 15px; }
+
+/* ホーム */
+.streak {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--card);
+  border: 2px solid var(--line);
+  font-size: 18px;
+  font-weight: bold;
+}
+.streak strong { font-size: 22px; color: var(--primary); }
+.streak.is-zero { color: var(--sub); }
+.streak.is-zero strong { color: var(--sub); }
+.streak.is-zero .streak-fire { filter: grayscale(1); opacity: 0.5; }
+
+.home-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+  text-align: center;
+}
+
+#screen-home .home-main { gap: 12px; }
+#screen-home .logo { font-size: 32px; line-height: 1.2; }
+#screen-home .meter { padding: 10px 18px; }
+#screen-home .meter-label strong { font-size: 24px; }
+#screen-home .meter-bar { margin: 6px 0; }
+#screen-home .btn-big { min-height: 64px; }
+
+/* 今日のミッション */
+.missions {
+  padding: 10px 16px 8px;
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+  text-align: left;
+}
+.missions-head { display: flex; justify-content: space-between; font-size: 15px; font-weight: bold; color: var(--sub); }
+.mission-count { color: var(--primary); }
+.mission-list { margin: 4px 0 0; padding: 0; list-style: none; }
+.mission-list li { display: flex; align-items: center; gap: 8px; padding: 2px 0; font-size: 16px; font-weight: bold; }
+.mission-check {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--line);
+  border-radius: 50%;
+  font-size: 13px;
+  color: #fff;
+}
+.mission-list li.is-done { color: var(--sub); text-decoration: line-through; text-decoration-color: var(--line); }
+.mission-list li.is-done .mission-check { background: var(--correct); border-color: var(--correct); }
+.missions.is-complete { border-color: var(--correct); }
+
+/* 文章ストーリー・1分チャレンジの入口 */
+.home-modes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.mode-card {
+  min-height: 72px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  padding: 10px 12px;
+  border: 3px solid var(--primary);
+  border-radius: 16px;
+  background: var(--card);
+  text-align: left;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.mode-card:active:not(:disabled) { transform: scale(0.98); }
+.mode-card:disabled { opacity: 0.5; cursor: default; }
+.mode-title { font-size: 16px; font-weight: bold; color: var(--primary-dark); white-space: nowrap; }
+.mode-sub { font-size: 14px; color: var(--sub); }
+.story-cards-link {
+  min-height: 44px;
+  padding: 0 12px;
+  border: none;
+  background: none;
+  color: var(--sub);
+  font-size: 15px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.logo { font-size: 48px; margin: 0; }
+.logo span { color: var(--primary); }
+
+.meter {
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: 20px;
+  padding: 18px 20px;
+  text-align: left;
+}
+.meter-label { font-size: 18px; font-weight: bold; }
+.meter-label strong { font-size: 30px; color: var(--primary); }
+.meter-bar {
+  height: 14px;
+  margin: 10px 0 8px;
+  background: var(--line);
+  border-radius: 7px;
+  overflow: hidden;
+}
+.meter-fill {
+  height: 100%;
+  width: 0;
+  min-width: 0;
+  background: linear-gradient(90deg, var(--accent), var(--primary));
+  border-radius: 7px;
+  transition: width 0.6s ease-out;
+}
+.meter-sub { color: var(--sub); font-size: 16px; }
+.meter-sub strong { color: var(--text); }
+
+.error { color: var(--wrong); font-size: 16px; margin: 0; }
+
+/* クイズ */
+.quiz-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.quiz-header .icon-btn { margin-left: -8px; }
+.progress-bar {
+  flex: 1;
+  height: 12px;
+  background: var(--line);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  width: 0;
+  background: var(--primary);
+  border-radius: 6px;
+  transition: width 0.3s;
+}
+.progress-text {
+  min-width: 48px;
+  text-align: right;
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--sub);
+}
+
+.combo-area { height: 36px; display: flex; justify-content: center; align-items: center; }
+.combo {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--sub);
+}
+.combo.is-hot {
+  color: var(--primary);
+  font-size: 22px;
+}
+.combo.is-hot strong { font-size: 28px; }
+.combo.pop { animation: pop 0.35s ease-out; }
+
+.question {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 150px;
+  text-align: center;
+}
+.task { margin: 0 0 10px; color: var(--sub); font-size: 15px; }
+.pos {
+  margin: 0 0 8px;
+  padding: 2px 12px;
+  border-radius: 999px;
+  background: var(--line);
+  color: var(--sub);
+  font-size: 14px;
+}
+.prompt {
+  margin: 0;
+  font-size: 48px;
+  font-weight: bold;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  word-break: break-word;
+}
+.prompt.is-ja { font-size: 34px; letter-spacing: 0; }
+.prompt.is-long { font-size: 38px; }
+.speak-btn {
+  margin-top: 8px;
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  background: var(--card);
+  color: var(--primary);
+  box-shadow: 0 2px 0 var(--line);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.choices { display: flex; flex-direction: column; gap: 12px; }
+.choice {
+  min-height: 60px;
+  padding: 10px 16px;
+  background: var(--card);
+  color: var(--text);
+  border: 3px solid var(--line);
+  border-radius: 16px;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background 0.15s, border-color 0.15s;
+}
+.choice.is-en { font-size: 24px; }
+.choice:active { transform: scale(0.98); }
+.choice.is-correct {
+  background: var(--correct-bg);
+  border-color: var(--correct);
+  color: var(--correct);
+}
+.choice.is-wrong {
+  background: var(--wrong-bg);
+  border-color: var(--wrong);
+  color: var(--wrong);
+}
+.choice.is-correct.is-picked { animation: pop 0.35s ease-out; }
+.choice.is-wrong { animation: shake 0.35s; }
+.choices.is-locked .choice { pointer-events: none; }
+
+/* レベル3：スペル入力
+   キーボードで画面の下半分が隠れるので、入力欄を問題のすぐ下に置く */
+#screen-quiz.is-spell .question { flex: 0 0 auto; min-height: 0; padding: 20px 0 24px; }
+.spell-form { display: flex; flex-direction: column; gap: 12px; }
+.spell-hint {
+  margin: 0;
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  letter-spacing: 0.12em;
+  color: var(--sub);
+  word-break: break-all;
+}
+.spell-input {
+  width: 100%;
+  min-height: 64px;
+  padding: 0 16px;
+  border: 3px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--text);
+  font: inherit;
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  outline: none;
+}
+.spell-input:focus { border-color: var(--primary); }
+.spell-input.is-correct { border-color: var(--correct); background: var(--correct-bg); color: var(--correct); }
+.spell-input.is-wrong { border-color: var(--wrong); background: var(--wrong-bg); color: var(--wrong); animation: shake 0.35s; }
+
+/* 文章の問題 */
+.prompt.is-sentence { font-size: 22px; line-height: 1.5; letter-spacing: 0; text-wrap: balance; }
+.s-line {
+  margin: 14px 0 0;
+  font-size: 21px;
+  font-weight: bold;
+  line-height: 1.5;
+  word-break: break-word;
+}
+.s-line .s-hint { color: var(--primary-dark); letter-spacing: 0.08em; }
+#screen-quiz.is-sentence .question { flex: 0 0 auto; min-height: 0; padding: 12px 0 18px; }
+/* 文章は答えるまで「次へ」を出さないので、場所を空けておかなくてよい */
+#screen-quiz.is-sentence .next-area { min-height: 0; }
+
+.s-build {
+  min-height: 64px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 8px;
+  padding: 10px;
+  border: 3px dashed var(--line);
+  border-radius: 16px;
+  background: var(--card);
+}
+.s-build.is-correct { border-style: solid; border-color: var(--correct); background: var(--correct-bg); }
+.s-build.is-wrong { border-style: solid; border-color: var(--wrong); background: var(--wrong-bg); animation: shake 0.35s; }
+.s-bank {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+.tile {
+  min-height: 48px;
+  padding: 8px 14px;
+  border: 2px solid var(--line);
+  border-bottom-width: 4px;
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--text);
+  font-size: 19px;
+  font-weight: bold;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.tile:active { transform: translateY(2px); }
+.tile.is-used { visibility: hidden; }
+.s-build .tile { border-color: var(--primary); }
+.s-build.is-locked .tile, .s-bank.is-locked .tile { pointer-events: none; }
+
+.s-feedback .s-grammar { margin: 0 0 6px; }
+.s-grammar span {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 14px;
+  font-weight: bold;
+}
+.sf-en { font-size: 18px; font-weight: bold; }
+.sf-note { margin-top: 4px !important; color: var(--sub); font-size: 15px; line-height: 1.6; }
+
+.result-unlock {
+  margin: 4px 0 0;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background: var(--accent);
+  font-size: 18px;
+  font-weight: bold;
+  animation: pop 0.5s ease-out;
+}
+
+.home-links { display: flex; gap: 2px; justify-content: center; flex-wrap: wrap; }
+.home-links .story-cards-link { padding: 0 7px; font-size: 14px; }
+
+/* 単語・熟語のスタート（大きなボタンを横に2つ） */
+.start-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.start-row .btn-big { font-size: 21px; padding: 0 6px; }
+.btn-idiom { background: #6c5ce7; box-shadow: 0 4px 0 #4b3fb8; }
+
+/* メーターの見出し行：左に単語、右に熟語 */
+.meter-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.meter-idioms { color: var(--sub); font-size: 15px; font-weight: bold; white-space: nowrap; }
+.meter-idioms strong { color: #6c5ce7; font-size: 20px; }
+
+/* 一覧の「単語・熟語」切り替え */
+.wl-kinds { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.wl-kind {
+  min-height: 44px;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--sub);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.wl-kind.is-active { border-color: var(--primary); background: var(--primary); color: #fff; }
+
+/* 熟語の問題 */
+.prompt.is-idiom { font-size: 30px; text-wrap: balance; }
+.choice.is-idiom { font-size: 19px; }
+/* 熟語の意味は長いもの（～の世話をする、～を大切にする）があるので、1行に収まる大きさにする */
+.choice.is-meaning { font-size: 18px; }
+/* 穴うめの選択肢は短い1語なので、2×2に並べて画面に収める */
+.choices.is-grid { display: grid; grid-template-columns: 1fr 1fr; }
+
+/* コイン */
+.coin {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff3b0 0 18%, #ffd54a 19% 60%, #e8a800 61%);
+  box-shadow: inset 0 0 0 2px #c48a00;
+  vertical-align: -4px;
+}
+.coin-small { width: 14px; height: 14px; margin-right: 3px; vertical-align: -2px; }
+.coin-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  margin-left: auto;
+  padding: 4px 14px;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  background: var(--card);
+  font-size: 18px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.coin-pill strong { color: #b07800; }
+.coin-pill.is-static { margin-left: 0; cursor: default; }
+.coin-pill.is-pop { animation: pop 0.5s ease-out; }
+
+/* ホームの相棒ネコ */
+.partner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+.partner-art { width: 64px; height: 64px; flex-shrink: 0; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 0 var(--line); }
+.partner-art svg { display: block; width: 100%; height: 100%; }
+.partner-bubble {
+  position: relative;
+  flex: 1;
+  padding: 8px 12px;
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  background: var(--card);
+  font-size: 15px;
+  font-weight: bold;
+  line-height: 1.4;
+}
+.partner-bubble::before {
+  content: "";
+  position: absolute;
+  left: -9px;
+  top: 50%;
+  margin-top: -7px;
+  border: 7px solid transparent;
+  border-right-color: var(--line);
+  border-left: 0;
+}
+
+/* ガチャ画面 */
+#screen-gacha .topbar { gap: 4px; }
+.gacha-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+}
+.gacha-tabs { display: flex; gap: 6px; width: 100%; }
+.gacha-tab {
+  flex: 1;
+  min-height: 44px;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--sub);
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.gacha-tab.is-active { border-color: var(--primary); background: var(--primary); color: #fff; }
+.gacha-series-name { margin: 0; font-size: 16px; font-weight: bold; color: var(--sub); }
+.gacha-machine { width: 180px; height: auto; }
+.gacha-machine.is-shaking { animation: shake 0.35s 2; }
+.gacha-need { margin: 0; min-height: 22px; color: var(--sub); font-size: 15px; font-weight: bold; }
+.gacha-rates { margin: 0; color: var(--sub); font-size: 13px; line-height: 1.6; }
+
+/* ガチャの結果（暗い背景にカプセル→カード） */
+.gacha-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(20, 20, 40, 0.85);
+  overflow-y: auto;
+}
+.gacha-capsule { position: relative; width: 120px; height: 120px; animation: capsule-shake 0.9s ease-in-out; }
+.gacha-capsule span { position: absolute; left: 0; width: 120px; height: 60px; border: 4px solid #3a3a4a; }
+.capsule-top { top: 0; border-radius: 60px 60px 0 0; background: var(--capsule, #ff8fa3); }
+.capsule-bottom { bottom: 0; border-radius: 0 0 60px 60px; background: #fff; }
+.gacha-capsule.is-open .capsule-top { animation: capsule-open-top 0.4s ease-in forwards; }
+.gacha-capsule.is-open .capsule-bottom { animation: capsule-open-bottom 0.4s ease-in forwards; }
+.gacha-capsule.glow-r { filter: drop-shadow(0 0 18px #9fd0ff); }
+.gacha-capsule.glow-sr { filter: drop-shadow(0 0 14px #ff6ad5) drop-shadow(0 0 28px #ffe66d); }
+/* 画面より高くても上が切れないよう、中央寄せは margin:auto で行う */
+.gacha-overlay > * { margin-top: auto; margin-bottom: auto; }
+.gacha-overlay { justify-content: flex-start; }
+.gacha-reveal { width: 100%; max-width: 340px; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 12px 0; animation: pop 0.45s ease-out; }
+#gacha-card .card { width: min(270px, 100%); }
+.gacha-label { margin: 0; color: #fff; font-size: 22px; font-weight: bold; text-align: center; }
+.gacha-label small { display: block; font-size: 15px; color: #d6d6e4; }
+.gacha-buttons { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+.gacha-buttons-row { display: flex; gap: 10px; }
+.btn-light { color: #fff; border-color: rgba(255, 255, 255, 0.4); }
+@keyframes capsule-shake {
+  0%, 100% { transform: rotate(0); }
+  20% { transform: rotate(-14deg); }
+  40% { transform: rotate(12deg); }
+  60% { transform: rotate(-8deg); }
+  80% { transform: rotate(5deg); }
+}
+@keyframes capsule-open-top { to { transform: translateY(-80px) rotate(-30deg); opacity: 0; } }
+@keyframes capsule-open-bottom { to { transform: translateY(80px) rotate(20deg); opacity: 0; } }
+
+/* ネコ図鑑 */
+#screen-zukan { gap: 12px; }
+.zukan-list { display: flex; flex-direction: column; gap: 16px; padding-bottom: 16px; }
+.zukan-section-title { margin: 0 0 8px; font-size: 16px; color: var(--sub); }
+.zukan-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.zukan-cell {
+  position: relative;
+  padding: 0;
+  border: 3px solid #e2dbd0;
+  border-radius: 12px;
+  background: var(--card);
+  overflow: hidden;
+  cursor: pointer;
+  aspect-ratio: 1;
+}
+.zukan-cell.r { border-color: #9fb3cf; }
+.zukan-cell.sr { border-color: transparent; background: linear-gradient(var(--card), var(--card)) padding-box, conic-gradient(#ff4d6d, #ffb347, #ffe66d, #5ee27a, #4dc9ff, #7b6cff, #ff6ad5, #ff4d6d) border-box; }
+.zukan-cell svg { display: block; width: 100%; height: 100%; }
+.zukan-cell.is-locked { background-color: #eee9e1; }
+.zukan-cell.sr.is-locked { background: linear-gradient(#eee9e1, #eee9e1) padding-box, conic-gradient(#ff4d6d, #ffb347, #ffe66d, #5ee27a, #4dc9ff, #7b6cff, #ff6ad5, #ff4d6d) border-box; }
+/* まだ持っていないネコは影だけ見せる（どんな形か想像できるように） */
+.zukan-cell.is-locked svg { filter: brightness(0); opacity: 0.22; }
+.zukan-no {
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  padding: 0 5px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--sub);
+  font-size: 11px;
+  font-weight: bold;
+}
+.zukan-count {
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  padding: 0 5px;
+  border-radius: 6px;
+  background: rgba(43, 43, 58, 0.75);
+  color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+}
+.zukan-partner { position: absolute; right: 3px; top: 3px; font-size: 14px; }
+
+/* 図鑑のカードを大きく見る */
+.card-dialog { background: rgba(20, 20, 40, 0.85); overflow-y: auto; }
+.card-dialog-body { width: 100%; max-width: 340px; display: flex; flex-direction: column; gap: 12px; margin: auto; padding: 12px 0; }
+.card-dialog { place-items: start center; }
+#card-view .card { width: min(270px, 100%); }
+.card-note { margin: 0; color: #fff; font-size: 15px; font-weight: bold; text-align: center; }
+.card-dialog-buttons { display: flex; flex-direction: column; gap: 10px; }
+.locked-card {
+  width: min(300px, 100%);
+  margin: 0 auto;
+  padding: 24px 16px;
+  border-radius: 22px;
+  background: #fff;
+  text-align: center;
+}
+.locked-card .locked-art { width: 160px; margin: 0 auto 8px; filter: brightness(0); opacity: 0.15; }
+.locked-card .locked-art svg { display: block; width: 100%; height: auto; }
+.locked-card p { margin: 4px 0; font-weight: bold; }
+
+/* 単語一覧 */
+#screen-wordlist { gap: 10px; }
+.wl-search { width: 100%; min-height: 48px; font-size: 18px; }
+.wl-filters { display: flex; gap: 6px; }
+.wl-filter {
+  flex: 1;
+  min-height: 44px;
+  border: 2px solid var(--line);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--sub);
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.wl-filter.is-active { border-color: var(--primary); background: var(--primary); color: #fff; }
+.wl-hint { margin: 0; text-align: center; color: var(--sub); font-size: 13px; }
+.wl-list { display: flex; flex-direction: column; padding-bottom: 16px; }
+.wl-rank { margin: 14px 0 6px; font-size: 16px; color: var(--sub); }
+.wl-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 2px 10px;
+  width: 100%;
+  min-height: 56px;
+  padding: 8px 12px;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+.wl-row:active { background: var(--line); }
+.wl-word { font-size: 19px; font-weight: bold; }
+.wl-meaning { grid-column: 1; color: var(--sub); font-size: 15px; }
+.wl-badge {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+.wl-badge.is-mastered { background: var(--accent); color: var(--text); }
+.wl-badge.is-learning { background: var(--correct-bg); color: var(--correct); }
+.wl-badge.is-new { background: var(--line); color: var(--sub); }
+.wl-empty { margin: 20px 0; text-align: center; color: var(--sub); }
+
+/* 結果画面の「できた」表示 */
+.result-growth { margin: 4px 0 0; font-size: 17px; font-weight: bold; color: var(--correct); }
+.result-missions { margin: 4px 0 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; align-items: center; }
+.result-missions li {
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: var(--correct-bg);
+  color: var(--correct);
+  font-size: 15px;
+  font-weight: bold;
+  animation: pop 0.5s ease-out;
+}
+
+/* 1分チャレンジ：進み具合のバーを残り時間として使う */
+#screen-quiz.is-challenge .progress-fill { transition: width 0.1s linear; }
+#screen-quiz.is-challenge .progress-fill.is-hurry { background: var(--wrong); }
+#screen-quiz.is-challenge .progress-text { min-width: 56px; }
+
+/* 文カード */
+#screen-cards { gap: 12px; }
+.cards-summary { margin: 0; text-align: center; color: var(--sub); font-size: 17px; }
+.cards-summary strong { color: var(--primary); font-size: 26px; }
+.cards-list { display: flex; flex-direction: column; gap: 20px; padding-bottom: 16px; }
+.chapter-head { display: flex; align-items: baseline; gap: 8px; margin: 0 0 8px; font-size: 18px; }
+.chapter-head .chapter-state { margin-left: auto; font-size: 14px; color: var(--sub); white-space: nowrap; }
+.chapter-locked { color: var(--sub); }
+.s-card {
+  margin: 0 0 8px;
+  padding: 10px 14px;
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  background: var(--card);
+}
+.s-card.is-mastered { border-color: var(--accent); }
+.s-card.is-unseen { color: var(--sub); background: transparent; border-style: dashed; }
+.s-card-en { margin: 0; font-size: 17px; font-weight: bold; }
+.s-card-ja { margin: 2px 0 0; color: var(--sub); font-size: 14px; }
+
+/* 不正解のときに出す答えと例文 */
+.feedback {
+  margin-top: 14px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: var(--card);
+  border: 2px solid var(--line);
+}
+.feedback p { margin: 0; }
+.feedback-answer { font-size: 20px; font-weight: bold; }
+.feedback-answer span + span { margin-left: 10px; color: var(--sub); font-size: 17px; }
+.feedback-example { margin-top: 6px !important; font-size: 17px; }
+.feedback-example-ja { color: var(--sub); font-size: 15px; }
+
+.next-area { min-height: 72px; padding-top: 14px; }
+
+/* 結果 */
+#screen-result { gap: 24px; }
+.result-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+}
+.result-quota {
+  margin: 0;
+  font-size: 28px;
+  font-weight: bold;
+  color: var(--primary);
+  animation: pop 0.5s ease-out;
+}
+.result-score { font-size: 72px; font-weight: bold; margin: 0; }
+.result-score small { font-size: 22px; }
+.result-stats { display: flex; gap: 12px; width: 100%; margin-top: 12px; }
+.result-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 8px;
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: 16px;
+}
+.result-stat-label { color: var(--sub); font-size: 15px; }
+.result-stat strong { font-size: 26px; color: var(--primary); }
+.result-buttons { display: flex; flex-direction: column; gap: 16px; }
+
+/* 設定 */
+#screen-settings { gap: 24px; }
+.settings-list {
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 64px;
+  padding: 0 16px;
+  font-size: 19px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.setting-row + .setting-row { border-top: 2px solid var(--line); }
+.switch {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  width: 56px;
+  height: 32px;
+  margin: 0;
+  border-radius: 16px;
+  background: var(--line);
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+.switch:checked { background: var(--correct); }
+.switch:checked::after { transform: translateX(24px); }
+.account-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: auto;
+}
+.account-name { margin: 0; text-align: center; font-size: 17px; font-weight: bold; }
+#btn-reset { margin-top: auto; }
+.account-box:not([hidden]) + #btn-reset { margin-top: 0; }
+
+/* 確認ダイアログ */
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(43, 43, 58, 0.45);
+  z-index: 10;
+}
+.dialog {
+  width: 100%;
+  max-width: 400px;
+  padding: 24px 20px 20px;
+  border-radius: 20px;
+  background: var(--card);
+}
+.dialog-title { margin: 0 0 8px; font-size: 21px; font-weight: bold; }
+.dialog-text { margin: 0 0 20px; color: var(--sub); font-size: 16px; line-height: 1.6; }
+.dialog-buttons { display: flex; gap: 12px; }
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
