@@ -93,6 +93,7 @@ function emptyRecord(settings = defaultSettings()) {
     updatedAt: 0, // 学習内容を最後に変えた時刻（端末どうしで、どちらが新しいかを比べる）
     words: {},
     sentences: {}, // 文章の記録（単語と同じ形）
+    idioms: {},    // 熟語の記録（単語と同じ形。単語の記録とは別の場所に置く）
     stats: { setsCompleted: 0, lastPlayedDate: null, streakDays: 0, lastStreakDate: null, storyChapter: 1, challengeBest: 0 },
     settings,
     usage: {}, // 日付ごとの { seconds, sets, answered, correct }
@@ -141,6 +142,9 @@ function parseRecord(data) {
   for (const [id, s] of Object.entries(data.sentences || {})) {
     record.sentences[id] = normalizeWord(s);
   }
+  for (const [id, s] of Object.entries(data.idioms || {})) {
+    record.idioms[id] = normalizeWord(s);
+  }
   return record;
 }
 
@@ -175,9 +179,12 @@ function touchRecord(record) {
 
 // ---------- 学習の記録 ----------
 
+// 日ごとの記録の名前の頭（wordLevelUps・sentenceMastered・idiomSets など）
+const USAGE_PREFIX = { words: 'word', sentences: 'sentence', idioms: 'idiom' };
+
 // 1問答えたときの記録
 // isPractice：復習日より前に「数合わせ」で出した問題。正解しても復習の間隔は進めない
-// kind：'words'（単語）か 'sentences'（文章）。どちらも同じ間隔反復とレベルの決まりを使う
+// kind：'words'（単語）・'sentences'（文章）・'idioms'（熟語）。どれも同じ間隔反復とレベルの決まりを使う
 function recordAnswer(record, wordId, isCorrect, isPractice = false, kind = 'words') {
   const today = localDate();
   const items = record[kind];
@@ -212,7 +219,7 @@ function recordAnswer(record, wordId, isCorrect, isPractice = false, kind = 'wor
   const u = usageOf(record, today);
   u.answered++;
   if (isCorrect) u.correct++;
-  const prefix = kind === 'sentences' ? 'sentence' : 'word';
+  const prefix = USAGE_PREFIX[kind];
   if (w.level > levelBefore) u[prefix + 'LevelUps']++;
   if (w.mastered && !masteredBefore) u[prefix + 'Mastered']++;
 
@@ -244,6 +251,7 @@ function recordSetCompleted(record, { mode = 'words', maxCombo = 0, score = 0 } 
   u.bestCombo = Math.max(u.bestCombo, maxCombo);
   if (mode === 'words') u.wordSets++;
   if (mode === 'sentences') u.sentenceSets++;
+  if (mode === 'idioms') u.idiomSets++;
   if (mode === 'challenge') {
     u.challenges++;
     u.challengeBest = Math.max(u.challengeBest, score);
@@ -261,6 +269,7 @@ function emptyUsage() {
     seconds: 0, sets: 0, answered: 0, correct: 0,
     wordSets: 0, sentenceSets: 0, challenges: 0, bestCombo: 0, challengeBest: 0,
     wordLevelUps: 0, wordMastered: 0, sentenceLevelUps: 0, sentenceMastered: 0,
+    idiomSets: 0, idiomLevelUps: 0, idiomMastered: 0,
   };
 }
 
@@ -310,8 +319,8 @@ function currentStreak(record) {
   return 0;
 }
 
-function countMastered(record) {
-  return Object.values(record.words).filter(w => w.mastered).length;
+function countMastered(record, kind = 'words') {
+  return Object.values(record[kind]).filter(w => w.mastered).length;
 }
 
 function updateSettings(record, changes) {

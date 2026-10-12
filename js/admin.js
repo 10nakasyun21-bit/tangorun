@@ -236,6 +236,7 @@ function renderDetailHeader() {
   $('d-sentences').textContent = (sum && sum.sentencesMastered) || 0;
   $('d-challenge').textContent = (sum && sum.challengeBest) || 0;
   $('d-cats').textContent = (sum && sum.catsOwned) || 0;
+  $('d-idioms').textContent = (sum && sum.idiomsMastered) || 0;
   $('d-rate').textContent = sum ? formatRate(sum.totalCorrect, sum.totalCorrect + sum.totalWrong) : '-';
   $('btn-toggle-active').textContent = s.active ? '利用停止にする' : '利用を再開する';
 }

@@ -8,6 +8,7 @@ const MISSION_ALWAYS = { id: 'any', label: '1セットやる', done: u => u.sets
 const MISSION_POOL = [
   { id: 'words', group: 'mode', label: '単語を1セットやる', done: u => u.wordSets >= 1 },
   { id: 'story', group: 'mode', label: '文章を1セットやる', done: u => u.sentenceSets >= 1 },
+  { id: 'idiom', group: 'mode', label: '熟語を1セットやる', done: u => u.idiomSets >= 1 },
   { id: 'challenge', group: 'mode', label: '1分チャレンジをやる', done: u => u.challenges >= 1 },
   { id: 'combo3', group: 'combo', label: '3連続正解する', done: u => u.bestCombo >= 3 },
   { id: 'combo5', group: 'combo', label: '5連続正解する', done: u => u.bestCombo >= 5 },

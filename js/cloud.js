@@ -77,7 +77,10 @@ function buildSummary(record) {
   }
   const words = Object.values(record.words);
   const sentences = Object.values(record.sentences || {});
+  const idioms = Object.values(record.idioms || {});
   return {
+    idiomsMastered: idioms.filter(s => s.mastered).length,
+    idiomsStudied: idioms.length,
     sentencesMastered: sentences.filter(s => s.mastered).length,
     sentencesStudied: sentences.length,
     storyChapter: record.stats.storyChapter || 1,

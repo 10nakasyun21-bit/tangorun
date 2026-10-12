@@ -15,8 +15,9 @@ const IDLE_LIMIT_MS = 60 * 1000; // 1分操作がなければ使用時間を数�
 const PUSH_INTERVAL_MS = 60 * 1000; // アプリを閉じたときの送信は1分に1回まで
 
 const state = {
-  mode: 'words',     // 'words'（単語）か 'sentences'（文章）
+  mode: 'words',     // 'words'（単語）・'idioms'（熟語）・'sentences'（文章）・'challenge'（1分チャレンジ）
   words: [],
+  idioms: [],
   chapters: [],
   sentences: [],
   placed: [],        // 文章の並べ替えで、並べたタイルの番号
@@ -75,6 +76,8 @@ function showHome() {
   $('mastered-count').textContent = mastered;
   $('goal-count').textContent = GOAL_WORDS;
   $('remaining-count').textContent = Math.max(GOAL_WORDS - mastered, 0);
+  $('idiom-mastered').textContent = countMastered(state.record, 'idioms');
+  $('idiom-total').textContent = state.idioms.length;
   renderStoryCard();
   renderChallengeCard();
   renderMissions();
@@ -137,6 +140,8 @@ function startSet(mode = state.mode) {
   if (mode === 'sentences') {
     state.openBefore = unlockedChapterIds(state.chapters, state.sentences, state.record).length;
     state.questions = buildSentenceSet(state.chapters, state.sentences, state.record);
+  } else if (mode === 'idioms') {
+    state.questions = buildIdiomSet(state.idioms, state.record);
   } else {
     state.questions = buildSet(state.words, state.record);
   }
@@ -226,7 +231,9 @@ function stopChallenge() {
 // いまの問題で読み上げる英語
 function currentSpeakText() {
   const q = state.questions[state.index];
-  return q.sentence ? q.sentence.en : q.word.word;
+  if (q.sentence) return q.sentence.en;
+  if (q.idiom) return idiomSpeakText(q.idiom);
+  return q.word.word;
 }
 
 function renderQuestion() {
@@ -250,6 +257,10 @@ function renderQuestion() {
     renderSentenceQuestion(q);
     return;
   }
+  if (q.idiom) {
+    renderIdiomQuestion(q);
+    return;
+  }
 
   $('q-task').textContent = state.mode === 'challenge' ? `正解 ${state.correctCount}問` : TASK_TEXT[q.level];
   $('q-pos').textContent = q.word.pos;
@@ -259,7 +270,7 @@ function renderQuestion() {
   prompt.textContent = isEnglishPrompt ? q.word.word : q.word.meaning;
   prompt.classList.toggle('is-ja', !isEnglishPrompt);
   prompt.classList.toggle('is-long', isEnglishPrompt && q.word.word.length > 10);
-  prompt.classList.remove('is-sentence');
+  prompt.classList.remove('is-sentence', 'is-idiom');
 
   // レベル1は問題が英語なので、答える前から発音を聞ける（1分チャレンジはテンポ優先で出さない）
   $('btn-speak').hidden = q.level !== 1 || state.mode === 'challenge';
@@ -267,7 +278,7 @@ function renderQuestion() {
   const box = $('choices');
   const form = $('spell-form');
   box.innerHTML = '';
-  box.classList.remove('is-locked');
+  box.classList.remove('is-locked', 'is-grid');
   $('screen-quiz').classList.toggle('is-spell', q.level === 3);
 
   if (q.level === 3) {
@@ -287,6 +298,83 @@ function renderQuestion() {
       box.appendChild(btn);
     });
   }
+}
+
+// ---------- 熟語の問題 ----------
+
+const IDIOM_TASK_TEXT = {
+  1: '意味をえらぼう',
+  2: '熟語をえらぼう',
+  3: '（　）に入る語をえらぼう',
+};
+
+function renderIdiomQuestion(q) {
+  const it = q.idiom;
+  $('q-task').textContent = IDIOM_TASK_TEXT[q.level];
+  $('q-pos').textContent = it.type;
+  const prompt = $('q-prompt');
+  // レベル1：熟語（英語）、レベル2：意味、レベル3：例文の日本語訳（英文は下に穴あきで出す）
+  prompt.textContent = q.level === 1 ? it.idiom : q.level === 2 ? it.meaning : it.example_ja;
+  prompt.className = 'prompt ' + (q.level === 1 ? 'is-idiom' : q.level === 2 ? 'is-ja' : 'is-ja is-sentence');
+  $('btn-speak').hidden = q.level !== 1; // レベル1は問題が英語なので、答える前から聞ける
+  $('spell-form').hidden = true;
+  // レベル3は例文をすぐ下に出し、選択肢が離れすぎないようにする
+  $('screen-quiz').classList.toggle('is-spell', q.level === 3);
+  if (q.level === 3) {
+    renderIdiomBlank(it, false);
+    $('s-line').hidden = false;
+  }
+
+  const box = $('choices');
+  box.innerHTML = '';
+  box.classList.remove('is-locked');
+  box.classList.toggle('is-grid', q.level === 3);
+  box.hidden = false;
+  if (q.level === 3) {
+    q.blankChoices.forEach(text => {
+      const btn = document.createElement('button');
+      btn.className = 'choice is-en';
+      btn.textContent = text;
+      btn.dataset.answer = text === it.blank ? '1' : '';
+      btn.addEventListener('click', () => answerIdiomChoice(btn, text === it.blank));
+      box.appendChild(btn);
+    });
+  } else {
+    q.choices.forEach(choice => {
+      const btn = document.createElement('button');
+      btn.className = 'choice' + (q.level === 2 ? ' is-idiom' : ' is-meaning');
+      btn.textContent = q.level === 1 ? choice.meaning : choice.idiom;
+      btn.dataset.answer = choice.id === it.id ? '1' : '';
+      btn.addEventListener('click', () => answerIdiomChoice(btn, choice.id === it.id));
+      box.appendChild(btn);
+    });
+  }
+}
+
+// 穴うめの英文。答える前は「(　　)」、答えたあとは正解の語を入れて見せる
+function renderIdiomBlank(it, revealed) {
+  const { before, after } = idiomBlankParts(it);
+  const line = $('s-line');
+  line.innerHTML = '';
+  const mid = document.createElement('span');
+  mid.className = 's-hint';
+  mid.textContent = revealed ? it.blank : '(　　)';
+  line.append(before, mid, after);
+}
+
+function answerIdiomChoice(btn, isCorrect) {
+  if (state.answered) return;
+  const q = state.questions[state.index];
+  const box = $('choices');
+  box.classList.add('is-locked');
+  if (isCorrect) {
+    btn.classList.add('is-correct', 'is-picked');
+  } else {
+    btn.classList.add('is-wrong');
+    box.querySelector('[data-answer="1"]').classList.add('is-correct');
+  }
+  if (q.level === 3) renderIdiomBlank(q.idiom, true);
+  finishAnswer(isCorrect);
 }
 
 function openSpellForm() {
@@ -448,6 +536,7 @@ function finishAnswer(isCorrect) {
 
   $('progress-fill').style.width = ((state.index + 1) / state.questions.length) * 100 + '%';
   if (q.sentence) recordAnswer(state.record, q.sentence.id, isCorrect, q.practice, 'sentences');
+  else if (q.idiom) recordAnswer(state.record, q.idiom.id, isCorrect, q.practice, 'idioms');
   else recordAnswer(state.record, q.word.id, isCorrect, q.practice);
 
   if (settings.sound) isCorrect ? playCorrect() : playWrong();
@@ -476,8 +565,11 @@ function finishAnswer(isCorrect) {
   } else if (isCorrect) {
     state.nextTimer = setTimeout(nextQuestion, NEXT_DELAY_MS);
   } else {
-    showFeedback(q.word);
+    // 熟語も単語と同じ形で、正解・意味・例文を見せる
+    showFeedback(q.idiom ? { word: q.idiom.idiom, meaning: q.idiom.meaning, example: q.idiom.example, example_ja: q.idiom.example_ja } : q.word);
     $('btn-next').hidden = false;
+    // 小さい画面でも、正解・例文と「次へ」が見えるようにする
+    requestAnimationFrame(() => $('btn-next').scrollIntoView({ block: 'end', behavior: 'smooth' }));
   }
 }
 
@@ -575,12 +667,12 @@ function showResult() {
   pushToCloud();
 }
 
-// 今日の「できた」：レベルアップした数と、新しく覚えた数（単語か文章か、遊んだほうを出す）
+// 今日の「できた」：レベルアップした数と、新しく覚えた数（単語・文章・熟語のうち、遊んだものを出す）
 function renderGrowth(mode) {
   const el = $('r-growth');
   const u = usageOf(state.record, localDate());
-  const unit = mode === 'sentences' ? '文' : '語';
-  const prefix = mode === 'sentences' ? 'sentence' : 'word';
+  const unit = { sentences: '文', idioms: '個' }[mode] || '語';
+  const prefix = USAGE_PREFIX[mode] || 'word';
   const parts = [];
   if (mode !== 'challenge') {
     if (u[prefix + 'LevelUps']) parts.push(`📈 今日レベルアップ ${u[prefix + 'LevelUps']}${unit}`);
@@ -790,63 +882,89 @@ function closeCardDialog() {
 
 // ---------- 単語一覧 ----------
 
+// 単語と熟語で同じ画面を使う。上の「単語・熟語」で切り替える
 const RANK_LABEL = { A: 'A　最頻出', B: 'B　頻出', C: 'C　標準' };
+const IDIOM_TYPES = ['動詞の熟語', 'be動詞の熟語', '前置詞の熟語', '接続詞のような熟語', '会話表現'];
 let wordListFilter = 'all';
+let wordListKind = 'words'; // 'words' | 'idioms'
 
-function wordStatus(id) {
-  const r = state.record.words[id];
+// 一覧の種類ごとのちがい
+function listConfig() {
+  if (wordListKind === 'idioms') {
+    return {
+      items: state.idioms, recs: state.record.idioms, unit: '個', title: '熟語一覧',
+      text: it => it.idiom, sub: it => it.meaning, speakText: it => idiomSpeakText(it),
+      // 熟語は種類ごとにまとめる
+      groups: IDIOM_TYPES.map(t => ({ label: t, match: it => it.type === t })),
+    };
+  }
+  return {
+    items: state.words, recs: state.record.words, unit: '語', title: '単語一覧',
+    text: w => w.word, sub: w => `${w.meaning}（${w.pos}）`, speakText: w => w.word,
+    groups: ['A', 'B', 'C'].map(r => ({ label: RANK_LABEL[r], match: w => w.rank === r })),
+  };
+}
+
+function itemStatus(recs, id) {
+  const r = recs[id];
   if (!r) return 'new';
   return r.mastered ? 'mastered' : 'learning';
 }
 
 function showWordList() {
+  const cfg = listConfig();
   const counts = { mastered: 0, learning: 0 };
-  for (const w of state.words) {
-    const s = wordStatus(w.id);
+  for (const it of cfg.items) {
+    const s = itemStatus(cfg.recs, it.id);
     if (s !== 'new') counts[s]++;
   }
-  $('wl-total').textContent = state.words.length;
+  $('wl-title').textContent = cfg.title;
+  $('wl-total').textContent = cfg.items.length;
+  $('wl-unit').textContent = cfg.unit;
   $('wl-mastered').textContent = counts.mastered;
   $('wl-learning').textContent = counts.learning;
+  $('wl-hint').textContent = wordListKind === 'idioms' ? '熟語をタップすると発音が聞けます' : '単語をタップすると発音が聞けます';
+  document.querySelectorAll('.wl-kind').forEach(b => b.classList.toggle('is-active', b.dataset.kind === wordListKind));
   renderWordList();
   showScreen('wordlist');
 }
 
 function renderWordList() {
+  const cfg = listConfig();
   const q = $('wl-search').value.trim().toLowerCase();
   const list = $('wl-list');
   list.innerHTML = '';
   const badgeText = { mastered: '★覚えた', learning: '学習中', new: 'まだ' };
   let shown = 0;
-  for (const rank of ['A', 'B', 'C']) {
-    const words = state.words.filter(w => w.rank === rank
-      && (wordListFilter === 'all' || wordStatus(w.id) === wordListFilter)
-      && (!q || w.word.toLowerCase().includes(q) || w.meaning.includes(q)));
-    if (!words.length) continue;
+  for (const group of cfg.groups) {
+    const items = cfg.items.filter(it => group.match(it)
+      && (wordListFilter === 'all' || itemStatus(cfg.recs, it.id) === wordListFilter)
+      && (!q || cfg.text(it).toLowerCase().includes(q) || it.meaning.includes(q)));
+    if (!items.length) continue;
     const head = document.createElement('h3');
     head.className = 'wl-rank';
-    head.textContent = `${RANK_LABEL[rank]}（${words.length}語）`;
+    head.textContent = `${group.label}（${items.length}${cfg.unit}）`;
     list.append(head);
     const frag = document.createDocumentFragment();
-    for (const w of words) {
-      const st = wordStatus(w.id);
+    for (const it of items) {
+      const st = itemStatus(cfg.recs, it.id);
       const row = document.createElement('button');
       row.className = 'wl-row';
-      row.dataset.word = w.word;
+      row.dataset.speak = cfg.speakText(it);
       const word = document.createElement('span');
       word.className = 'wl-word';
-      word.textContent = w.word;
+      word.textContent = cfg.text(it);
       const badge = document.createElement('span');
       badge.className = 'wl-badge is-' + st;
       badge.textContent = badgeText[st];
       const meaning = document.createElement('span');
       meaning.className = 'wl-meaning';
-      meaning.textContent = `${w.meaning}（${w.pos}）`;
+      meaning.textContent = cfg.sub(it);
       row.append(word, badge, meaning);
       frag.append(row);
     }
     list.append(frag);
-    shown += words.length;
+    shown += items.length;
   }
   if (!shown) {
     const p = document.createElement('p');
@@ -1131,6 +1249,12 @@ async function init() {
   $('logout-dialog').addEventListener('click', e => { if (e.target === e.currentTarget) closeLogoutDialog(); });
 
   $('btn-start').addEventListener('click', () => startSet('words'));
+  $('btn-start-idiom').addEventListener('click', () => startSet('idioms'));
+  document.querySelectorAll('.wl-kind').forEach(btn => btn.addEventListener('click', () => {
+    wordListKind = btn.dataset.kind;
+    $('wl-search').value = '';
+    showWordList();
+  }));
   $('btn-start-story').addEventListener('click', () => startSet('sentences'));
   $('btn-cards').addEventListener('click', showCards);
   $('btn-wordlist').addEventListener('click', showWordList);
@@ -1143,7 +1267,7 @@ async function init() {
   }));
   $('wl-list').addEventListener('click', e => {
     const row = e.target.closest('.wl-row');
-    if (row) speak(row.dataset.word);
+    if (row) speak(row.dataset.speak);
   });
   $('btn-cards-back').addEventListener('click', showHome);
   $('btn-next').addEventListener('click', nextQuestion);
@@ -1201,15 +1325,18 @@ async function init() {
   }
 
   try {
-    const [wordsRes, sentRes] = await Promise.all([fetch('data/words.json'), fetch('data/sentences.json')]);
-    if (!wordsRes.ok || !sentRes.ok) throw new Error('load failed');
+    const [wordsRes, sentRes, idiomRes] = await Promise.all([fetch('data/words.json'), fetch('data/sentences.json'), fetch('data/idioms.json')]);
+    if (!wordsRes.ok || !sentRes.ok || !idiomRes.ok) throw new Error('load failed');
     state.words = await wordsRes.json();
     const story = await sentRes.json();
     state.chapters = story.chapters;
     state.sentences = story.sentences;
+    state.idioms = await idiomRes.json();
     $('btn-start').textContent = '単語スタート';
     $('btn-start').disabled = false;
+    $('btn-start-idiom').disabled = false;
     $('btn-start-story').disabled = false;
+    $('idiom-total').textContent = state.idioms.length;
     renderStoryCard();
     renderChallengeCard();
   } catch (e) {

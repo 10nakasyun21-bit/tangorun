@@ -1,0 +1,36 @@
+[
+  { "id": 1, "idiom": "look for", "meaning": "～をさがす", "type": "動詞の熟語", "example": "I'm looking for my cat.", "example_ja": "私はネコをさがしています。", "blank": "for", "blank_choices": ["at", "after", "to"], "rank": "A" },
+  { "id": 2, "idiom": "take care of", "meaning": "～の世話をする、～を大切にする", "type": "動詞の熟語", "example": "My sister takes care of our dog.", "example_ja": "姉が私たちの犬の世話をしています。", "blank": "of", "blank_choices": ["for", "with", "in"], "rank": "A" },
+  { "id": 3, "idiom": "look forward to", "meaning": "～を楽しみに待つ", "type": "動詞の熟語", "example": "We are looking forward to the trip.", "example_ja": "私たちは旅行を楽しみにしています。", "blank": "forward", "blank_choices": ["up", "out", "back"], "rank": "A" },
+  { "id": 4, "idiom": "give up", "meaning": "あきらめる", "type": "動詞の熟語", "example": "Don't give up your dream.", "example_ja": "夢をあきらめないで。", "blank": "up", "blank_choices": ["out", "off", "in"], "rank": "A" },
+  { "id": 5, "idiom": "get to", "meaning": "～に着く", "type": "動詞の熟語", "example": "We got to the park at ten.", "example_ja": "私たちは10時に公園に着きました。", "blank": "to", "blank_choices": ["at", "in", "on"], "rank": "B" },
+  { "id": 6, "idiom": "take part in", "meaning": "～に参加する", "type": "動詞の熟語", "example": "Many students took part in the event.", "example_ja": "多くの生徒がその行事に参加しました。", "blank": "part", "blank_choices": ["place", "care", "time"], "rank": "B" },
+
+  { "id": 7, "idiom": "be good at", "meaning": "～が得意だ", "type": "be動詞の熟語", "example": "Ken is good at math.", "example_ja": "健は数学が得意です。", "blank": "at", "blank_choices": ["in", "for", "on"], "rank": "A" },
+  { "id": 8, "idiom": "be interested in", "meaning": "～に興味がある", "type": "be動詞の熟語", "example": "My brother is interested in old cars.", "example_ja": "兄は古い車に興味があります。", "blank": "in", "blank_choices": ["at", "on", "for"], "rank": "A" },
+  { "id": 9, "idiom": "be afraid of", "meaning": "～をこわがる", "type": "be動詞の熟語", "example": "My little sister is afraid of big dogs.", "example_ja": "妹は大きな犬をこわがります。", "blank": "of", "blank_choices": ["for", "from", "at"], "rank": "A" },
+  { "id": 10, "idiom": "be famous for", "meaning": "～で有名だ", "type": "be動詞の熟語", "example": "This city is famous for its beautiful lake.", "example_ja": "この市は美しい湖で有名です。", "blank": "for", "blank_choices": ["of", "by", "at"], "rank": "A" },
+  { "id": 11, "idiom": "be proud of", "meaning": "～を誇りに思う", "type": "be動詞の熟語", "example": "I'm proud of my brother.", "example_ja": "私は兄を誇りに思います。", "blank": "of", "blank_choices": ["for", "with", "at"], "rank": "B" },
+  { "id": 12, "idiom": "be different from", "meaning": "～と違う", "type": "be動詞の熟語", "example": "My answer is different from yours.", "example_ja": "私の答えはあなたのと違います。", "blank": "from", "blank_choices": ["of", "with", "at"], "rank": "B" },
+
+  { "id": 13, "idiom": "a lot of", "meaning": "たくさんの", "type": "前置詞の熟語", "example": "There are a lot of books in this room.", "example_ja": "この部屋にはたくさんの本があります。", "blank": "lot", "blank_choices": ["much", "many", "big"], "rank": "A" },
+  { "id": 14, "idiom": "in front of", "meaning": "～の前に", "type": "前置詞の熟語", "example": "Let's meet in front of the library.", "example_ja": "図書館の前で会いましょう。", "blank": "front", "blank_choices": ["face", "side", "head"], "rank": "A" },
+  { "id": 15, "idiom": "because of", "meaning": "～のために、～が原因で", "type": "前置詞の熟語", "example": "The game was stopped because of the rain.", "example_ja": "雨のために試合は中止されました。", "blank": "of", "blank_choices": ["for", "by", "from"], "rank": "A" },
+  { "id": 16, "idiom": "for example", "meaning": "たとえば", "type": "前置詞の熟語", "example": "I like sports, for example, tennis and soccer.", "example_ja": "私はスポーツが好きです。たとえばテニスやサッカーです。", "blank": "example", "blank_choices": ["sample", "model", "show"], "rank": "A" },
+  { "id": 17, "idiom": "at first", "meaning": "最初は", "type": "前置詞の熟語", "example": "At first, I couldn't swim well.", "example_ja": "最初は、うまく泳げませんでした。", "blank": "first", "blank_choices": ["once", "start", "begin"], "rank": "A" },
+  { "id": 18, "idiom": "all over the world", "meaning": "世界中で", "type": "前置詞の熟語", "example": "This song is loved all over the world.", "example_ja": "この歌は世界中で愛されています。", "blank": "over", "blank_choices": ["on", "in", "up"], "rank": "B" },
+
+  { "id": 19, "idiom": "as soon as", "meaning": "～するとすぐに", "type": "接続詞のような熟語", "example": "Call me as soon as you arrive.", "example_ja": "着いたらすぐに電話してね。", "blank": "soon", "blank_choices": ["fast", "much", "quick"], "rank": "A" },
+  { "id": 20, "idiom": "not only A but also B", "meaning": "AだけでなくBも", "type": "接続詞のような熟語", "example": "She can speak not only English but also Chinese.", "example_ja": "彼女は英語だけでなく中国語も話せます。", "blank": "also", "blank_choices": ["too", "so", "more"], "rank": "A" },
+  { "id": 21, "idiom": "both A and B", "meaning": "AとBの両方", "type": "接続詞のような熟語", "example": "Both Tom and Mary are my friends.", "example_ja": "トムとメアリーの両方が私の友達です。", "blank": "and", "blank_choices": ["or", "but", "nor"], "rank": "A" },
+  { "id": 22, "idiom": "either A or B", "meaning": "AかBのどちらか", "type": "接続詞のような熟語", "example": "You can choose either tea or coffee.", "example_ja": "紅茶かコーヒーのどちらかを選べます。", "blank": "or", "blank_choices": ["and", "but", "nor"], "rank": "B" },
+  { "id": 23, "idiom": "so ～ that …", "meaning": "とても～なので…", "type": "接続詞のような熟語", "example": "I was so tired that I went to bed early.", "example_ja": "とても疲れていたので、早く寝ました。", "blank": "that", "blank_choices": ["what", "which", "how"], "rank": "B" },
+  { "id": 24, "idiom": "not A but B", "meaning": "AではなくB", "type": "接続詞のような熟語", "example": "This is not a cat but a dog.", "example_ja": "これはネコではなくイヌです。", "blank": "but", "blank_choices": ["and", "or", "so"], "rank": "B" },
+
+  { "id": 25, "idiom": "How about ～?", "meaning": "～はどうですか", "type": "会話表現", "example": "How about going to the park?", "example_ja": "公園に行くのはどうですか。", "blank": "about", "blank_choices": ["of", "for", "with"], "rank": "A" },
+  { "id": 26, "idiom": "Why don't you ～?", "meaning": "～したらどうですか", "type": "会話表現", "example": "Why don't you ask your teacher?", "example_ja": "先生に聞いてみたらどうですか。", "blank": "Why", "blank_choices": ["What", "How", "When"], "rank": "A" },
+  { "id": 27, "idiom": "Would you like ～?", "meaning": "～はいかがですか", "type": "会話表現", "example": "Would you like some cake?", "example_ja": "ケーキはいかがですか。", "blank": "Would", "blank_choices": ["Are", "Is", "Has"], "rank": "A" },
+  { "id": 28, "idiom": "Shall we ～?", "meaning": "（いっしょに）～しませんか", "type": "会話表現", "example": "Shall we play tennis after school?", "example_ja": "放課後テニスをしませんか。", "blank": "Shall", "blank_choices": ["Are", "Is", "Does"], "rank": "A" },
+  { "id": 29, "idiom": "Here you are.", "meaning": "はい、どうぞ（物をわたすとき）", "type": "会話表現", "example": "\"Can I see your notebook?\" \"Sure. Here you are.\"", "example_ja": "「ノートを見てもいい？」「いいよ。はい、どうぞ。」", "blank": "are", "blank_choices": ["is", "am", "do"], "rank": "A" },
+  { "id": 30, "idiom": "Of course.", "meaning": "もちろん", "type": "会話表現", "example": "\"Can you help me?\" \"Of course.\"", "example_ja": "「手伝ってくれる？」「もちろん。」", "blank": "course", "blank_choices": ["sure", "yes", "right"], "rank": "A" }
+]

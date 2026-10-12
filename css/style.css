@@ -473,6 +473,39 @@ button { font: inherit; color: inherit; }
 }
 
 .home-links { display: flex; gap: 2px; justify-content: center; flex-wrap: wrap; }
+.home-links .story-cards-link { padding: 0 7px; font-size: 14px; }
+
+/* 単語・熟語のスタート（大きなボタンを横に2つ） */
+.start-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.start-row .btn-big { font-size: 21px; padding: 0 6px; }
+.btn-idiom { background: #6c5ce7; box-shadow: 0 4px 0 #4b3fb8; }
+
+/* メーターの見出し行：左に単語、右に熟語 */
+.meter-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.meter-idioms { color: var(--sub); font-size: 15px; font-weight: bold; white-space: nowrap; }
+.meter-idioms strong { color: #6c5ce7; font-size: 20px; }
+
+/* 一覧の「単語・熟語」切り替え */
+.wl-kinds { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.wl-kind {
+  min-height: 44px;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--sub);
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.wl-kind.is-active { border-color: var(--primary); background: var(--primary); color: #fff; }
+
+/* 熟語の問題 */
+.prompt.is-idiom { font-size: 30px; text-wrap: balance; }
+.choice.is-idiom { font-size: 19px; }
+/* 熟語の意味は長いもの（～の世話をする、～を大切にする）があるので、1行に収まる大きさにする */
+.choice.is-meaning { font-size: 18px; }
+/* 穴うめの選択肢は短い1語なので、2×2に並べて画面に収める */
+.choices.is-grid { display: grid; grid-template-columns: 1fr 1fr; }
 
 /* コイン */
 .coin {

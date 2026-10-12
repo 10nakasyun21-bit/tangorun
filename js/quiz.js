@@ -19,7 +19,7 @@ function shuffle(array) {
 function meaningParts(meaning) {
   return meaning
     .replace(/[（(][^）)]*[）)]/g, '')
-    .replace(/〜/g, '')
+    .replace(/[〜～]/g, '') // 単語のデータは「〜」、熟語のデータは「～」を使っている
     .split(/[、,・]/)
     .map(s => s.trim())
     .filter(Boolean);
@@ -30,23 +30,27 @@ function meaningsOverlap(a, b) {
   return meaningParts(b).some(p => pa.includes(p));
 }
 
-// ダミーにしてよいか：正解と意味がかぶる単語はダミーにしない（正解が2つになるため）
-function canBeDummy(target, w, picked) {
+// 単語と熟語で、グループ（品詞・熟語の種類）と英語の項目名がちがう
+const WORD_KEYS = { group: 'pos', text: 'word' };
+const IDIOM_KEYS = { group: 'type', text: 'idiom' };
+
+// ダミーにしてよいか：正解と意味がかぶるものはダミーにしない（正解が2つになるため）
+function canBeDummy(target, w, picked, keys) {
   return w.id !== target.id
-    && w.word !== target.word
+    && w[keys.text] !== target[keys.text]
     && !meaningsOverlap(w.meaning, target.meaning)
-    && !picked.some(p => p.word === w.word || p.meaning === w.meaning);
+    && !picked.some(p => p[keys.text] === w[keys.text] || p.meaning === w.meaning);
 }
 
-// 正解1つ＋ダミー3つを、シャッフルして返す。ダミーは同じ品詞から選ぶ
-function makeChoices(target, words) {
+// 正解1つ＋ダミー3つを、シャッフルして返す。ダミーは同じグループ（品詞・熟語の種類）から選ぶ
+function makeChoices(target, items, keys = WORD_KEYS) {
   const dummies = [];
-  const samePos = shuffle(words.filter(w => w.pos === target.pos));
-  const others = shuffle(words.filter(w => w.pos !== target.pos));
-  // 同じ品詞で3つそろわないときだけ、ほかの品詞から補う
-  for (const w of [...samePos, ...others]) {
+  const same = shuffle(items.filter(w => w[keys.group] === target[keys.group]));
+  const others = shuffle(items.filter(w => w[keys.group] !== target[keys.group]));
+  // 同じグループで3つそろわないときだけ、ほかのグループから補う
+  for (const w of [...same, ...others]) {
     if (dummies.length >= 3) break;
-    if (canBeDummy(target, w, dummies)) dummies.push(w);
+    if (canBeDummy(target, w, dummies, keys)) dummies.push(w);
   }
   return shuffle([target, ...dummies]);
 }
@@ -109,6 +113,38 @@ function buildSet(words, record) {
       choices: level < 3 ? makeChoices(word, words) : null,
     };
   });
+}
+
+// ---------- 熟語 ----------
+
+// 熟語の1セット（10問）。単語と同じ選び方（復習 → 新しい熟語は最大5個・rank A から → 練習）
+// レベル1・2は4択（意味 / 熟語）、レベル3は例文の穴うめ4択
+function buildIdiomSet(idioms, record) {
+  const picked = pickForSet(idioms, record.idioms, QUESTIONS_PER_SET, MAX_NEW_PER_SET, byRankThenId);
+  return shuffle(picked).map(({ item: idiom, practice }) => {
+    const r = record.idioms[idiom.id];
+    const level = r ? r.level : 1;
+    return {
+      idiom,
+      level,
+      practice,
+      isNew: !r,
+      choices: level < 3 ? makeChoices(idiom, idioms, IDIOM_KEYS) : null,
+      blankChoices: level === 3 ? shuffle([idiom.blank, ...idiom.blank_choices]) : null,
+    };
+  });
+}
+
+// 穴うめの文：隠す語（1語・1回だけ）を「( )」にする
+function idiomBlankParts(idiom) {
+  const re = new RegExp(`(?<![A-Za-z'])${idiom.blank}(?![A-Za-z'])`);
+  const m = re.exec(idiom.example);
+  return { before: idiom.example.slice(0, m.index), after: idiom.example.slice(m.index + idiom.blank.length) };
+}
+
+// 読み上げる英語：A・B や「～」「…」を含む熟語は「エー」「ビー」と読まれないよう、例文を読む
+function idiomSpeakText(idiom) {
+  return /(^|\s)[AB](\s|$)|[～〜…]/.test(idiom.idiom) ? idiom.example : idiom.idiom;
 }
 
 // ---------- 文章 ----------
