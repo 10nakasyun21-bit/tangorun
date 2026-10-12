@@ -56,7 +56,10 @@
       </button>
 
       <div class="meter">
-        <div class="meter-label">覚えた単語 <strong id="mastered-count">0</strong> 語</div>
+        <div class="meter-head">
+          <div class="meter-label">覚えた単語 <strong id="mastered-count">0</strong> 語</div>
+          <div class="meter-idioms">熟語 <strong id="idiom-mastered">0</strong>/<span id="idiom-total">30</span></div>
+        </div>
         <div class="meter-bar"><div id="meter-fill" class="meter-fill"></div></div>
         <div class="meter-sub">目標<span id="goal-count">800</span>語まで あと<strong id="remaining-count">800</strong>語</div>
       </div>
@@ -66,7 +69,10 @@
         <ul id="mission-list" class="mission-list"></ul>
       </div>
 
-      <button id="btn-start" class="btn btn-primary btn-big" disabled>読み込み中…</button>
+      <div class="start-row">
+        <button id="btn-start" class="btn btn-primary btn-big" disabled>読み込み中…</button>
+        <button id="btn-start-idiom" class="btn btn-primary btn-big btn-idiom" disabled>熟語スタート</button>
+      </div>
 
       <div class="home-modes">
         <button id="btn-start-story" class="mode-card" disabled>
@@ -79,7 +85,7 @@
         </button>
       </div>
       <div class="home-links">
-        <button id="btn-wordlist" class="story-cards-link">単語一覧</button>
+        <button id="btn-wordlist" class="story-cards-link">単語・熟語一覧</button>
         <button id="btn-cards" class="story-cards-link">文カード</button>
         <button id="btn-zukan" class="story-cards-link">ネコ図鑑</button>
         <button id="btn-gacha" class="story-cards-link">ガチャ</button>
@@ -211,10 +217,14 @@
       <button id="btn-wordlist-back" class="icon-btn" aria-label="もどる">
         <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></svg>
       </button>
-      <h2 class="screen-title">単語一覧</h2>
+      <h2 id="wl-title" class="screen-title">単語一覧</h2>
       <span class="icon-btn-spacer"></span>
     </div>
-    <p class="cards-summary">全<strong id="wl-total">800</strong>語　覚えた <span id="wl-mastered">0</span>・学習中 <span id="wl-learning">0</span></p>
+    <div class="wl-kinds" role="tablist">
+      <button class="wl-kind is-active" data-kind="words">単語</button>
+      <button class="wl-kind" data-kind="idioms">熟語</button>
+    </div>
+    <p class="cards-summary">全<strong id="wl-total">800</strong><span id="wl-unit">語</span>　覚えた <span id="wl-mastered">0</span>・学習中 <span id="wl-learning">0</span></p>
     <input id="wl-search" class="field-input wl-search" type="search" placeholder="英語か日本語でさがす" autocapitalize="off" autocorrect="off" spellcheck="false">
     <div class="wl-filters" role="tablist">
       <button class="wl-filter is-active" data-filter="all">すべて</button>
@@ -222,7 +232,7 @@
       <button class="wl-filter" data-filter="learning">学習中</button>
       <button class="wl-filter" data-filter="new">まだ</button>
     </div>
-    <p class="wl-hint">単語をタップすると発音が聞けます</p>
+    <p id="wl-hint" class="wl-hint">単語をタップすると発音が聞けます</p>
     <div id="wl-list" class="wl-list"></div>
   </section>
 
