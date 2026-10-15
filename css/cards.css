@@ -100,6 +100,30 @@
 .card .sparkle.s5 { top: 230px; left: 26px; width: 20px; height: 20px; animation-delay: 0.9s; }
 .card .sparkle.s6 { top: 40px; right: 60px; width: 22px; height: 22px; animation-delay: 1.4s; }
 
+/* 期間限定 SR：虹色ではなく、朱色と金のふち（和風）。光り方は SR と同じ */
+.card.sr.limited .aura::before,
+.card.sr.limited .frame::before {
+  background: conic-gradient(#c8102e, #ffd54a, #fff3c4, #ffd54a, #8b0000, #ffd54a, #fff3c4, #ffd54a, #c8102e);
+}
+.card.sr.limited .rarity {
+  background: linear-gradient(90deg, #8b0000, #c8102e, #e8a800);
+  color: #fff;
+}
+.card.sr.limited .name {
+  background: linear-gradient(90deg, #8b0000, #c8102e, #b8860b);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.card .limited-tag {
+  padding: 1px 8px;
+  border: 1.5px solid #c8102e;
+  border-radius: 999px;
+  color: #c8102e;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+}
+
 @keyframes card-spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
 @keyframes card-sweep { 0%, 55% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
 @keyframes card-holo { 0%, 100% { background-position: 0% 0%; } 50% { background-position: 100% 100%; } }

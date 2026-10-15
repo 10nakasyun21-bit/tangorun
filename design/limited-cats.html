@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>期間限定 歴史人物ネコ</title>
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/cards.css">
+<style>
+  body { padding: 40px 24px; background: var(--bg); }
+  .grid { display: grid; grid-template-columns: repeat(5, 300px); gap: 44px 36px; justify-content: center; }
+  .period { margin: 14px 0 0; color: var(--sub); font-size: 13px; text-align: center; }
+</style>
+</head>
+<body>
+<div id="grid" class="grid"></div>
+<script src="../js/storage.js"></script>
+<script src="../js/catart.js"></script>
+<script src="../js/cats.js"></script>
+<script src="../js/limited.js"></script>
+<script src="../js/gacha.js"></script>
+<script>
+  const grid = document.getElementById('grid');
+  LIMITED_CATS.forEach((c, i) => {
+    const d = limitedPeriodDates(i);
+    const fig = document.createElement('div');
+    fig.innerHTML = catCardHTML(c) + `<p class="period">第${i + 1}弾　${d.start.slice(5).replace('-', '/')}〜${d.end.slice(5).replace('-', '/')}</p>`;
+    grid.append(fig);
+  });
+  // 画像にするとき用（?still で光がきれいな瞬間に止める）
+  if (location.search.includes('still')) {
+    const s = document.createElement('style');
+    s.textContent = `.card .sparkle { animation-delay: -0.9s !important; animation-play-state: paused !important; }
+      .card.sr::after { animation-delay: -2.55s !important; animation-play-state: paused !important; }
+      .card.sr .holo { animation-delay: -1.6s !important; animation-play-state: paused !important; }
+      .card.sr .frame::before, .card.sr .aura, .card.sr .aura::before { animation-delay: -0.7s !important; animation-play-state: paused !important; }`;
+    document.head.append(s);
+  }
+</script>
+</body>
+</html>

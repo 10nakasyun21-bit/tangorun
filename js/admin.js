@@ -163,39 +163,66 @@ function renderList() {
 
 // ---------- 期間限定ガチャ ----------
 
+// 期間限定ネコは3日ごとに自動で入れかわる（js/limited.js）。ここでは予定の確認と、過去のネコの復刻だけを行う
+const RERUN_DAYS = 3;
+
+function periodLabel(i) {
+  const d = limitedPeriodDates(i);
+  return `${d.start.slice(5).replace('-', '/')}〜${d.end.slice(5).replace('-', '/')}`;
+}
+
 async function loadSeries() {
   const box = $('series-options');
   const status = $('series-status');
   box.innerHTML = '';
-  if (!LIMITED_SERIES.length) {
-    status.textContent = '期間限定シリーズはまだありません。ネコの内容が決まったら、ここで開始・終了を切り替えられます。';
-    return;
-  }
-  let active = null;
+  const ms = (await fetchServerTime()) ?? Date.now();
+  const i = limitedPeriodIndex(ms);
+  const lines = [];
+  if (i < 0) lines.push(`${LIMITED_START_DATE} から始まります。`);
+  else if (i < LIMITED_CATS.length) lines.push(`いま：第${i + 1}弾「${LIMITED_CATS[i].name}」（${periodLabel(i)}）`);
+  else lines.push('準備した期間限定ネコはすべて終わりました。次のネコを Claude に依頼してください。');
+  if (i + 1 >= 0 && i + 1 < LIMITED_CATS.length) lines.push(`次：第${i + 2}弾「${LIMITED_CATS[i + 1].name}」（${periodLabel(i + 1)}）`);
+  const left = LIMITED_CATS.length - Math.max(i + 1, 0);
+  if (i >= 0 && left <= 3) lines.push(`※ 準備した期間限定ネコは、あと${left}弾で終わります。早めに次のネコを Claude に依頼してください。`);
+
+  let cfg = { rerunCat: null, rerunUntil: null };
   try {
-    active = await cloudFetchActiveSeries();
+    cfg = await cloudFetchGachaConfig();
   } catch (e) {
-    status.textContent = '設定を読めませんでした。Firestore のルールに config の項目があるか確認してください。';
+    lines.push('復刻の設定を読めませんでした。Firestore のルールに config の項目があるか確認してください。');
+    status.textContent = lines.join('\n');
     return;
   }
-  const options = [{ id: null, name: 'なし（通常だけ）' }, ...LIMITED_SERIES];
-  for (const s of options) {
-    const b = el('button', { className: 'btn btn-ghost btn-small series-option' + (s.id === active ? ' is-active' : ''), textContent: s.name });
-    b.addEventListener('click', async () => {
-      b.disabled = true;
+  const today = jstDate(ms);
+  const rerun = cfg.rerunCat && cfg.rerunUntil >= today ? LIMITED_CATS.find(c => c.id === cfg.rerunCat) : null;
+  lines.push(rerun ? `復刻中：「${rerun.name}」（${cfg.rerunUntil.slice(5).replace('-', '/')} まで）` : '復刻：なし');
+  status.textContent = lines.join('\n');
+
+  // 復刻できるのは、期間が終わったネコだけ
+  const past = LIMITED_CATS.slice(0, Math.max(i, 0));
+  if (!past.length) return;
+  const select = el('select', { className: 'field-input series-select' });
+  for (const c of past) select.append(el('option', { value: c.id, textContent: `第${LIMITED_CATS.indexOf(c) + 1}弾 ${c.name}` }));
+  const start = el('button', { className: 'btn btn-primary btn-small', textContent: `${RERUN_DAYS}日間 復刻する` });
+  start.addEventListener('click', async () => {
+    start.disabled = true;
+    try {
+      await cloudSetGachaConfig({ rerunCat: Number(select.value), rerunUntil: addDays(today, RERUN_DAYS - 1) });
+      await loadSeries();
+    } catch (e) { showMessage(cloudErrorMessage(e)); }
+  });
+  box.append(select, start);
+  if (rerun) {
+    const stop = el('button', { className: 'btn btn-ghost btn-small', textContent: '復刻をやめる' });
+    stop.addEventListener('click', async () => {
+      stop.disabled = true;
       try {
-        await cloudSetActiveSeries(s.id);
+        await cloudSetGachaConfig({ rerunCat: null, rerunUntil: null });
         await loadSeries();
-      } catch (e) {
-        showMessage(cloudErrorMessage(e));
-      }
+      } catch (e) { showMessage(cloudErrorMessage(e)); }
     });
-    box.append(b);
+    box.append(stop);
   }
-  const current = LIMITED_SERIES.find(s => s.id === active);
-  status.textContent = current
-    ? `いま「${current.name}」を開催中です。生徒がアプリを開き直すと反映されます。`
-    : 'いまは通常シリーズだけです。';
 }
 
 // ---------- 生徒の詳細 ----------

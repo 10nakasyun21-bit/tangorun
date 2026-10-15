@@ -16,6 +16,7 @@ const PUSH_INTERVAL_MS = 60 * 1000; // アプリを閉じたときの送信は1�
 
 const state = {
   mode: 'words',     // 'words'（単語）・'idioms'（熟語）・'sentences'（文章）・'challenge'（1分チャレンジ）
+  weak: false,       // ニガテだけのセットか
   words: [],
   idioms: [],
   chapters: [],
@@ -26,9 +27,9 @@ const state = {
   challengePool: [], // 1分チャレンジでこれから出す単語
   challengeEnd: 0,
   challengeTimer: null,
-  gachaSeries: 'regular', // ガチャ画面で選んでいるシリーズ
+  gachaTab: 'regular',    // ガチャ画面で選んでいるガチャ：'regular'（通常）か 'limited'（期間限定）
   gachaTimer: null,
-  activeSeries: loadActiveSeries(), // 管理者が開始した期間限定シリーズ（なければ null）
+  gachaConfig: loadGachaConfig(), // 先生が設定した復刻（{ rerunCat, rerunUntil }）
   record: emptyRecord(),
   user: null,        // ログイン中の生徒 { uid, name }（ログインなしで使うときは null）
   synced: false,     // Firebase の記録と一度まとめたか
@@ -83,6 +84,9 @@ function showHome() {
   renderMissions();
   renderCoins();
   renderPartner();
+  const weak = weakCount('words') + weakCount('idioms');
+  $('weak-count').textContent = weak;
+  $('btn-weak').hidden = weak === 0;
   showScreen('home');
   // 画面が出てからバーを伸ばす（アニメーションさせるため）
   requestAnimationFrame(() => {
@@ -134,10 +138,14 @@ function renderMissions() {
 
 // ---------- クイズ ----------
 
-function startSet(mode = state.mode) {
+// weak：ニガテ（前回まちがえた・「わからない」）だけで出す（単語・熟語のみ）
+function startSet(mode = state.mode, { weak = false } = {}) {
   unlockAudio();
   state.mode = mode;
-  if (mode === 'sentences') {
+  state.weak = weak && weakCount(mode) > 0;
+  if (state.weak) {
+    state.questions = buildWeakSet(mode, mode === 'idioms' ? state.idioms : state.words, state.record);
+  } else if (mode === 'sentences') {
     state.openBefore = unlockedChapterIds(state.chapters, state.sentences, state.record).length;
     state.questions = buildSentenceSet(state.chapters, state.sentences, state.record);
   } else if (mode === 'idioms') {
@@ -247,6 +255,8 @@ function renderQuestion() {
     $('progress-fill').style.width = (state.index / total) * 100 + '%';
   }
   $('btn-next').hidden = true;
+  // 「わからない」は単語・熟語だけ（文章と1分チャレンジにはない）
+  $('btn-dunno').hidden = !!q.sentence || state.mode === 'challenge';
   $('feedback').hidden = true;
   $('s-feedback').hidden = true;
   $('s-line').hidden = true;
@@ -523,9 +533,32 @@ function answerSpelling(e) {
   finishAnswer(isCorrect);
 }
 
-// 正解・不正解の共通処理
-function finishAnswer(isCorrect) {
+// 「わからない」：不正解と同じあつかい（コンボは切れる・次のセットでまた出る）で、すぐ答えを見せる
+function answerDunno() {
+  if (state.answered) return;
+  const q = state.questions[state.index];
+  const box = $('choices');
+  box.classList.add('is-locked');
+  if (q.idiom) {
+    box.querySelector('[data-answer="1"]').classList.add('is-correct');
+    if (q.level === 3) renderIdiomBlank(q.idiom, true);
+  } else if (q.level === 3) {
+    const input = $('spell-input');
+    input.value = q.word.word;
+    input.readOnly = true;
+    input.classList.add('is-dunno');
+    $('btn-spell').hidden = true;
+    input.blur();
+  } else {
+    box.querySelector(`[data-id="${q.word.id}"]`).classList.add('is-correct');
+  }
+  finishAnswer(false, true);
+}
+
+// 正解・不正解の共通処理（dunno：「わからない」を押した）
+function finishAnswer(isCorrect, dunno = false) {
   state.answered = true;
+  $('btn-dunno').hidden = true;
   const q = state.questions[state.index];
   const settings = state.record.settings;
 
@@ -536,10 +569,11 @@ function finishAnswer(isCorrect) {
 
   $('progress-fill').style.width = ((state.index + 1) / state.questions.length) * 100 + '%';
   if (q.sentence) recordAnswer(state.record, q.sentence.id, isCorrect, q.practice, 'sentences');
-  else if (q.idiom) recordAnswer(state.record, q.idiom.id, isCorrect, q.practice, 'idioms');
-  else recordAnswer(state.record, q.word.id, isCorrect, q.practice);
+  else if (q.idiom) recordAnswer(state.record, q.idiom.id, isCorrect, q.practice, 'idioms', dunno);
+  else recordAnswer(state.record, q.word.id, isCorrect, q.practice, 'words', dunno);
 
-  if (settings.sound) isCorrect ? playCorrect() : playWrong();
+  // 「わからない」は正直に押したので、ブーという音は鳴らさない
+  if (settings.sound && !dunno) isCorrect ? playCorrect() : playWrong();
   // 効果音と重ならないよう、発音は少しだけ遅らせる
   const text = currentSpeakText();
   if (settings.autoSpeak) setTimeout(() => speak(text), settings.sound ? 250 : 0);
@@ -642,7 +676,8 @@ function showResult() {
 
   $('r-correct').textContent = state.correctCount;
   $('r-combo').textContent = state.maxCombo;
-  $('btn-again').textContent = mode === 'challenge' ? 'もう一回' : 'もう1セット';
+  $('btn-again').textContent = mode === 'challenge' ? 'もう一回'
+    : state.weak && weakCount(mode) > 0 ? `ニガテをもう1セット（あと${weakCount(mode)}問）` : 'もう1セット';
   if (mode === 'challenge') {
     $('r-score-unit').textContent = ' 問正解';
     $('r-stat2-label').textContent = '🏆 自己ベスト';
@@ -721,36 +756,70 @@ function renderPartner() {
 
 // ---------- ガチャ ----------
 
-// 管理者が期間限定シリーズを開始していれば、そのシリーズも引ける
-function activeLimitedSeries() {
-  return state.activeSeries ? limitedSeries(state.activeSeries) : null;
+// 期間限定ガチャ：3日ごとに入れかわる。判定はインターネット上の時刻で行う（js/limited.js）
+// 時刻を確かめられないとき（電波がないなど）は null
+function limitedNow() {
+  const ms = serverNow();
+  if (ms === null) return null;
+  return { ms, index: limitedPeriodIndex(ms), cats: currentLimitedCats(ms, state.gachaConfig) };
 }
 
-function gachaPool() {
-  const s = state.gachaSeries !== 'regular' ? activeLimitedSeries() : null;
-  return s ? s.cats : CATS;
+// 「のこり 2日 5時間」
+function formatRemaining(ms) {
+  const h = Math.max(0, Math.floor(ms / 3600e3));
+  const d = Math.floor(h / 24);
+  if (d > 0) return `のこり ${d}日 ${h % 24}時間`;
+  if (h > 0) return `のこり ${h}時間`;
+  return `のこり ${Math.max(1, Math.ceil(ms / 60e3))}分`;
 }
 
-function showGacha() {
-  const limited = activeLimitedSeries();
-  if (!limited) state.gachaSeries = 'regular';
+async function showGacha(tab) {
+  if (typeof tab === 'string') state.gachaTab = tab;
+  renderGachaScreen();
+  showScreen('gacha');
+  // 開くたびにインターネット上の時刻を取り直してから、期間限定の表示を更新する
+  await fetchServerTime();
+  if ($('screen-gacha').classList.contains('is-active')) renderGachaScreen();
+}
+
+function renderGachaScreen() {
   const tabs = $('gacha-tabs');
+  tabs.hidden = false;
   tabs.innerHTML = '';
-  tabs.hidden = !limited;
-  if (limited) {
-    for (const [id, label] of [['regular', '通常'], [limited.id, `★期間限定`]]) {
-      const b = document.createElement('button');
-      b.className = 'gacha-tab' + (state.gachaSeries === id ? ' is-active' : '');
-      b.textContent = label;
-      b.addEventListener('click', () => { state.gachaSeries = id; showGacha(); });
-      tabs.append(b);
+  for (const [id, label] of [['regular', '通常ガチャ'], ['limited', '期間限定ガチャ']]) {
+    const b = document.createElement('button');
+    b.className = 'gacha-tab' + (id === 'limited' ? ' is-limited' : '') + (state.gachaTab === id ? ' is-active' : '');
+    b.textContent = label;
+    b.addEventListener('click', () => { state.gachaTab = id; renderGachaScreen(); });
+    tabs.append(b);
+  }
+
+  const info = $('limited-info');
+  if (state.gachaTab === 'regular') {
+    $('gacha-series-name').textContent = `通常シリーズ（全${CATS.length}匹）`;
+    info.hidden = true;
+  } else {
+    $('gacha-series-name').textContent = 'SR が出たら、期間限定ネコ確定！';
+    info.hidden = false;
+    const now = limitedNow();
+    if (!now) {
+      $('limited-art').innerHTML = '';
+      $('limited-title').textContent = 'インターネットにつないでね';
+      $('limited-time').textContent = '期間限定ガチャは、電波があるときだけ引けます';
+    } else if (!now.cats.length) {
+      $('limited-art').innerHTML = '';
+      $('limited-title').textContent = 'いまは期間限定ネコがいません';
+      $('limited-time').textContent = '';
+    } else {
+      const cat = now.cats[0];
+      $('limited-art').innerHTML = buildCatSVG(cat);
+      $('limited-title').textContent = now.cats.length > 1
+        ? `${cat.name}　＋復刻：${now.cats.slice(1).map(c => c.name).join('・')}`
+        : `第${now.index + 1}弾　${cat.name}`;
+      $('limited-time').textContent = formatRemaining(limitedPeriodEndMs(now.index) - now.ms);
     }
   }
-  $('gacha-series-name').textContent = state.gachaSeries === 'regular'
-    ? `通常シリーズ（全${CATS.length}匹）`
-    : `${limited.name}（全${limited.cats.length}匹）`;
   renderGachaButton();
-  showScreen('gacha');
 }
 
 function renderGachaButton() {
@@ -759,14 +828,30 @@ function renderGachaButton() {
   $('gacha-rate-text').textContent = GACHA_RATES.map(([r, p]) => `${r} ${p}%`).join('・');
   const coins = state.record.coins;
   const enough = coins >= GACHA_COST;
-  $('btn-draw').disabled = !enough;
-  $('gacha-need').textContent = enough
-    ? `あと${Math.floor(coins / GACHA_COST)}回引けるよ`
+  const now = state.gachaTab === 'limited' ? limitedNow() : null;
+  const limitedClosed = state.gachaTab === 'limited' && (!now || !now.cats.length);
+  $('btn-draw').disabled = !enough || limitedClosed;
+  $('gacha-need').textContent = limitedClosed ? ''
+    : enough ? `あと${Math.floor(coins / GACHA_COST)}回引けるよ`
     : `あと${GACHA_COST - coins}コインで引ける（問題に正解するとたまるよ）`;
 }
 
-function drawOnce() {
-  const result = drawGacha(state.record, gachaPool());
+async function drawOnce() {
+  let pool = CATS;
+  if (state.gachaTab === 'limited') {
+    // 引く直前に、もう一度インターネット上の時刻を確かめる（期間が終わっていないか）
+    $('btn-draw').disabled = true;
+    $('btn-draw-again').disabled = true;
+    const ms = await fetchServerTime();
+    const cats = ms === null ? [] : currentLimitedCats(ms, state.gachaConfig);
+    if (!cats.length) {
+      closeGachaOverlay();
+      renderGachaScreen();
+      return;
+    }
+    pool = limitedGachaPool(cats);
+  }
+  const result = drawGacha(state.record, pool);
   if (!result) {
     renderGachaButton();
     return;
@@ -779,7 +864,7 @@ function drawOnce() {
   const overlay = $('gacha-overlay');
   const capsule = $('gacha-capsule');
   const reveal = $('gacha-reveal');
-  const capsuleColors = { N: ['#ff8fa3', '#7bc4ff', '#9be37a', '#ffb347'], R: ['#9fb3cf'], SR: ['#ff6ad5'] };
+  const capsuleColors = { N: ['#ff8fa3', '#7bc4ff', '#9be37a', '#ffb347'], R: ['#9fb3cf'], SR: [cat.limited ? '#c8102e' : '#ff6ad5'] };
   const colors = capsuleColors[cat.rarity];
   capsule.style.setProperty('--capsule', colors[Math.floor(Math.random() * colors.length)]);
   capsule.className = 'gacha-capsule' + (cat.rarity === 'R' ? ' glow-r' : cat.rarity === 'SR' ? ' glow-sr' : '');
@@ -793,7 +878,7 @@ function drawOnce() {
     capsule.classList.add('is-open');
     state.gachaTimer = setTimeout(() => {
       capsule.hidden = true;
-      const head = cat.rarity === 'SR' ? '✨ SR ✨' : cat.rarity === 'R' ? 'R！' : '';
+      const head = cat.limited ? '✨ 期間限定 SR ✨' : cat.rarity === 'SR' ? '✨ SR ✨' : cat.rarity === 'R' ? 'R！' : '';
       $('gacha-label').innerHTML = isNew
         ? `${head ? head + '<br>' : ''}NEW！ なかまになった！`
         : `${head ? head + '<br>' : ''}ダブり！<small>${cat.rarity}のかけら +${fragments}（いま ${state.record.fragments[cat.rarity]}個・${FRAGMENTS_TO_EXCHANGE[cat.rarity]}個で${cat.rarity}と交換）</small>`;
@@ -818,7 +903,11 @@ function showZukan() {
   ensureCollection(state.record);
   const list = $('zukan-list');
   list.innerHTML = '';
-  const sections = [{ name: `通常シリーズ`, cats: CATS }, ...LIMITED_SERIES.map(s => ({ name: s.name, cats: s.cats }))];
+  // 期間限定は、期間が始まったネコと持っているネコだけ並べる（これから出るネコは見せない）
+  const revealed = revealedLimitedCats(serverNow() ?? Date.now());
+  const limitedShown = LIMITED_CATS.filter(c => revealed.includes(c) || state.record.collection[c.id] > 0);
+  const sections = [{ name: '通常シリーズ', cats: CATS }];
+  if (limitedShown.length) sections.push({ name: '期間限定（歴史人物ネコ）', cats: limitedShown });
   for (const sec of sections) {
     const wrap = document.createElement('section');
     const title = document.createElement('h3');
@@ -829,7 +918,7 @@ function showZukan() {
     for (const cat of sec.cats) {
       const n = state.record.collection[cat.id] || 0;
       const cell = document.createElement('button');
-      cell.className = `zukan-cell ${cat.rarity.toLowerCase()}` + (n ? '' : ' is-locked');
+      cell.className = `zukan-cell ${cat.rarity.toLowerCase()}` + (cat.limited ? ' limited' : '') + (n ? '' : ' is-locked');
       cell.setAttribute('aria-label', n ? cat.name : `No.${cat.id} まだ持っていない`);
       cell.innerHTML = buildCatSVG(cat, { noBg: !n })
         + `<span class="zukan-no">${cat.id}</span>`
@@ -841,8 +930,8 @@ function showZukan() {
     wrap.append(title, grid);
     list.append(wrap);
   }
-  $('zk-owned').textContent = ownedCount(state.record, allCats());
-  $('zk-total').textContent = allCats().length;
+  $('zk-owned').textContent = ownedCount(state.record, [...CATS, ...limitedShown]);
+  $('zk-total').textContent = CATS.length + limitedShown.length;
   $('zk-fragments').textContent = RARITIES.map(r => `${r} ${state.record.fragments[r]}`).join('・');
   showScreen('zukan');
 }
@@ -851,6 +940,16 @@ function openCardDialog(cat) {
   const owned = state.record.collection[cat.id] || 0;
   const view = $('card-view');
   const action = $('btn-card-action');
+  action.hidden = false;
+  if (!owned && cat.limited) {
+    // 期間限定のネコは、かけらでは交換できない（ガチャでしか手に入らない）
+    view.innerHTML = `<div class="locked-card"><div class="locked-art">${buildCatSVG(cat, { noBg: true })}</div><p>No.${cat.id}　限定SR</p><p>？？？</p></div>`;
+    const now = limitedNow();
+    $('card-note').textContent = now && now.cats.includes(cat) ? '期間限定ガチャで出るかも！' : '';
+    action.hidden = true;
+    $('card-dialog').hidden = false;
+    return;
+  }
   if (owned) {
     view.innerHTML = catCardHTML(cat);
     $('card-note').textContent = `持っている数：${owned}枚`;
@@ -924,7 +1023,7 @@ function showWordList() {
   $('wl-mastered').textContent = counts.mastered;
   $('wl-learning').textContent = counts.learning;
   $('wl-hint').textContent = wordListKind === 'idioms' ? '熟語をタップすると発音が聞けます' : '単語をタップすると発音が聞けます';
-  document.querySelectorAll('.wl-kind').forEach(b => b.classList.toggle('is-active', b.dataset.kind === wordListKind));
+  document.querySelectorAll('#screen-wordlist .wl-kind').forEach(b => b.classList.toggle('is-active', b.dataset.kind === wordListKind));
   renderWordList();
   showScreen('wordlist');
 }
@@ -972,6 +1071,56 @@ function renderWordList() {
     p.textContent = '見つかりませんでした';
     list.append(p);
   }
+}
+
+// ---------- ニガテ ----------
+
+let weakKind = 'words'; // 'words' | 'idioms'
+
+function weakList(kind) {
+  return kind === 'idioms' ? weakItems(state.idioms, state.record.idioms) : weakItems(state.words, state.record.words);
+}
+
+function weakCount(kind) {
+  return weakList(kind).length;
+}
+
+// kind を省くと、ニガテがある方を開く
+function showWeak(kind) {
+  if (!kind) kind = weakCount('words') || !weakCount('idioms') ? 'words' : 'idioms';
+  weakKind = kind;
+  const isIdiom = kind === 'idioms';
+  const items = weakList(kind);
+  const recs = state.record[kind];
+  $('wk-count-words').textContent = weakCount('words');
+  $('wk-count-idioms').textContent = weakCount('idioms');
+  document.querySelectorAll('.wk-kind').forEach(b => b.classList.toggle('is-active', b.dataset.kind === kind));
+  const start = $('btn-weak-start');
+  start.hidden = items.length === 0;
+  start.textContent = `この${isIdiom ? '熟語' : '単語'}だけでスタート（${Math.min(items.length, QUESTIONS_PER_SET)}問）`;
+  $('wk-empty').hidden = items.length > 0;
+
+  const list = $('wk-list');
+  list.innerHTML = '';
+  for (const it of items) {
+    const r = recs[it.id];
+    const row = document.createElement('button');
+    row.className = 'wl-row';
+    row.dataset.speak = isIdiom ? idiomSpeakText(it) : it.word;
+    const word = document.createElement('span');
+    word.className = 'wl-word';
+    word.textContent = isIdiom ? it.idiom : it.word;
+    const badge = document.createElement('span');
+    badge.className = 'wl-badge is-weak';
+    const miss = r.wrong - (r.dunno || 0);
+    badge.textContent = [miss ? `×${miss}` : '', r.dunno ? `？${r.dunno}` : ''].filter(Boolean).join(' ');
+    const meaning = document.createElement('span');
+    meaning.className = 'wl-meaning';
+    meaning.textContent = isIdiom ? it.meaning : `${it.meaning}（${it.pos}）`;
+    row.append(word, badge, meaning);
+    list.append(row);
+  }
+  showScreen('weak');
 }
 
 // ---------- 文カード ----------
@@ -1121,10 +1270,10 @@ async function syncFromCloud() {
     state.user.name = profile.name;
     setLastUser(state.user);
 
-    // 期間限定ガチャの開始・終了（読めなくても学習には関係ないので無視して続ける）
+    // 期間限定ガチャの復刻の設定（読めなくても学習には関係ないので無視して続ける）
     try {
-      state.activeSeries = await cloudFetchActiveSeries();
-      saveActiveSeries(state.activeSeries);
+      state.gachaConfig = await cloudFetchGachaConfig();
+      saveGachaConfig(state.gachaConfig);
     } catch (e) { /* ルール未設定・電波なしなど */ }
 
     const remote = await cloudFetchProgress(uid);
@@ -1250,7 +1399,16 @@ async function init() {
 
   $('btn-start').addEventListener('click', () => startSet('words'));
   $('btn-start-idiom').addEventListener('click', () => startSet('idioms'));
-  document.querySelectorAll('.wl-kind').forEach(btn => btn.addEventListener('click', () => {
+  $('btn-dunno').addEventListener('click', answerDunno);
+  $('btn-weak').addEventListener('click', () => showWeak());
+  $('btn-weak-back').addEventListener('click', showHome);
+  $('btn-weak-start').addEventListener('click', () => startSet(weakKind, { weak: true }));
+  document.querySelectorAll('.wk-kind').forEach(btn => btn.addEventListener('click', () => showWeak(btn.dataset.kind)));
+  $('wk-list').addEventListener('click', e => {
+    const row = e.target.closest('.wl-row');
+    if (row) speak(row.dataset.speak);
+  });
+  document.querySelectorAll('#screen-wordlist .wl-kind').forEach(btn => btn.addEventListener('click', () => {
     wordListKind = btn.dataset.kind;
     $('wl-search').value = '';
     showWordList();
@@ -1271,7 +1429,10 @@ async function init() {
   });
   $('btn-cards-back').addEventListener('click', showHome);
   $('btn-next').addEventListener('click', nextQuestion);
-  $('btn-again').addEventListener('click', () => (state.mode === 'challenge' ? startChallenge() : startSet()));
+  $('btn-again').addEventListener('click', () => {
+    if (state.mode === 'challenge') startChallenge();
+    else startSet(state.mode, { weak: state.weak && weakCount(state.mode) > 0 });
+  });
   $('btn-challenge').addEventListener('click', startChallenge);
   $('btn-coins').addEventListener('click', showGacha);
   $('btn-gacha').addEventListener('click', showGacha);

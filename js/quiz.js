@@ -115,6 +115,32 @@ function buildSet(words, record) {
   });
 }
 
+// ---------- ニガテ（前回まちがえた・「わからない」を押したもの） ----------
+
+// ニガテの一覧：最後の答えが不正解のもの。新しくまちがえた順。正解すると一覧から消える
+function weakItems(items, recMap) {
+  return items
+    .filter(it => recMap[it.id] && recMap[it.id].lastResult === 'wrong')
+    .sort((a, b) => (recMap[b.id].lastAnsweredAt || '').localeCompare(recMap[a.id].lastAnsweredAt || ''));
+}
+
+// ニガテだけのセット（最大10問）。まちがえたものは今日が復習日なので、正解すれば間隔もふつうに進む
+function buildWeakSet(kind, items, record) {
+  const recs = record[kind];
+  const picked = shuffle(weakItems(items, recs).slice(0, QUESTIONS_PER_SET));
+  return picked.map(item => {
+    const level = recs[item.id].level;
+    if (kind === 'idioms') {
+      return {
+        idiom: item, level, practice: false, isNew: false,
+        choices: level < 3 ? makeChoices(item, items, IDIOM_KEYS) : null,
+        blankChoices: level === 3 ? shuffle([item.blank, ...item.blank_choices]) : null,
+      };
+    }
+    return { word: item, level, practice: false, isNew: false, choices: level < 3 ? makeChoices(item, items) : null };
+  });
+}
+
 // ---------- 熟語 ----------
 
 // 熟語の1セット（10問）。単語と同じ選び方（復習 → 新しい熟語は最大5個・rank A から → 練習）

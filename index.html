@@ -73,6 +73,7 @@
         <button id="btn-start" class="btn btn-primary btn-big" disabled>読み込み中…</button>
         <button id="btn-start-idiom" class="btn btn-primary btn-big btn-idiom" disabled>熟語スタート</button>
       </div>
+      <button id="btn-weak" class="weak-link" hidden>📝 ニガテ <strong id="weak-count">0</strong>問 を見る</button>
 
       <div class="home-modes">
         <button id="btn-start-story" class="mode-card" disabled>
@@ -144,6 +145,7 @@
     </div>
 
     <div class="next-area">
+      <button id="btn-dunno" class="btn btn-ghost btn-dunno" hidden>🤔 わからない</button>
       <button id="btn-next" class="btn btn-primary" hidden>次へ</button>
     </div>
   </section>
@@ -180,6 +182,13 @@
     <div class="gacha-main">
       <div id="gacha-tabs" class="gacha-tabs" hidden></div>
       <p id="gacha-series-name" class="gacha-series-name">通常シリーズ（全40匹）</p>
+      <div id="limited-info" class="limited-info" hidden>
+        <span id="limited-art" class="limited-art"></span>
+        <div class="limited-text">
+          <p id="limited-title" class="limited-title"></p>
+          <p id="limited-time" class="limited-time"></p>
+        </div>
+      </div>
       <svg class="gacha-machine" viewBox="0 0 200 220" aria-hidden="true">
         <circle cx="100" cy="80" r="70" fill="#e8f6ff" stroke="#3a3a4a" stroke-width="4"/>
         <g stroke="#3a3a4a" stroke-width="2.5">
@@ -234,6 +243,25 @@
     </div>
     <p id="wl-hint" class="wl-hint">単語をタップすると発音が聞けます</p>
     <div id="wl-list" class="wl-list"></div>
+  </section>
+
+  <!-- ニガテ（前回まちがえた・「わからない」を押した問題） -->
+  <section id="screen-weak" class="screen">
+    <div class="topbar">
+      <button id="btn-weak-back" class="icon-btn" aria-label="もどる">
+        <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <h2 class="screen-title">ニガテ</h2>
+      <span class="icon-btn-spacer"></span>
+    </div>
+    <div class="wl-kinds" role="tablist">
+      <button class="wl-kind wk-kind is-active" data-kind="words">単語 <span id="wk-count-words">0</span></button>
+      <button class="wl-kind wk-kind" data-kind="idioms">熟語 <span id="wk-count-idioms">0</span></button>
+    </div>
+    <p class="wl-hint">まちがえた・わからなかった問題。正解すると消えるよ<br>×＝まちがえた回数　？＝わからない　タップで発音</p>
+    <button id="btn-weak-start" class="btn btn-primary weak-start">この単語だけでスタート</button>
+    <div id="wk-list" class="wl-list"></div>
+    <p id="wk-empty" class="empty-note" hidden>ニガテはありません。すごい！</p>
   </section>
 
   <!-- 文カード -->
@@ -340,6 +368,7 @@
   <script src="js/missions.js"></script>
   <script src="js/catart.js"></script>
   <script src="js/cats.js"></script>
+  <script src="js/limited.js"></script>
   <script src="js/gacha.js"></script>
   <script src="js/sound.js"></script>
   <script src="js/app.js"></script>

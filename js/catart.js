@@ -195,9 +195,11 @@ const CAT_ITEMS = {
       + `<path d="M150 44 L196 22" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity="0.7"/><circle cx="198" cy="21" r="3" fill="#fff"/>`
       + `<g fill="#ffe680">${sparklePath(31, 91, 7)}${sparklePath(38, 147, 5)}</g>`,
   }),
-  cape: () => ({
-    back: `<path d="M76 150 Q120 140 164 150 L192 228 Q120 240 48 228 Z" fill="#c8323c" stroke="#ffcf4a" stroke-width="3" stroke-linejoin="round"/>`,
-    body: `<ellipse cx="120" cy="154" rx="38" ry="11" fill="#fff" stroke="#3a3a4a" stroke-width="2.5"/><g fill="#3a3a4a"><circle cx="96" cy="155" r="1.8"/><circle cx="110" cy="158" r="1.8"/><circle cx="130" cy="158" r="1.8"/><circle cx="144" cy="155" r="1.8"/></g>`,
+  cape: ({ color = '#c8323c', trim = '#ffcf4a', collar = true } = {}) => ({
+    back: `<path d="M76 150 Q120 140 164 150 L192 228 Q120 240 48 228 Z" fill="${color}" stroke="${trim}" stroke-width="3" stroke-linejoin="round"/>`,
+    body: collar
+      ? `<ellipse cx="120" cy="154" rx="38" ry="11" fill="#fff" stroke="#3a3a4a" stroke-width="2.5"/><g fill="#3a3a4a"><circle cx="96" cy="155" r="1.8"/><circle cx="110" cy="158" r="1.8"/><circle cx="130" cy="158" r="1.8"/><circle cx="144" cy="155" r="1.8"/></g>`
+      : '',
   }),
   crown: () => ({
     head: `<path d="M94 80 L98 54 L109 67 L120 46 L131 67 L142 54 L146 80 Z" fill="#ffd54a" stroke="#a86f00" stroke-width="2.5" stroke-linejoin="round"/>`
@@ -418,6 +420,135 @@ const CAT_ITEMS = {
     front: `<path d="M54 160 h40 v30 q0 22 -20 30 q-20 -8 -20 -30 Z" fill="#3a7bd5" stroke="#1d3f70" stroke-width="3"/><path d="M74 168 v40 M60 184 h28" stroke="#ffd54a" stroke-width="5"/>`,
   }),
 };
+
+// ---------- 期間限定：日本史の歴史人物ネコ ----------
+
+Object.assign(CAT_ITEMS, {
+  // かぶと。crest：mon（家紋）・moon（三日月）・rays（日輪の後光）・aoi（葵の紋）
+  kabuto: ({ color = '#2b2b38', crest = 'mon' } = {}) => {
+    const gold = 'fill="#ffd54a" stroke="#a86f00" stroke-width="2"';
+    let front = '';
+    let back = '';
+    if (crest === 'mon') front = `<circle cx="120" cy="80" r="10" ${gold}/>${flowerPath(120, 80, 7, '#c8323c')}`;
+    if (crest === 'moon') front = `<path d="M62 44 Q120 100 178 44 Q120 78 62 44 Z" ${gold} stroke-linejoin="round"/>`;
+    if (crest === 'aoi') front = `<circle cx="120" cy="80" r="11" ${gold}/><g fill="#2b5f3a">${[0, 120, 240].map(a => `<ellipse cx="${120 + 5 * Math.cos((a - 90) * Math.PI / 180)}" cy="${80 + 5 * Math.sin((a - 90) * Math.PI / 180)}" rx="3.2" ry="4.5" transform="rotate(${a} ${120 + 5 * Math.cos((a - 90) * Math.PI / 180)} ${80 + 5 * Math.sin((a - 90) * Math.PI / 180)})"/>`).join('')}</g>`;
+    if (crest === 'rays') {
+      for (let i = 0; i < 13; i++) {
+        const a = (-170 + i * (160 / 12)) * Math.PI / 180;
+        back += `<path d="M120 84 L${(120 + 92 * Math.cos(a)).toFixed(1)} ${(84 + 92 * Math.sin(a)).toFixed(1)} L${(120 + 92 * Math.cos(a + 0.06)).toFixed(1)} ${(84 + 92 * Math.sin(a + 0.06)).toFixed(1)} Z" ${gold} stroke-width="1"/>`;
+      }
+      front = `<circle cx="120" cy="80" r="8" ${gold}/>`;
+    }
+    return {
+      back,
+      head: `<path d="M66 104 Q64 60 120 58 Q176 60 174 104 Q120 92 66 104 Z" fill="${color}" stroke="#14141c" stroke-width="3" stroke-linejoin="round"/>`
+        + `<path d="M58 104 Q120 86 182 104 L178 114 Q120 98 62 114 Z" fill="${color}" stroke="#14141c" stroke-width="3" stroke-linejoin="round"/>`
+        + `<path d="M58 100 L42 92 L46 116 L62 112 Z M182 100 L198 92 L194 116 L178 112 Z" fill="${color}" stroke="#14141c" stroke-width="2.5" stroke-linejoin="round"/>`
+        + front,
+    };
+  },
+  // 着物。rx・ry は体型に合わせる（まるい体型は 50・38）
+  kimono: ({ color = '#3d4a6b', collar = '#f4f1ea', rx = 40, ry = 36 } = {}) => {
+    const top = 222 - 2 * ry; // からだのいちばん上
+    return {
+      body: `<ellipse cx="120" cy="${222 - ry}" rx="${rx}" ry="${ry}" fill="${color}" stroke="#3a3a4a" stroke-width="3"/>`
+        + `<path d="M100 ${top + 4} L120 ${top + 30} L140 ${top + 4}" fill="none" stroke="${collar}" stroke-width="7" stroke-linejoin="round"/>`
+        + `<path d="M${120 - rx + 4} 200 Q120 208 ${120 + rx - 4} 200 L${120 + rx - 6} 210 Q120 218 ${120 - rx + 6} 210 Z" fill="${collar}" opacity="0.9"/>`,
+    };
+  },
+  topknot: () => ({
+    head: `<path d="M110 80 Q116 58 136 64 Q126 70 128 80 Z" fill="#2b2b38" stroke="#14141c" stroke-width="2"/><path d="M76 96 Q80 82 92 86 M164 96 Q160 82 148 86" fill="none" stroke="#2b2b38" stroke-width="5" stroke-linecap="round"/>`,
+  }),
+  boots: () => ({
+    front: `<path d="M90 204 h28 v18 q0 8 -8 8 h-20 q-8 0 -8 -8 Z M122 204 h28 v18 q0 8 -8 8 h-20 q-8 0 -8 -8 Z" fill="#2b2b38" stroke="#14141c" stroke-width="2.5"/><path d="M92 210 h24 M124 210 h24" stroke="#5c5c70" stroke-width="2"/>`,
+  }),
+  letter: () => ({
+    front: `<rect x="160" y="168" width="40" height="28" rx="3" fill="#fffaf0" stroke="#8b5a2b" stroke-width="2.5"/><path d="M166 176 h28 M166 182 h28 M166 188 h20" stroke="#8b5a2b" stroke-width="1.5"/><circle cx="160" cy="182" r="5" fill="#c99a5b" stroke="#8b5a2b" stroke-width="2"/>`,
+  }),
+  seaSunrise: () => ({
+    bg: `<circle cx="56" cy="150" r="30" fill="#ff8a3d" opacity="0.85"/><rect x="0" y="156" width="240" height="84" fill="#2f6fb0" opacity="0.75"/>`
+      + `<g stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity="0.7"><path d="M10 176 q10 -6 20 0 M60 190 q10 -6 20 0 M190 196 q10 -6 20 0 M150 176 q10 -6 20 0"/></g>`
+      + `<path d="M176 150 h44 l-8 10 h-28 Z" fill="#8b5a2b"/><path d="M196 150 V112 L218 146 Z" fill="#fff" stroke="#8b5a2b" stroke-width="1.5"/>`,
+  }),
+  sunrays: () => {
+    let rays = '';
+    for (let i = 0; i < 16; i++) {
+      const a = (i * 22.5) * Math.PI / 180;
+      rays += `<path d="M120 110 L${(120 + 220 * Math.cos(a)).toFixed(1)} ${(110 + 220 * Math.sin(a)).toFixed(1)} L${(120 + 220 * Math.cos(a + 0.18)).toFixed(1)} ${(110 + 220 * Math.sin(a + 0.18)).toFixed(1)} Z"/>`;
+    }
+    return { bg: `<g fill="#ffffff" opacity="0.35">${rays}</g>` };
+  },
+  magatama: () => ({
+    body: `<path d="M88 158 Q120 184 152 158" fill="none" stroke="#5a4a3e" stroke-width="2"/><g fill="#3fb37f" stroke="#1f6b45" stroke-width="1.5">${[[104, 172], [120, 177], [136, 172]].map(([x, y]) => `<path d="M${x} ${y - 6} a6 6 0 1 1 -2 10 q4 -4 2 -10 Z"/>`).join('')}</g><g fill="#c8323c">${[[94, 166], [112, 175], [128, 175], [146, 166]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2.5"/>`).join('')}</g>`,
+  }),
+  sunCrown: () => ({
+    head: `<g fill="#ffd54a" stroke="#a86f00" stroke-width="2" stroke-linejoin="round">${[84, 102, 120, 138, 156].map((x, i) => `<path d="M${x - 8} 90 L${x} ${i === 2 ? 58 : 68} L${x + 8} 90 Z"/>`).join('')}<rect x="74" y="86" width="92" height="9" rx="4"/></g><circle cx="120" cy="90" r="5" fill="#c8323c" stroke="#a86f00" stroke-width="1.5"/>`,
+  }),
+  mirror: () => ({
+    front: `<circle cx="188" cy="196" r="18" fill="#d9a441" stroke="#8b5a2b" stroke-width="3"/><circle cx="188" cy="196" r="12" fill="#f3d27a" stroke="#b07c2a" stroke-width="1.5"/><path d="M181 190 q4 -5 10 -4" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>`,
+  }),
+  bigMoon: () => ({
+    bg: `<circle cx="190" cy="54" r="26" fill="#fff3b0"/><circle cx="182" cy="48" r="5" fill="#f0e08a"/><circle cx="198" cy="62" r="3.5" fill="#f0e08a"/>`,
+  }),
+  eyepatch: () => ({
+    head: `<path d="M70 102 L176 120" stroke="#14141c" stroke-width="3"/><ellipse cx="104" cy="116" rx="12" ry="10" fill="#14141c"/>`,
+  }),
+  wisteria: () => {
+    let s = '';
+    for (const [x, len] of [[18, 7], [44, 5], [196, 6], [222, 8]]) {
+      for (let k = 0; k < len; k++) s += `<circle cx="${x + (k % 2 ? 4 : -4)}" cy="${8 + k * 10}" r="${7 - k * 0.6}" fill="${k % 2 ? '#a78bfa' : '#c4b5fd'}"/>`;
+    }
+    return { bg: `<path d="M0 6 H240" stroke="#6b8e4e" stroke-width="5"/>${s}` };
+  },
+  longHair: () => ({
+    back: `<path d="M64 112 Q56 200 74 236 L166 236 Q184 200 176 112 Q120 64 64 112 Z" fill="#1f1f2a"/>`,
+    head: `<path d="M70 102 Q120 62 170 102 Q150 88 120 90 Q90 88 70 102 Z" fill="#1f1f2a"/>`,
+  }),
+  junihitoe: () => ({
+    body: `<ellipse cx="120" cy="186" rx="40" ry="36" fill="#8e5bd1" stroke="#3a3a4a" stroke-width="3"/>`
+      + ['#f4f1ea', '#ff9ab5', '#ffd54a', '#6cc04a'].map((c, i) => `<path d="M${98 - i * 5} 152 L120 ${178 + i * 6} L${142 + i * 5} 152" fill="none" stroke="${c}" stroke-width="5" stroke-linejoin="round"/>`).join(''),
+  }),
+  brush: () => ({
+    front: `<path d="M164 220 L196 170" stroke="#8b5a2b" stroke-width="6" stroke-linecap="round"/><path d="M160 226 L166 214 L172 218 Z" fill="#14141c"/><rect x="176" y="204" width="36" height="24" rx="2" fill="#fffaf0" stroke="#8b5a2b" stroke-width="2"/><path d="M182 210 v12 M190 210 v12 M198 210 v8" stroke="#3a3a4a" stroke-width="1.5"/>`,
+  }),
+  byobu: () => ({
+    bg: `<g stroke="#b8860b" stroke-width="2" opacity="0.7">${[40, 80, 120, 160, 200].map(x => `<path d="M${x} 0 V240"/>`).join('')}</g><g fill="#ffffff" opacity="0.55"><ellipse cx="50" cy="60" rx="34" ry="12"/><ellipse cx="190" cy="40" rx="30" ry="10"/><ellipse cx="200" cy="200" rx="34" ry="12"/></g>`,
+  }),
+  gourd: () => ({
+    back: `<path d="M204 232 V48" stroke="#8b5a2b" stroke-width="5"/>`
+      + [[204, 40], [190, 64], [218, 70]].map(([x, y]) => `<g fill="#ffd54a" stroke="#a86f00" stroke-width="2"><circle cx="${x}" cy="${y}" r="6"/><circle cx="${x}" cy="${y + 12}" r="9"/></g>`).join(''),
+  }),
+  pagoda: () => ({
+    bg: `<g fill="#7a4a2e" opacity="0.55">${[0, 1, 2, 3, 4].map(i => `<path d="M${166 + i * 4} ${196 - i * 32} h${68 - i * 8} l-8 -8 h${-52 + i * 8} Z"/><rect x="${182 + i * 2}" y="${168 - i * 32}" width="${36 - i * 4}" height="20"/>`).join('')}<path d="M200 40 V12" stroke="#7a4a2e" stroke-width="3"/></g>`,
+  }),
+  kanmuri: () => ({
+    head: `<path d="M90 86 Q120 60 150 86 Z" fill="#1f1f2a" stroke="#14141c" stroke-width="2"/><rect x="114" y="44" width="12" height="36" rx="5" fill="#1f1f2a"/>`,
+  }),
+  shaku: () => ({
+    front: `<rect x="113" y="164" width="14" height="52" rx="5" fill="#d9b38c" stroke="#8b5a2b" stroke-width="2"/>`,
+  }),
+  sakura: () => ({
+    bg: `<g fill="#ff9ab5" opacity="0.85">${[[30, 30], [80, 60], [200, 30], [220, 120], [20, 140], [190, 200], [60, 210]].map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="6" ry="3.5" transform="rotate(${(x * 7) % 90} ${x} ${y})"/>`).join('')}</g>`,
+  }),
+  dog: () => ({
+    front: `<g stroke="#3a3a4a" stroke-width="2.5"><ellipse cx="44" cy="214" rx="20" ry="14" fill="#fff"/><circle cx="40" cy="190" r="14" fill="#fff"/><path d="M28 182 q-8 10 -2 18 q4 -2 6 -12 Z M52 182 q8 10 2 18 q-4 -2 -6 -12 Z" fill="#e8d4b8"/></g><circle cx="35" cy="190" r="2" fill="#3a3a4a"/><circle cx="45" cy="190" r="2" fill="#3a3a4a"/><ellipse cx="40" cy="196" rx="3" ry="2" fill="#3a3a4a"/><path d="M26 214 l-10 -6" stroke="#3a3a4a" stroke-width="3" stroke-linecap="round"/>`,
+  }),
+  boats: () => ({
+    bg: `<rect x="0" y="170" width="240" height="70" fill="#2f6fb0" opacity="0.55"/>${[[30, 186], [80, 204], [190, 190], [220, 214], [150, 222]].map(([x, y]) => `<path d="M${x - 18} ${y} h36 l-6 8 h-24 Z" fill="#8b5a2b"/>`).join('')}`,
+  }),
+  eboshi: () => ({
+    head: `<path d="M98 84 Q100 44 138 34 Q148 58 144 84 Z" fill="#1f1f2a" stroke="#14141c" stroke-width="2" stroke-linejoin="round"/><path d="M90 86 Q120 78 150 86" fill="none" stroke="#14141c" stroke-width="4"/>`,
+  }),
+  fan: () => ({
+    front: `<path d="M178 214 L150 172 A44 44 0 0 1 208 168 Z" fill="#fffaf0" stroke="#8b5a2b" stroke-width="2.5" stroke-linejoin="round"/><circle cx="180" cy="178" r="8" fill="#e8343f"/><path d="M178 214 L164 176 M178 214 L194 172" stroke="#8b5a2b" stroke-width="1.2"/>`,
+  }),
+  fuji: () => ({
+    bg: `<path d="M20 220 L104 112 L136 112 L220 220 Z" fill="#4a6fa5" opacity="0.75"/><path d="M104 112 L136 112 L150 130 L136 126 L126 134 L114 126 L100 132 L90 130 Z" fill="#ffffff"/>`,
+  }),
+  castle: () => ({
+    bg: `<g opacity="0.85"><rect x="14" y="176" width="70" height="40" fill="#9a9aa6"/><path d="M8 178 L48 160 L90 178 Z" fill="#2b2b38"/><rect x="24" y="140" width="50" height="22" fill="#fffaf0"/><path d="M16 144 L49 126 L82 144 Z" fill="#2b2b38"/><rect x="34" y="110" width="30" height="18" fill="#fffaf0"/><path d="M26 114 L49 96 L72 114 Z" fill="#2b2b38"/><path d="M40 98 q-6 -8 2 -10 M58 98 q6 -8 -2 -10" stroke="#ffd54a" stroke-width="3" fill="none"/></g>`,
+  }),
+});
 
 // ---------- 組み立て ----------
 

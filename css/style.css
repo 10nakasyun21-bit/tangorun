@@ -596,6 +596,26 @@ button { font: inherit; color: inherit; }
   cursor: pointer;
 }
 .gacha-tab.is-active { border-color: var(--primary); background: var(--primary); color: #fff; }
+.gacha-tab.is-limited { color: #c8102e; }
+.gacha-tab.is-limited.is-active { border-color: #c8102e; background: linear-gradient(90deg, #8b0000, #c8102e, #d4a017); color: #fff; }
+
+/* 期間限定ガチャ：今回のネコと残り時間 */
+.limited-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 3px solid #e0a52a;
+  border-radius: 16px;
+  background: #fff8e6;
+  text-align: left;
+}
+.limited-art { width: 72px; height: 72px; flex-shrink: 0; border-radius: 12px; overflow: hidden; }
+.limited-art:empty { display: none; }
+.limited-art svg { display: block; width: 100%; height: 100%; }
+.limited-title { margin: 0; font-size: 16px; font-weight: bold; color: #8b0000; line-height: 1.4; }
+.limited-time { margin: 4px 0 0; font-size: 14px; font-weight: bold; color: var(--sub); }
 .gacha-series-name { margin: 0; font-size: 16px; font-weight: bold; color: var(--sub); }
 .gacha-machine { width: 180px; height: auto; }
 .gacha-machine.is-shaking { animation: shake 0.35s 2; }
@@ -662,6 +682,8 @@ button { font: inherit; color: inherit; }
 .zukan-cell.sr { border-color: transparent; background: linear-gradient(var(--card), var(--card)) padding-box, conic-gradient(#ff4d6d, #ffb347, #ffe66d, #5ee27a, #4dc9ff, #7b6cff, #ff6ad5, #ff4d6d) border-box; }
 .zukan-cell svg { display: block; width: 100%; height: 100%; }
 .zukan-cell.is-locked { background-color: #eee9e1; }
+.zukan-cell.sr.limited { background: linear-gradient(var(--card), var(--card)) padding-box, conic-gradient(#c8102e, #ffd54a, #8b0000, #ffd54a, #c8102e) border-box; }
+.zukan-cell.sr.limited.is-locked { background: linear-gradient(#eee9e1, #eee9e1) padding-box, conic-gradient(#c8102e, #ffd54a, #8b0000, #ffd54a, #c8102e) border-box; }
 .zukan-cell.sr.is-locked { background: linear-gradient(#eee9e1, #eee9e1) padding-box, conic-gradient(#ff4d6d, #ffb347, #ffe66d, #5ee27a, #4dc9ff, #7b6cff, #ff6ad5, #ff4d6d) border-box; }
 /* まだ持っていないネコは影だけ見せる（どんな形か想像できるように） */
 .zukan-cell.is-locked svg { filter: brightness(0); opacity: 0.22; }
@@ -709,7 +731,29 @@ button { font: inherit; color: inherit; }
 .locked-card p { margin: 4px 0; font-weight: bold; }
 
 /* 単語一覧 */
-#screen-wordlist { gap: 10px; }
+#screen-wordlist, #screen-weak { gap: 10px; }
+.weak-start { min-height: 52px; }
+.wl-badge.is-weak { background: var(--wrong-bg); color: var(--wrong); }
+.empty-note { margin: 24px 0; text-align: center; color: var(--sub); font-size: 16px; }
+
+/* ホームの「ニガテ ○問 を見る」 */
+.weak-link {
+  min-height: 48px;
+  margin-top: -4px;
+  border: 2px dashed var(--wrong);
+  border-radius: 14px;
+  background: var(--wrong-bg);
+  color: var(--wrong);
+  font: inherit;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.weak-link strong { font-size: 19px; }
+
+/* 「わからない」：選択肢よりひかえめに */
+.btn-dunno { min-height: 48px; font-size: 16px; color: var(--sub); }
+.spell-input.is-dunno { border-color: var(--correct); background: var(--correct-bg); color: var(--correct); }
 .wl-search { width: 100%; min-height: 48px; font-size: 18px; }
 .wl-filters { display: flex; gap: 6px; }
 .wl-filter {

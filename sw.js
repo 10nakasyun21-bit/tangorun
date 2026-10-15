@@ -1,7 +1,7 @@
 // service worker：一度開けば、オフラインでも動くようにする
 // 新しいファイルを足したときは APP_FILES に加えて、CACHE_NAME の番号を上げる
 
-const CACHE_NAME = 'tangorun-v10';
+const CACHE_NAME = 'tangorun-v11';
 const FIREBASE_SDK = 'https://www.gstatic.com/firebasejs/10.12.2/';
 const APP_FILES = [
   './',
@@ -15,6 +15,7 @@ const APP_FILES = [
   './js/missions.js',
   './js/catart.js',
   './js/cats.js',
+  './js/limited.js',
   './js/gacha.js',
   './js/sound.js',
   './js/app.js',

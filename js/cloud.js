@@ -116,14 +116,16 @@ async function cloudPushRecord(uid, record, usageDates = [localDate()]) {
   await batch.commit();
 }
 
-// 期間限定ガチャの設定（config/gacha の activeSeries。管理者だけが書ける）
-async function cloudFetchActiveSeries() {
+// 期間限定ガチャの設定（config/gacha。管理者だけが書ける）
+// 期間限定ネコは3日ごとに自動で入れかわる。ここに入るのは先生の「復刻」だけ：{ rerunCat, rerunUntil }
+async function cloudFetchGachaConfig() {
   const snap = await cloudDb().collection('config').doc('gacha').get();
-  return snap.exists ? (snap.data().activeSeries || null) : null;
+  const d = snap.exists ? snap.data() : {};
+  return { rerunCat: d.rerunCat || null, rerunUntil: d.rerunUntil || null };
 }
 
-async function cloudSetActiveSeries(seriesId) {
-  await cloudDb().collection('config').doc('gacha').set({ activeSeries: seriesId || null, updatedAt: Date.now() });
+async function cloudSetGachaConfig(cfg) {
+  await cloudDb().collection('config').doc('gacha').set({ rerunCat: cfg.rerunCat || null, rerunUntil: cfg.rerunUntil || null, updatedAt: Date.now() });
 }
 
 // ---------- 管理者ページ ----------

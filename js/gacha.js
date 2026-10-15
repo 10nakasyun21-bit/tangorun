@@ -13,21 +13,18 @@ const COIN_PER_SET = 5;
 const COIN_PER_MISSION = 10;
 const COIN_PER_CHALLENGE = 5;
 
-// 期間限定シリーズ（管理者ページで開始・終了を切り替える）
-// 例：{ id: 'summer', name: '夏祭りシリーズ', cats: [ { id: 101, ... } ] }
-// ネコの id は通常シリーズ（1〜40）と重ならないように 101 以降を使う
-const LIMITED_SERIES = [];
-
+// 期間限定のネコ（LIMITED_CATS）は js/limited.js。id は 101 以降で、通常の 1〜40 と重ならない
 function allCats() {
-  return [...CATS, ...LIMITED_SERIES.flatMap(s => s.cats.map(c => ({ ...c, series: s.id })))];
+  return [...CATS, ...LIMITED_CATS];
 }
 
 function findCat(id) {
   return allCats().find(c => c.id === Number(id));
 }
 
-function limitedSeries(id) {
-  return LIMITED_SERIES.find(s => s.id === id) || null;
+// 期間限定ガチャで引けるネコ：N と R は通常と同じ、SR はその期間の限定ネコだけ
+function limitedGachaPool(limitedCats) {
+  return [...CATS.filter(c => c.rarity !== 'SR'), ...limitedCats];
 }
 
 // ---------- 記録 ----------
@@ -92,6 +89,7 @@ function drawGacha(record, pool) {
 function exchangeFragments(record, cat) {
   ensureCollection(record);
   const cost = FRAGMENTS_TO_EXCHANGE[cat.rarity];
+  if (cat.limited) return false; // 期間限定のネコはガチャでしか手に入らない
   if (record.collection[cat.id] > 0 || record.fragments[cat.rarity] < cost) return false;
   record.fragments[cat.rarity] -= cost;
   record.collection[cat.id] = 1;
@@ -117,13 +115,18 @@ function escapeHtml(s) {
 
 // N / R / SR のカード1枚（HTML 文字列）
 function catCardHTML(cat) {
-  const r = cat.rarity.toLowerCase();
+  const r = cat.rarity.toLowerCase() + (cat.limited ? ' limited' : '');
   const sr = cat.rarity === 'SR';
-  const sparkleColors = ['#fff8c4', '#d6f3ff', '#ffd6f0', '#fff8c4', '#ffffff', '#fff8c4'];
+  const sparkleColors = cat.limited
+    ? ['#ffe08a', '#fff3c4', '#ffd0d0', '#ffe08a', '#ffffff', '#ffe08a']
+    : ['#fff8c4', '#d6f3ff', '#ffd6f0', '#fff8c4', '#ffffff', '#fff8c4'];
+  const middle = cat.limited
+    ? '<span class="limited-tag">期間限定</span>'
+    : `<span class="type ${cat.type}">${cat.type === 'cute' ? 'かわいい系' : 'かっこいい系'}</span>`;
   return `<div class="card ${r}">`
     + (sr ? '<div class="aura"></div><div class="frame"></div>' : '')
     + `<div class="card-inner">`
-    + `<div class="card-head"><span class="rarity">${cat.rarity}</span><span class="type ${cat.type}">${cat.type === 'cute' ? 'かわいい系' : 'かっこいい系'}</span><span class="no">No.${String(cat.id).padStart(2, '0')}</span></div>`
+    + `<div class="card-head"><span class="rarity">${cat.limited ? '限定SR' : cat.rarity}</span>${middle}<span class="no">No.${String(cat.id).padStart(2, '0')}</span></div>`
     + `<div class="art-box">${buildCatSVG(cat)}${sr ? '<div class="holo"></div>' : ''}</div>`
     + `<p class="name">${escapeHtml(cat.name)}</p>`
     + `<ul class="profile"><li><b>好物</b><span>${escapeHtml(cat.food)}</span></li><li><b>特技</b><span>${escapeHtml(cat.skill)}</span></li></ul>`

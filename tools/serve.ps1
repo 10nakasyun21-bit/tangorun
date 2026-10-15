@@ -51,7 +51,9 @@ try {
         $status = '404 Not Found'
       }
 
-      $header = "HTTP/1.1 $status`r`nContent-Type: $type`r`nContent-Length: $($body.Length)`r`nCache-Control: no-store`r`nConnection: close`r`n`r`n"
+      # Date は期間限定ガチャの時刻あわせに使う（GitHub Pages も返す）
+      $date = [DateTime]::UtcNow.ToString('r')
+      $header = "HTTP/1.1 $status`r`nDate: $date`r`nContent-Type: $type`r`nContent-Length: $($body.Length)`r`nCache-Control: no-store`r`nConnection: close`r`n`r`n"
       $headerBytes = [System.Text.Encoding]::ASCII.GetBytes($header)
       $stream.Write($headerBytes, 0, $headerBytes.Length)
       $stream.Write($body, 0, $body.Length)

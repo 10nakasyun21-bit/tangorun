@@ -55,18 +55,15 @@ function setLastUser(user) {
   } catch (e) { /* 保存できなくても続ける */ }
 }
 
-// 管理者が開始した期間限定ガチャ（電波がなくても前回の状態で遊べるよう端末にも控える）
-const ACTIVE_SERIES_KEY = 'tangorun:activeSeries';
+// 先生が設定した期間限定ガチャの復刻（{ rerunCat, rerunUntil }）。端末にも控えておく
+const GACHA_CONFIG_KEY = 'tangorun:gachaConfig';
 
-function loadActiveSeries() {
-  try { return localStorage.getItem(ACTIVE_SERIES_KEY) || null; } catch (e) { return null; }
+function loadGachaConfig() {
+  try { return JSON.parse(localStorage.getItem(GACHA_CONFIG_KEY)) || {}; } catch (e) { return {}; }
 }
 
-function saveActiveSeries(id) {
-  try {
-    if (id) localStorage.setItem(ACTIVE_SERIES_KEY, id);
-    else localStorage.removeItem(ACTIVE_SERIES_KEY);
-  } catch (e) { /* 保存できなくても続ける */ }
+function saveGachaConfig(cfg) {
+  try { localStorage.setItem(GACHA_CONFIG_KEY, JSON.stringify(cfg || {})); } catch (e) { /* 保存できなくても続ける */ }
 }
 
 // ログイン前に端末で遊んでいた記録（最初にログインした生徒に引き継ぐ）
@@ -108,6 +105,7 @@ function newWordRecord() {
   return {
     correct: 0,
     wrong: 0,
+    dunno: 0,       // 「わからない」を押した回数（wrong にも数える）
     lastResult: null,
     lastAnsweredAt: null,
     level: 1,       // 出題形式のレベル（1〜3）
@@ -185,7 +183,8 @@ const USAGE_PREFIX = { words: 'word', sentences: 'sentence', idioms: 'idiom' };
 // 1問答えたときの記録
 // isPractice：復習日より前に「数合わせ」で出した問題。正解しても復習の間隔は進めない
 // kind：'words'（単語）・'sentences'（文章）・'idioms'（熟語）。どれも同じ間隔反復とレベルの決まりを使う
-function recordAnswer(record, wordId, isCorrect, isPractice = false, kind = 'words') {
+// dunno：「わからない」を押した（不正解と同じあつかい）
+function recordAnswer(record, wordId, isCorrect, isPractice = false, kind = 'words', dunno = false) {
   const today = localDate();
   const items = record[kind];
   const w = items[wordId] || newWordRecord();
@@ -206,6 +205,7 @@ function recordAnswer(record, wordId, isCorrect, isPractice = false, kind = 'wor
     }
   } else {
     w.wrong++;
+    if (dunno) w.dunno++;
     w.stage = 0;     // 間隔を最初に戻す
     w.due = today;   // 次のセットで再出題
     w.levelStreak = 0;
