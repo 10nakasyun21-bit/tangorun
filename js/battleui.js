@@ -42,7 +42,7 @@ function showStages() {
   const party = partyInstances(record);
   const row = $('stage-party-row');
   row.innerHTML = '';
-  for (let slot = PARTY_SIZE - 1; slot >= 0; slot--) {
+  for (let slot = 0; slot < PARTY_SIZE; slot++) {
     const inst = party[slot];
     const span = document.createElement('span');
     span.className = 'stage-party-slot';
@@ -136,7 +136,7 @@ function renderEnemies() {
 function renderTeam() {
   const team = $('bt-team');
   team.innerHTML = '';
-  for (let slot = PARTY_SIZE - 1; slot >= 0; slot--) {
+  for (let slot = 0; slot < PARTY_SIZE; slot++) {
     const p = bt.party[slot];
     const div = document.createElement('div');
     div.className = 'bt-slot';
@@ -176,7 +176,7 @@ function nextBattleQuestion() {
   const slot = bt.slots[bt.pos];
   const word = pickBattleWord();
   bt.word = word;
-  $('bt-task').textContent = `${slot + 1}問目　正解すると右から${slot + 1}番目のネコが攻撃`;
+  $('bt-task').textContent = `${slot + 1}問目　正解すると左から${slot + 1}番目のネコが攻撃`;
   $('bt-word').textContent = word.word;
   $('bt-word').classList.toggle('is-long', word.word.length > 12);
   $('bt-message').textContent = '';

@@ -218,7 +218,7 @@ function mergeCats(record, baseUid, materialUid) {
   return refund;
 }
 
-// パーティの slot 番目（0 = 1問目 = いちばん右 = リーダー）にネコを入れる。すでに別の場所にいたら入れかえる
+// パーティの slot 番目（0 = 1問目 = いちばん左 = リーダー）にネコを入れる。すでに別の場所にいたら入れかえる
 function setPartySlot(record, slot, uid) {
   ensureGrowth(record);
   const party = record.party.slice();

@@ -1087,11 +1087,11 @@ function showCats(from) {
 function renderCats() {
   const record = state.record;
   renderFoodPills();
-  // パーティ：左から5問目…1問目（右はしがリーダー）
+  // パーティ：左から1問目…5問目（左はしがリーダー）
   const row = $('party-row');
   row.innerHTML = '';
   const party = partyInstances(record);
-  for (let slot = PARTY_SIZE - 1; slot >= 0; slot--) {
+  for (let slot = 0; slot < PARTY_SIZE; slot++) {
     const inst = party[slot];
     const b = document.createElement('button');
     b.className = 'party-slot' + (pickSlot === slot ? ' is-picking' : '');
@@ -1103,7 +1103,7 @@ function renderCats() {
     });
     row.append(b);
   }
-  $('party-hint').textContent = pickSlot >= 0 ? `${pickSlot + 1}問目に入れるネコをタップ` : '右はしがリーダー👑';
+  $('party-hint').textContent = pickSlot >= 0 ? `${pickSlot + 1}問目に入れるネコをタップ` : '左はしがリーダー👑';
   $('party-hint').classList.toggle('is-picking', pickSlot >= 0);
 
   document.querySelectorAll('.cat-sort').forEach(b => b.classList.toggle('is-active', b.dataset.sort === catSort));
