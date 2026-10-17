@@ -158,6 +158,14 @@ function parseRecord(data) {
   record.collection = { ...data.collection };
   record.fragments = normalizeFragments(data.fragments);
   record.partner = data.partner || null;
+  // ネコの育成（js/growth.js）。前の版の記録には無いので、そのときは ensureGrowth が図鑑から作る
+  if (Array.isArray(data.cats)) {
+    record.cats = data.cats.map(c => ({ uid: c.uid, id: c.id, exp: c.exp || 0, koban: c.koban || 0 }));
+    record.nextCatUid = data.nextCatUid || 0;
+  }
+  if (Array.isArray(data.party)) record.party = data.party.slice(0, 5);
+  if (data.food) record.food = { s: data.food.s || 0, m: data.food.m || 0 };
+  if (data.player) record.player = { exp: data.player.exp || 0, bestStage: data.player.bestStage || 0 };
   for (const key of WORD_KEYS_ALL) {
     for (const [id, w] of Object.entries(data[key] || {})) {
       record[key][id] = normalizeWord(w);
@@ -364,6 +372,10 @@ function resetRecord(record) {
   fresh.collection = record.collection;
   fresh.fragments = record.fragments;
   fresh.partner = record.partner;
+  // 育てたネコ・フード・対戦の記録も残す
+  for (const k of ['cats', 'nextCatUid', 'party', 'food', 'player']) {
+    if (record[k] !== undefined) fresh[k] = record[k];
+  }
   touchRecord(fresh);
   saveRecord(fresh);
   return fresh;

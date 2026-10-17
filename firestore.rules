@@ -44,6 +44,22 @@ service cloud.firestore {
       allow write: if isAdmin() || isActiveStudent(uid);
     }
 
+    // ランキング：ログインしていればだれでも読める。書けるのは本人（決まった項目だけ）と管理者
+    match /ranking/{uid} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin() || (isActiveStudent(uid)
+        && request.resource.data.keys().hasOnly(['level', 'exp', 'bestStage', 'party', 'zukan', 'updatedAt'])
+        && request.resource.data.level is int && request.resource.data.level <= 9999
+        && request.resource.data.bestStage is int && request.resource.data.bestStage <= 10
+        && request.resource.data.party is list && request.resource.data.party.size() <= 5);
+    }
+
+    // ランキングに出す名前（ニックネーム）と「出さない」設定：書けるのは管理者だけ
+    match /rankingMeta/{uid} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
+
     // 期間限定ガチャの設定：ログインしていればだれでも読める、書けるのは管理者だけ
     match /config/{doc} {
       allow read: if request.auth != null;

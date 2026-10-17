@@ -126,6 +126,17 @@
         <p id="weak-empty" class="empty" hidden>まだ間違えた単語はありません。</p>
       </div>
 
+      <div class="admin-card">
+        <h3>ランキング</h3>
+        <p class="rk-admin-note">ランキングには本名は出ません。ニックネームを付けていない生徒は「<span id="rk-default-name"></span>」と出ます。</p>
+        <div class="rk-admin-row">
+          <input id="rk-nickname" class="field-input" type="text" maxlength="12" placeholder="ニックネーム（12文字まで）">
+          <button id="btn-rk-save" class="btn btn-primary btn-small">保存</button>
+        </div>
+        <label class="rk-admin-check"><input id="rk-hidden" type="checkbox"> この生徒をランキングに出さない</label>
+        <p id="rk-admin-status" class="rk-admin-note"></p>
+      </div>
+
       <div class="admin-card danger-zone">
         <h3>アカウント</h3>
         <div class="detail-actions">
@@ -201,6 +212,7 @@
   <script src="js/cats.js"></script>
   <script src="js/limited.js"></script>
   <script src="js/gacha.js"></script>
+  <script src="js/growth.js"></script>
   <script src="js/admin.js"></script>
 </body>
 </html>

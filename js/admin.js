@@ -235,6 +235,7 @@ async function openDetail(student) {
   $('weak-words').innerHTML = '';
   $('weak-empty').hidden = true;
   showView('detail');
+  loadRankingMeta(student);
 
   try {
     const from = addDays(localDate(), -(CHART_DAYS - 1));
@@ -248,6 +249,41 @@ async function openDetail(student) {
     renderWeakWords(progress);
   } catch (e) {
     showMessage(cloudErrorMessage(e));
+  }
+}
+
+// ---------- ランキングの名前・表示 ----------
+// 生徒アプリの defaultNickname（js/battleui.js）と同じ決め方
+function rankDefaultName(uid) {
+  let h = 0;
+  for (const ch of String(uid)) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return `ネコ使い${1000 + (h % 9000)}号`;
+}
+
+async function loadRankingMeta(student) {
+  $('rk-default-name').textContent = rankDefaultName(student.uid);
+  $('rk-nickname').value = '';
+  $('rk-hidden').checked = false;
+  $('rk-admin-status').textContent = '読みこみ中…';
+  try {
+    const meta = await cloudFetchRankingMeta(student.uid);
+    if (admin.current !== student) return;
+    $('rk-nickname').value = meta.nickname || '';
+    $('rk-hidden').checked = !!meta.hidden;
+    $('rk-admin-status').textContent = meta.hidden ? 'いまはランキングに出ていません。' : '';
+  } catch (e) {
+    $('rk-admin-status').textContent = 'ランキングの設定を読めませんでした。Firestore のルールを新しいものに更新してください。';
+  }
+}
+
+async function saveRankingMeta(changes, message) {
+  const student = admin.current;
+  if (!student) return;
+  try {
+    await cloudSetRankingMeta(student.uid, changes);
+    $('rk-admin-status').textContent = message;
+  } catch (e) {
+    $('rk-admin-status').textContent = cloudErrorMessage(e);
   }
 }
 
@@ -497,6 +533,13 @@ function init() {
   $('btn-back').addEventListener('click', () => { admin.current = null; showView('list'); });
   $('btn-reissue').addEventListener('click', () => openStudentDialog('reissue'));
   $('btn-toggle-active').addEventListener('click', askToggleActive);
+  $('btn-rk-save').addEventListener('click', () => {
+    const name = $('rk-nickname').value.trim().slice(0, 12);
+    saveRankingMeta({ nickname: name }, name ? `「${name}」で保存しました。` : 'ニックネームを消しました（自動の名前で出ます）。');
+  });
+  $('rk-hidden').addEventListener('change', e => {
+    saveRankingMeta({ hidden: e.target.checked }, e.target.checked ? 'ランキングに出さないようにしました。' : 'ランキングに出すようにしました。');
+  });
   $('btn-gen-password').addEventListener('click', () => { $('s-password').value = generatePassword(); });
   $('student-form').addEventListener('submit', submitStudent);
   $('btn-student-cancel').addEventListener('click', closeStudentDialog);

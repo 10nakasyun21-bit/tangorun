@@ -77,18 +77,26 @@
 
       <div class="home-modes">
         <button id="btn-start-story" class="mode-card" disabled>
-          <span class="mode-title">📖 ストーリー</span>
+          <span class="mode-icon" aria-hidden="true">📖</span>
+          <span class="mode-title">ストーリー</span>
           <span id="story-chapter" class="mode-sub">第1章</span>
         </button>
         <button id="btn-challenge" class="mode-card" disabled>
-          <span class="mode-title">⏱ 1分チャレンジ</span>
+          <span class="mode-icon" aria-hidden="true">⏱</span>
+          <span class="mode-title">1分チャレンジ</span>
           <span id="challenge-sub" class="mode-sub">自己ベスト 0問</span>
+        </button>
+        <button id="btn-battle" class="mode-card is-battle" disabled>
+          <span class="mode-icon" aria-hidden="true">⚔️</span>
+          <span class="mode-title">対戦</span>
+          <span id="battle-sub" class="mode-sub">ステージ1</span>
         </button>
       </div>
       <div class="home-links">
-        <button id="btn-wordlist" class="story-cards-link">単語・熟語一覧</button>
+        <button id="btn-wordlist" class="story-cards-link">単語一覧</button>
         <button id="btn-cards" class="story-cards-link">文カード</button>
-        <button id="btn-zukan" class="story-cards-link">ネコ図鑑</button>
+        <button id="btn-cats" class="story-cards-link">ネコ</button>
+        <button id="btn-zukan" class="story-cards-link">図鑑</button>
         <button id="btn-gacha" class="story-cards-link">ガチャ</button>
       </div>
       <p id="home-error" class="error" hidden></p>
@@ -161,7 +169,7 @@
       <div class="result-stats">
         <div class="result-stat"><span class="result-stat-label">最高コンボ</span><strong id="r-combo">0</strong></div>
         <div class="result-stat"><span id="r-stat2-label" class="result-stat-label">🔥 連続</span><strong id="r-stat2">1日</strong></div>
-        <div class="result-stat"><span class="result-stat-label"><span class="coin coin-small" aria-hidden="true"></span>コイン</span><strong id="r-coins">+0</strong></div>
+        <div class="result-stat"><span id="r-stat3-label" class="result-stat-label"><span class="coin coin-small" aria-hidden="true"></span>コイン</span><strong id="r-coins">+0</strong></div>
       </div>
     </div>
     <div class="result-buttons">
@@ -244,6 +252,164 @@
     <p id="wl-hint" class="wl-hint">単語をタップすると発音が聞けます</p>
     <div id="wl-list" class="wl-list"></div>
   </section>
+
+  <!-- 対戦：ステージ一覧 -->
+  <section id="screen-stages" class="screen">
+    <div class="topbar">
+      <button id="btn-stages-back" class="icon-btn" aria-label="もどる">
+        <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <h2 class="screen-title">対戦</h2>
+      <span class="icon-btn-spacer"></span>
+    </div>
+    <div class="player-box">
+      <div class="player-head"><span>プレーヤー <b>Lv<span id="pl-level">1</span></b></span><small id="pl-xp-note"></small></div>
+      <div class="pl-xp"><div id="pl-xp-fill"></div></div>
+    </div>
+    <button id="btn-ranking" class="btn btn-ghost ranking-link">🏆 ランキングを見る</button>
+    <div class="stage-party">
+      <div id="stage-party-row" class="stage-party-row"></div>
+      <button id="btn-edit-party" class="btn btn-ghost stage-party-btn">パーティを変える</button>
+    </div>
+    <p id="stages-note" class="stages-note" hidden></p>
+    <div id="stage-list" class="stage-list"></div>
+  </section>
+
+  <!-- ランキング -->
+  <section id="screen-ranking" class="screen">
+    <div class="topbar">
+      <button id="btn-ranking-back" class="icon-btn" aria-label="もどる">
+        <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <h2 class="screen-title">ランキング</h2>
+      <span class="icon-btn-spacer"></span>
+    </div>
+    <p class="rk-hint">プレーヤーレベルの順。名前の枠は、クリアしたステージで豪華になるよ</p>
+    <p id="rk-status" class="rk-status" hidden></p>
+    <ol id="rk-list" class="rk-list"></ol>
+  </section>
+
+  <!-- 対戦 -->
+  <section id="screen-battle" class="screen">
+    <header class="bt-header">
+      <button id="btn-bt-quit" class="icon-btn" aria-label="やめる">
+        <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+      <p class="bt-title"><b id="bt-stage"></b><small id="bt-wave"></small></p>
+      <span id="bt-turn" class="bt-turn"></span>
+    </header>
+    <div id="bt-arena" class="bt-arena"></div>
+    <div id="bt-team" class="bt-team"></div>
+    <div class="bt-hp">
+      <span>体力</span>
+      <div class="bt-hp-bar"><div id="bt-hp-fill"></div></div>
+      <b id="bt-hp-text"></b>
+    </div>
+    <div class="bt-question">
+      <p id="bt-task" class="bt-task"></p>
+      <p id="bt-word" class="bt-word"></p>
+    </div>
+    <div id="bt-choices" class="bt-choices"></div>
+    <p id="bt-message" class="bt-message"></p>
+  </section>
+
+  <!-- 対戦の結果 -->
+  <div id="bt-result" class="dialog-backdrop" hidden>
+    <div class="dialog bt-result" role="dialog" aria-modal="true" aria-labelledby="btr-title">
+      <div id="btr-art" class="btr-art"></div>
+      <p id="btr-title" class="dialog-title"></p>
+      <ul id="btr-lines" class="btr-lines"></ul>
+      <div class="dialog-buttons">
+        <button id="btn-btr-list" class="btn btn-ghost">ステージ一覧</button>
+        <button id="btn-btr-next" class="btn btn-primary"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 対戦をやめる確認 -->
+  <div id="bt-quit-dialog" class="dialog-backdrop" hidden>
+    <div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="btq-title">
+      <p id="btq-title" class="dialog-title">対戦をやめますか？</p>
+      <p class="dialog-text">このステージは最初からやり直しになります。</p>
+      <div class="dialog-buttons">
+        <button id="btn-btq-cancel" class="btn btn-ghost">つづける</button>
+        <button id="btn-btq-ok" class="btn btn-danger">やめる</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ネコ（もちもの・パーティ） -->
+  <section id="screen-cats" class="screen">
+    <div class="topbar">
+      <button id="btn-cats-back" class="icon-btn" aria-label="もどる">
+        <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <h2 class="screen-title">ネコ</h2>
+      <span class="food-pill" aria-label="経験値フード">🍖 小<b id="cats-food-s">0</b>・中<b id="cats-food-m">0</b></span>
+    </div>
+    <div class="party-box">
+      <div class="party-head"><span>対戦パーティ</span><small id="party-hint">右はしがリーダー👑</small></div>
+      <div id="party-row" class="party-row"></div>
+    </div>
+    <div class="cat-sorts" role="tablist">
+      <button class="cat-sort is-active" data-sort="level">レベル順</button>
+      <button class="cat-sort" data-sort="rarity">レア度順</button>
+      <button class="cat-sort" data-sort="id">図鑑順</button>
+    </div>
+    <div id="cat-box" class="cat-box"></div>
+    <p id="cat-box-empty" class="empty-note" hidden>まだネコがいません。ガチャで仲間をさがそう！</p>
+  </section>
+
+  <!-- ネコの詳細（育てる・合成） -->
+  <section id="screen-catdetail" class="screen">
+    <div class="topbar">
+      <button id="btn-catdetail-back" class="icon-btn" aria-label="もどる">
+        <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" d="M15 5l-7 7 7 7"/></svg>
+      </button>
+      <h2 class="screen-title">ネコ</h2>
+      <span class="food-pill" aria-label="経験値フード">🍖 小<b id="cd-food-s">0</b>・中<b id="cd-food-m">0</b></span>
+    </div>
+    <div class="cd-head">
+      <span id="cd-icon"></span>
+      <div class="cd-info">
+        <p id="cd-name" class="cd-name"></p>
+        <p class="cd-level">Lv <b id="cd-level">1</b> <small>/ 99</small></p>
+        <div class="cd-xp"><div id="cd-xp-fill"></div></div>
+        <p id="cd-xp-note" class="cd-xp-note"></p>
+        <p class="cd-kobans">小判 <span id="cd-kobans"></span></p>
+      </div>
+    </div>
+    <div class="cd-stats">
+      <div class="cd-stat">HP<div class="cd-bar"><div id="cd-hp-bar" class="is-hp"></div></div><b id="cd-hp">0</b></div>
+      <div class="cd-stat">こうげき<div class="cd-bar"><div id="cd-atk-bar" class="is-atk"></div></div><b id="cd-atk">0</b></div>
+      <div class="cd-stat">かいふく<div class="cd-bar"><div id="cd-rcv-bar" class="is-rcv"></div></div><b id="cd-rcv">0</b></div>
+    </div>
+    <div id="cd-skill" class="cd-skill"></div>
+    <div class="cd-feed">
+      <button id="btn-feed-s" class="btn btn-primary">小をあげる<small id="feed-s-note"></small></button>
+      <button id="btn-feed-m" class="btn btn-primary">中をあげる<small id="feed-m-note"></small></button>
+      <button id="btn-feed-next" class="btn btn-primary">次のLvまで<small>まとめてあげる</small></button>
+    </div>
+    <p id="cd-food-hint" class="cd-food-hint"></p>
+    <div class="cd-actions">
+      <button id="btn-merge" class="btn btn-ghost">合成する<small id="merge-note"></small></button>
+      <button id="btn-party-toggle" class="btn btn-ghost">パーティに入れる</button>
+      <button id="btn-partner" class="btn btn-ghost">相棒にする</button>
+    </div>
+  </section>
+
+  <!-- 合成の確認 -->
+  <div id="merge-dialog" class="dialog-backdrop" hidden>
+    <div class="dialog" role="alertdialog" aria-modal="true" aria-labelledby="merge-title">
+      <p id="merge-title" class="dialog-title">合成しますか？</p>
+      <div id="merge-preview" class="merge-preview"></div>
+      <p id="merge-text" class="dialog-text"></p>
+      <div class="dialog-buttons">
+        <button id="btn-merge-cancel" class="btn btn-ghost">やめる</button>
+        <button id="btn-merge-ok" class="btn btn-primary">合成する</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ニガテ（前回まちがえた・「わからない」を押した問題） -->
   <section id="screen-weak" class="screen">
@@ -376,6 +542,10 @@
   <script src="js/cats.js"></script>
   <script src="js/limited.js"></script>
   <script src="js/gacha.js"></script>
+  <script src="js/growth.js"></script>
+  <script src="js/animalart.js"></script>
+  <script src="js/battle.js"></script>
+  <script src="js/battleui.js"></script>
   <script src="js/sound.js"></script>
   <script src="js/app.js"></script>
 </body>

@@ -121,6 +121,60 @@ async function cloudPushRecord(uid, record, usageDates = [localDate()]) {
   await batch.commit();
 }
 
+// ---------- ランキング ----------
+//   ranking/{uid}      生徒が書く：プレーヤーレベル・クリアしたステージ・対戦パーティ・図鑑の数
+//   rankingMeta/{uid}  先生が書く：ニックネーム・ランキングに出さない・利用停止
+
+// ランキングに出す中身（生徒の記録から作る）
+function buildRankingDoc(record) {
+  ensureGrowth(record);
+  const party = partyInstances(record).filter(Boolean).map(c => ({ id: c.id, lv: levelFromExp(c.exp).level, kb: c.koban }));
+  return {
+    level: playerLevel(record.player.exp).level,
+    exp: record.player.exp,
+    bestStage: record.player.bestStage,
+    party,
+    zukan: ownedCount(record, allCats()),
+  };
+}
+
+let lastRankingJson = null;
+
+// 変わったときだけ送る。ルールがまだ古いときなどに失敗しても、学習記録の保存には影響させない
+async function cloudPushRanking(uid, record) {
+  const doc = buildRankingDoc(record);
+  const json = JSON.stringify(doc);
+  if (json === lastRankingJson) return;
+  try {
+    await cloudDb().collection('ranking').doc(uid).set({ ...doc, updatedAt: Date.now() });
+    lastRankingJson = json;
+  } catch (e) { /* ランキングは送れなくても続ける */ }
+}
+
+// ランキング一覧（名前・出さない設定をまとめた形）。生徒の人数ぶん × 2 回の読み取り
+async function cloudFetchRanking() {
+  const db = cloudDb();
+  const [rank, meta] = await Promise.all([db.collection('ranking').get(), db.collection('rankingMeta').get()]);
+  const metas = {};
+  meta.forEach(d => { metas[d.id] = d.data(); });
+  const list = [];
+  rank.forEach(d => {
+    const m = metas[d.id] || {};
+    if (m.hidden || m.inactive) return;
+    list.push({ uid: d.id, ...d.data(), nickname: m.nickname || '' });
+  });
+  return list;
+}
+
+async function cloudFetchRankingMeta(uid) {
+  const snap = await cloudDb().collection('rankingMeta').doc(uid).get();
+  return snap.exists ? snap.data() : {};
+}
+
+async function cloudSetRankingMeta(uid, changes) {
+  await cloudDb().collection('rankingMeta').doc(uid).set({ ...changes, updatedAt: Date.now() }, { merge: true });
+}
+
 // 期間限定ガチャの設定（config/gacha。管理者だけが書ける）
 // 期間限定ネコは3日ごとに自動で入れかわる。ここに入るのは先生の「復刻」だけ：{ rerunCat, rerunUntil }
 async function cloudFetchGachaConfig() {
@@ -181,6 +235,8 @@ async function cloudCreateStudent(name, loginId, password) {
 
 async function cloudSetActive(uid, active) {
   await cloudDb().collection('users').doc(uid).update({ active });
+  // 利用停止した生徒はランキングにも出さない
+  try { await cloudSetRankingMeta(uid, { inactive: !active }); } catch (e) { /* ルールが古いときは名簿の変更だけ */ }
 }
 
 // パスワードを忘れた生徒用：新しいログインIDを作って、学習記録をそっくり移す

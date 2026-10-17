@@ -34,6 +34,7 @@ function ensureCollection(record) {
   if (!record.collection) record.collection = {}; // ネコの id → 持っている枚数
   record.fragments = normalizeFragments(record.fragments);
   if (record.partner === undefined) record.partner = null;
+  ensureGrowth(record);
 }
 
 function addCoins(record, amount) {
@@ -74,6 +75,7 @@ function drawGacha(record, pool) {
   record.coins -= GACHA_COST;
   const isNew = !(record.collection[cat.id] > 0);
   record.collection[cat.id] = (record.collection[cat.id] || 0) + 1;
+  addCatInstance(record, cat.id); // ダブっても別の1匹として持つ（かけらもこれまでどおりもらえる）
   let fragments = 0;
   if (!isNew) {
     fragments = 1;
@@ -93,6 +95,7 @@ function exchangeFragments(record, cat) {
   if (record.collection[cat.id] > 0 || record.fragments[cat.rarity] < cost) return false;
   record.fragments[cat.rarity] -= cost;
   record.collection[cat.id] = 1;
+  addCatInstance(record, cat.id);
   touchRecord(record);
   saveRecord(record);
   return true;

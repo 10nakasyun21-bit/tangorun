@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ネコ育成・対戦 見本</title>
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/cards.css">
+<style>
+  body { padding: 32px 24px 60px; background: #efe6d8; }
+  h1 { text-align: center; margin: 0 0 6px; font-size: 26px; }
+  .lead { text-align: center; color: var(--sub); margin: 0 0 28px; }
+  .phones { display: flex; flex-wrap: wrap; gap: 36px; justify-content: center; align-items: flex-start; }
+  .phone-wrap { text-align: center; }
+  .phone-cap { margin: 0 0 10px; font-weight: bold; font-size: 17px; }
+  .phone {
+    width: 360px; height: 740px; overflow: hidden; position: relative; text-align: left;
+    background: var(--bg); border: 10px solid #2b2b3a; border-radius: 34px; box-shadow: 0 14px 40px rgba(0,0,0,.18);
+    padding: 14px 14px 0; display: flex; flex-direction: column; gap: 10px;
+  }
+  .bar { display: flex; align-items: center; justify-content: space-between; min-height: 40px; }
+  .bar h2 { margin: 0; font-size: 20px; }
+  .back { font-size: 26px; color: var(--sub); width: 32px; }
+  .pill { padding: 4px 12px; border-radius: 99px; background: #fff; border: 2px solid var(--line); font-weight: bold; font-size: 14px; }
+
+  /* ---- ネコのアイコン（正方形） ---- */
+  .ic { position: relative; width: 72px; height: 72px; border-radius: 12px; overflow: hidden; border: 3px solid #b9c3d6; background: #fff; flex-shrink: 0; }
+  .ic svg { position: absolute; inset: -6px -6px auto; width: calc(100% + 12px); height: calc(100% + 12px); }
+  .ic.r { border-color: #f0b429; }
+  .ic.sr { border: 3px solid transparent; background: linear-gradient(#fff,#fff) padding-box, conic-gradient(#ff6b6b,#ffd93d,#6bcB77,#4d96ff,#c77dff,#ff6b6b) border-box; }
+  .ic.lim { border: 3px solid transparent; background: linear-gradient(#fff,#fff) padding-box, conic-gradient(#c8102e,#ffd54a,#fff3c4,#ffd54a,#8b0000,#c8102e) border-box; }
+  .ic .lv { position: absolute; left: 50%; bottom: 2px; transform: translateX(-50%); padding: 0 6px; border-radius: 8px; background: rgba(43,43,58,.82); color: #fff; font-size: 11px; font-weight: bold; line-height: 16px; white-space: nowrap; }
+  .ic .kb { position: absolute; left: 2px; top: 2px; display: flex; align-items: center; gap: 1px; padding: 0 4px 0 2px; border-radius: 8px; background: rgba(255,255,255,.92); font-size: 11px; font-weight: bold; line-height: 16px; color: #8a5a00; }
+  .ic .kb i { display: inline-block; width: 10px; height: 13px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff6b0, #f4b400 60%, #b07800); border: 1px solid #8a5a00; }
+  .ic .kami { position: absolute; left: 2px; top: 2px; padding: 0 5px; border-radius: 6px; background: linear-gradient(135deg,#ffe066,#ff8a3d,#c8102e); color: #fff; font-size: 12px; font-weight: 900; line-height: 17px; text-shadow: 0 1px 0 rgba(0,0,0,.35); box-shadow: 0 0 6px #ffd54a; }
+  .ic.small { width: 56px; height: 56px; border-radius: 10px; }
+  .ic.small .lv { font-size: 10px; line-height: 14px; }
+  .leader-crown { position: absolute; right: 2px; top: 1px; font-size: 13px; }
+
+  /* ---- ネコ一覧 ---- */
+  .party { background: #fff; border: 2px solid var(--line); border-radius: 16px; padding: 10px; }
+  .party-head { display: flex; justify-content: space-between; font-weight: bold; font-size: 14px; margin-bottom: 8px; }
+  .party-head span { color: var(--sub); font-weight: normal; font-size: 12px; }
+  .party-row { display: flex; gap: 6px; justify-content: space-between; }
+  .party-row .slot { position: relative; }
+  .party-num { display: block; text-align: center; font-size: 11px; color: var(--sub); margin-top: 2px; }
+  .sorts { display: flex; gap: 6px; }
+  .sorts b { flex: 1; text-align: center; padding: 8px 0; border-radius: 10px; background: #fff; border: 2px solid var(--line); font-size: 13px; }
+  .sorts b.on { background: var(--primary); border-color: var(--primary); color: #fff; }
+  .box { display: grid; grid-template-columns: repeat(4, 72px); gap: 10px 8px; justify-content: space-between; }
+  .box .in-party::after { content: '出撃中'; position: absolute; right: 0; top: 0; background: var(--primary); color: #fff; font-size: 9px; padding: 1px 4px; border-bottom-left-radius: 6px; font-weight: bold; }
+  .food-line { display: flex; gap: 8px; font-size: 13px; color: var(--sub); justify-content: center; }
+
+  /* ---- 詳細 ---- */
+  .detail-art { display: flex; gap: 12px; align-items: center; }
+  .detail-art .ic { width: 112px; height: 112px; }
+  .detail-art .ic .lv { font-size: 13px; line-height: 18px; }
+  .dname { font-size: 18px; font-weight: bold; margin: 0 0 4px; }
+  .lvbig { font-size: 15px; font-weight: bold; }
+  .xp { height: 8px; border-radius: 6px; background: var(--line); overflow: hidden; margin-top: 6px; }
+  .xp div { height: 100%; background: linear-gradient(90deg,#9be37a,#2fb36b); }
+  .xp-note { font-size: 12px; color: var(--sub); margin-top: 3px; }
+  .stats { background: #fff; border: 2px solid var(--line); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+  .st { display: grid; grid-template-columns: 64px 1fr 56px; align-items: center; gap: 8px; font-size: 14px; font-weight: bold; }
+  .st .sb { height: 10px; border-radius: 6px; background: var(--line); overflow: hidden; }
+  .st .sb div { height: 100%; border-radius: 6px; }
+  .st .v { text-align: right; font-variant-numeric: tabular-nums; }
+  .skill { background: #fff7e0; border: 2px solid #ffd98a; border-radius: 12px; padding: 8px 10px; font-size: 13px; }
+  .skill b { color: #b46a00; }
+  .feed { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .feed .btn, .row2 .btn { min-height: 48px; font-size: 15px; }
+  .feed small { display: block; font-size: 11px; opacity: .85; font-weight: normal; }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .kobans { display: flex; gap: 4px; align-items: center; font-size: 13px; color: var(--sub); }
+  .kobans i { width: 14px; height: 18px; border-radius: 50%; border: 1px solid #8a5a00; background: #eee; }
+  .kobans i.on { background: radial-gradient(circle at 35% 30%, #fff6b0, #f4b400 60%, #b07800); }
+
+  /* ---- 対戦 ---- */
+  .bt-top { display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+  .bt-top small { color: var(--sub); font-weight: normal; }
+  .arena { position: relative; height: 150px; border-radius: 16px; background: linear-gradient(#cfe9c4, #8fca7a); display: flex; justify-content: center; align-items: flex-end; gap: 14px; padding-bottom: 10px; }
+  .foe { text-align: center; width: 90px; }
+  .foe .em { font-size: 54px; line-height: 1; }
+  .foe .em.big { font-size: 70px; }
+  .foe .nm { font-size: 12px; font-weight: bold; }
+  .hp { height: 8px; border-radius: 6px; background: rgba(0,0,0,.18); overflow: hidden; }
+  .hp div { height: 100%; background: #e5484d; }
+  .cd { position: absolute; transform: translate(34px, -6px); background: #2b2b3a; color: #fff; border-radius: 10px; font-size: 11px; padding: 1px 6px; font-weight: bold; }
+  .cd.now { background: #e5484d; }
+  .team { display: flex; justify-content: space-between; gap: 4px; }
+  .team .slot { position: relative; text-align: center; }
+  .team .ic.turn { outline: 3px solid var(--primary); outline-offset: 2px; }
+  .dot { display: block; margin: 4px auto 0; width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--line); background: #fff; font-size: 12px; font-weight: bold; line-height: 18px; color: var(--sub); }
+  .dot.ok { background: var(--correct); border-color: var(--correct); color: #fff; }
+  .dot.ng { background: var(--wrong); border-color: var(--wrong); color: #fff; }
+  .dot.now { border-color: var(--primary); color: var(--primary); }
+  .team-hp { font-size: 12px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
+  .team-hp .hp { flex: 1; height: 12px; }
+  .team-hp .hp div { background: linear-gradient(90deg,#2fb36b,#9be37a); }
+  .bq { text-align: center; }
+  .bq .task { margin: 0; font-size: 13px; color: var(--sub); }
+  .bq .w { margin: 2px 0 0; font-size: 34px; font-weight: 800; }
+  .ch { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .ch b { display: flex; align-items: center; justify-content: center; min-height: 56px; border-radius: 14px; background: #fff; border: 2px solid var(--line); font-size: 17px; }
+
+  /* ---- 数字の表 ---- */
+  .sheet { max-width: 1160px; margin: 44px auto 0; background: #fff; border-radius: 20px; padding: 24px 28px; }
+  .sheet h2 { margin: 26px 0 10px; font-size: 20px; }
+  .sheet h2:first-child { margin-top: 0; }
+  .sheet table { border-collapse: collapse; width: 100%; font-size: 15px; }
+  .sheet th, .sheet td { border-bottom: 1px solid var(--line); padding: 8px 10px; text-align: left; }
+  .sheet th { color: var(--sub); font-size: 13px; }
+  .sheet td.n { text-align: right; font-variant-numeric: tabular-nums; }
+  .sheet p, .sheet li { line-height: 1.7; }
+  .note { color: var(--sub); font-size: 14px; }
+</style>
+</head>
+<body>
+<h1>ネコの育成・対戦　見本</h1>
+<p class="lead">見た目と数字のたたき台です。動きはまだありません（絵の動物は仮で絵文字）</p>
+
+<div class="phones">
+  <!-- 1. ネコ一覧 -->
+  <div class="phone-wrap">
+    <p class="phone-cap">① ネコ画面（もちもの・パーティ）</p>
+    <div class="phone">
+      <div class="bar"><span class="back">‹</span><h2>ネコ</h2><span class="pill">🍖 小12・中3</span></div>
+      <div class="party">
+        <div class="party-head">対戦パーティ <span>右はしがリーダー👑</span></div>
+        <div class="party-row" id="party"></div>
+      </div>
+      <div class="sorts"><b class="on">レベル順</b><b>レア度順</b><b>図鑑順</b></div>
+      <div class="box" id="box"></div>
+      <p class="food-line">ネコをタップ → ステータス・フード・合成</p>
+    </div>
+  </div>
+
+  <!-- 2. 詳細 -->
+  <div class="phone-wrap">
+    <p class="phone-cap">② ネコの詳細（育てる・合成）</p>
+    <div class="phone">
+      <div class="bar"><span class="back">‹</span><h2>ネコ</h2><span style="width:32px"></span></div>
+      <div class="detail-art">
+        <div id="detail-icon"></div>
+        <div style="flex:1">
+          <p class="dname">疾風のクロ</p>
+          <div class="lvbig">Lv 42 <span style="color:var(--sub);font-weight:normal;font-size:13px">/ 99</span></div>
+          <div class="xp"><div style="width:62%"></div></div>
+          <div class="xp-note">次のレベルまで フード小 あと3個</div>
+          <div class="kobans" style="margin-top:6px">小判 <i class="on"></i><i class="on"></i><i></i><i></i><i></i></div>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="st">HP<div class="sb"><div style="width:38%;background:#2fb36b"></div></div><span class="v">1,180</span></div>
+        <div class="st">こうげき<div class="sb"><div style="width:72%;background:#e5484d"></div></div><span class="v">652</span></div>
+        <div class="st">かいふく<div class="sb"><div style="width:22%;background:#4d96ff"></div></div><span class="v">90</span></div>
+      </div>
+      <div class="skill"><b>とくせい（リーダーのとき）</b><br>1問目と5問目のネコのこうげき 2倍</div>
+      <div class="feed">
+        <button class="btn btn-primary">フード小をあげる<small>あと12個（+100）</small></button>
+        <button class="btn btn-primary">フード中をあげる<small>あと3個（+200）</small></button>
+      </div>
+      <div class="row2">
+        <button class="btn btn-ghost">合成する<small style="display:block;font-size:11px;font-weight:normal">同じネコが1匹いる</small></button>
+        <button class="btn btn-ghost">相棒にする</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. 対戦 -->
+  <div class="phone-wrap">
+    <p class="phone-cap">③ 対戦（ステージ3「森」2戦目）</p>
+    <div class="phone">
+      <div class="bt-top"><span>ステージ3　森</span><small>2 / 5戦　ターン3</small></div>
+      <div class="arena">
+        <div class="foe"><span class="cd">あと2</span><div class="em">🦊</div><div class="nm">キツネ</div><div class="hp"><div style="width:58%"></div></div></div>
+        <div class="foe"><span class="cd now">あと1</span><div class="em">🦝</div><div class="nm">アライグマ</div><div class="hp"><div style="width:100%"></div></div></div>
+      </div>
+      <div class="team" id="team"></div>
+      <div class="team-hp">体力<div class="hp"><div style="width:74%"></div></div>2,350 / 3,180</div>
+      <div class="bq">
+        <p class="task">3問目（正解すると 右から3番目のネコ が攻撃）</p>
+        <p class="w">protect</p>
+      </div>
+      <div class="ch"><b>集める</b><b>守る</b><b>比べる</b><b>届ける</b></div>
+    </div>
+  </div>
+</div>
+
+<div class="sheet">
+  <h2>1. ステータス（N・小判なしの場合）</h2>
+  <table>
+    <tr><th>（画面には書かないタイプ）</th><th>HP　Lv1 → Lv99</th><th>こうげき　Lv1 → Lv99</th><th>かいふく　Lv1 → Lv99</th><th>こんな役わり</th></tr>
+    <tr><td>たいりょく型</td><td class="n">400 → 4,000</td><td class="n">60 → 600</td><td class="n">20 → 200</td><td>チームの体力を増やす。長く戦える</td></tr>
+    <tr><td>こうげき型</td><td class="n">220 → 2,200</td><td class="n">110 → 1,100</td><td class="n">15 → 150</td><td>相手を早く倒す。体力は少なめ</td></tr>
+    <tr><td>かいふく型</td><td class="n">260 → 2,600</td><td class="n">60 → 600</td><td class="n">60 → 600</td><td>正解するたびに体力を大きく戻す</td></tr>
+    <tr><td>バランス型</td><td class="n">300 → 3,000</td><td class="n">80 → 800</td><td class="n">35 → 350</td><td>どこに入れても使いやすい</td></tr>
+  </table>
+  <p class="note">R は ×1.2、SR・期間限定は ×1.4。小判1つで +4%（小判5で +20%）。つまり「N の神（小判5）」≒ R の Lv99 ＜ SR の Lv99。</p>
+
+  <h2>2. レベルの上がり方（フード小 = 100、フード中 = 200）</h2>
+  <table>
+    <tr><th>レベル</th><th>Lv2</th><th>Lv10</th><th>Lv30</th><th>Lv50</th><th>Lv70</th><th>Lv90</th><th>Lv99</th></tr>
+    <tr><td>次のレベルに必要な量</td><td class="n">200</td><td class="n">225</td><td class="n">425</td><td class="n">830</td><td class="n">1,435</td><td class="n">2,240</td><td class="n">-</td></tr>
+    <tr><td>熟語・ストーリーのセット数（合計）</td><td class="n">約0.2</td><td class="n">約2</td><td class="n">約8</td><td class="n">約20</td><td class="n">約42</td><td class="n">約78</td><td class="n">約100</td></tr>
+  </table>
+  <p class="note">1セット（10問中8問正解）で フード小8個＋中1個 ＝ 1,000。最初はすぐ上がり、後半ほど上がりにくい。プレーヤーレベルも同じ形の上がり方にする。</p>
+
+  <h2>3. ステージ（相手は動物。1ステージ5戦・5戦目がボス）</h2>
+  <table>
+    <tr><th>ステージ</th><th>場所</th><th>出てくる動物</th><th>ボス</th><th>ボスのHP</th><th>勝てる目安</th></tr>
+    <tr><td>1</td><td>町はずれ</td><td>🐭ネズミ・🐦スズメ</td><td>🐦‍⬛カラス</td><td class="n">1,500</td><td>N の Lv1 でOK</td></tr>
+    <tr><td>2</td><td>はらっぱ</td><td>🐰ウサギ・🐸カエル</td><td>🦝タヌキ</td><td class="n">4,000</td><td>Lv10 くらい</td></tr>
+    <tr><td>3</td><td>森</td><td>🦊キツネ・🦝アライグマ</td><td>🐗イノシシ</td><td class="n">9,000</td><td>Lv20 くらい</td></tr>
+    <tr><td>4</td><td>山</td><td>🐒サル・🐍ヘビ</td><td>🐺オオカミ</td><td class="n">16,000</td><td>Lv30 くらい</td></tr>
+    <tr><td>5</td><td>川</td><td>🦦カワウソ・🐢カメ</td><td>🐊ワニ</td><td class="n">25,000</td><td>Lv40・R まじり</td></tr>
+    <tr><td>6</td><td>海</td><td>🐧ペンギン・🦭アザラシ</td><td>🦈サメ</td><td class="n">38,000</td><td>Lv50 くらい</td></tr>
+    <tr><td>7</td><td>さばく</td><td>🦂サソリ・🐪ラクダ</td><td>🐍コブラ</td><td class="n">55,000</td><td>Lv60 くらい</td></tr>
+    <tr><td>8</td><td>ジャングル</td><td>🦍ゴリラ・🐆ヒョウ</td><td>🐅トラ</td><td class="n">90,000</td><td>Lv80・小判1〜2（約3か月）</td></tr>
+    <tr><td>9</td><td>雪山</td><td>🐺オオカミの群れ・🦌ヘラジカ</td><td>🐻‍❄️シロクマ</td><td class="n">140,000</td><td>Lv99・小判3（約半年）</td></tr>
+    <tr><td>10</td><td>サバンナの王座</td><td>🐘ゾウ・🦏サイ</td><td>🦁ライオン王</td><td class="n">200,000</td><td>Lv99・神ネコ中心（約1年）</td></tr>
+  </table>
+  <p class="note">相手は「あと○ターン」で攻撃。ボスは攻撃が強いので、かいふく型とたいりょく型がいないと押し切られる。数字はたたき台で、作ったあとに何度も試して調整する。</p>
+
+  <h2>4. とくせい（R・SR。リーダーのときだけ効く）の例</h2>
+  <ul>
+    <li>5問全部正解したターン、こうげき 2倍（SR）</li>
+    <li>チームの体力 1.5倍（SR）</li>
+    <li>3問以上正解したターン、こうげき 1.5倍（R）</li>
+    <li>1問目と5問目のネコのこうげき 2倍（R）</li>
+    <li>かいふく 1.5倍（R）</li>
+  </ul>
+</div>
+
+<script src="../js/storage.js"></script>
+<script src="../js/catart.js"></script>
+<script src="../js/cats.js"></script>
+<script src="../js/limited.js"></script>
+<script src="../js/gacha.js"></script>
+<script>
+  const byId = id => allCats().find(c => c.id === id);
+  function icon(id, { lv = 1, kb = 0, small = false, crown = false, cls = '' } = {}) {
+    const c = byId(id);
+    const r = c.limited ? 'lim' : c.rarity.toLowerCase();
+    const kami = lv >= 99 && kb >= 5;
+    const badge = kami ? '<span class="kami">神</span>' : kb ? `<span class="kb"><i></i>${kb}</span>` : '';
+    return `<div class="ic ${r} ${small ? 'small' : ''} ${cls}">${buildCatSVG(c)}${badge}<span class="lv">Lv${lv}</span>${crown ? '<span class="leader-crown">👑</span>' : ''}</div>`;
+  }
+  // パーティ：左から5・4・3・2・1問目。右はしがリーダー
+  const party = [[39, 23, 0], [25, 31, 1], [13, 18, 0], [5, 42, 2], [1, 35, 0]];
+  document.getElementById('party').innerHTML = party.map(([id, lv, kb], i) =>
+    `<div class="slot">${icon(id, { lv, kb, small: true, crown: i === 4 })}<span class="party-num">${5 - i}問目</span></div>`).join('');
+  const box = [[101, 99, 5], [5, 42, 2], [1, 35, 0], [25, 31, 1], [39, 23, 0], [13, 18, 0], [5, 3, 0], [37, 12, 0], [25, 1, 0], [39, 7, 0], [37, 1, 0], [25, 5, 0]];
+  const inParty = new Set([1, 2, 3, 4, 5]);
+  document.getElementById('box').innerHTML = box.map(([id, lv, kb], i) =>
+    `<div style="position:relative" class="${inParty.has(i) ? 'in-party' : ''}">${icon(id, { lv, kb })}</div>`).join('');
+  document.getElementById('detail-icon').innerHTML = icon(5, { lv: 42, kb: 2 });
+  // 対戦：3問目に答えているところ（1問目○、2問目×）
+  const dots = ['', 'now', 'ng', 'ok'];
+  document.getElementById('team').innerHTML = party.map(([id, lv, kb], i) => {
+    const q = 5 - i;
+    const st = q === 1 ? 'ok' : q === 2 ? 'ng' : q === 3 ? 'now' : '';
+    return `<div class="slot">${icon(id, { lv, kb, small: true, crown: i === 4, cls: st === 'now' ? 'turn' : '' })}<span class="dot ${st}">${st === 'ok' ? '○' : st === 'ng' ? '×' : q}</span></div>`;
+  }).join('');
+</script>
+</body>
+</html>

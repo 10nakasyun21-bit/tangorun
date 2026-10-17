@@ -127,6 +127,7 @@ function showHome() {
   $('idiom-total').textContent = state.idioms.length;
   renderStoryCard();
   renderChallengeCard();
+  renderBattleCard();
   renderMissions();
   renderCoins();
   renderPartner();
@@ -153,7 +154,7 @@ function storyProgress() {
 function renderStoryCard() {
   if (!state.chapters.length) return;
   const p = storyProgress();
-  $('story-chapter').textContent = `文章 第${p.chapter.id}章 ${p.done}/${p.total}文`;
+  $('story-chapter').textContent = `第${p.chapter.id}章 ${p.done}/${p.total}文`;
 }
 
 function renderChallengeCard() {
@@ -753,11 +754,29 @@ function showResult() {
   }
   renderGrowth(mode);
   const newMissions = renderNewMissions();
-  // コイン：正解1問ごと＋セットを終えたボーナス＋新しく達成したミッション
-  const earned = (mode === 'challenge' ? COIN_PER_CHALLENGE : state.correctCount * COIN_PER_CORRECT + COIN_PER_SET)
-    + newMissions * COIN_PER_MISSION;
-  addCoins(state.record, earned);
-  $('r-coins').textContent = `+${earned}`;
+  const missionCoins = newMissions * COIN_PER_MISSION;
+  const label = $('r-stat3-label');
+  if (mode === 'idioms' || mode === 'sentences') {
+    // 熟語・ストーリー：経験値フード（正解1問で小1個、1セット終えると中1個）。ミッションのコインは別にもらえる
+    const s = state.correctCount * FOOD_PER_CORRECT;
+    const m = FOOD_PER_SET;
+    addFood(state.record, s, m);
+    if (missionCoins) addCoins(state.record, missionCoins);
+    label.textContent = '🍖 フード';
+    $('r-coins').textContent = `小+${s} 中+${m}`;
+    if (missionCoins) {
+      const g = $('r-growth');
+      g.textContent = (g.textContent ? g.textContent + '　' : '') + `🪙 ミッション +${missionCoins}コイン`;
+      g.hidden = false;
+    }
+  } else {
+    // 単語・1分チャレンジ：コイン（正解1問ごと＋セットを終えたボーナス＋新しく達成したミッション）
+    const earned = (mode === 'challenge' ? COIN_PER_CHALLENGE : state.correctCount * COIN_PER_CORRECT + COIN_PER_SET) + missionCoins;
+    addCoins(state.record, earned);
+    label.innerHTML = '<span class="coin coin-small" aria-hidden="true"></span>コイン';
+    $('r-coins').textContent = `+${earned}`;
+  }
+  $('r-coins').classList.toggle('is-food', mode === 'idioms' || mode === 'sentences');
   showScreen('result');
   pushToCloud();
 }
@@ -1037,6 +1056,175 @@ function openCardDialog(cat) {
 function closeCardDialog() {
   $('card-dialog').hidden = true;
   if ($('screen-zukan').classList.contains('is-active')) showZukan();
+}
+
+// ---------- ネコ（もちもの・パーティ・育成） ----------
+
+let catSort = 'level';   // 'level' | 'rarity' | 'id'
+let pickSlot = -1;       // パーティの入れかえで選んでいる場所（-1 = 選んでいない）
+let detailUid = null;    // 詳細を開いているネコ
+
+const RARITY_ORDER = { SR: 0, R: 1, N: 2 };
+
+function renderFoodPills() {
+  const f = state.record.food;
+  for (const p of ['cats', 'cd']) {
+    $(`${p}-food-s`).textContent = f.s;
+    $(`${p}-food-m`).textContent = f.m;
+  }
+}
+
+let catsReturnTo = 'home'; // ネコ画面の「もどる」の行き先（対戦のステージ一覧から来たときは 'stages'）
+
+function showCats(from) {
+  if (from === 'home' || from === 'stages') catsReturnTo = from;
+  ensureCollection(state.record);
+  pickSlot = -1;
+  renderCats();
+  showScreen('cats');
+}
+
+function renderCats() {
+  const record = state.record;
+  renderFoodPills();
+  // パーティ：左から5問目…1問目（右はしがリーダー）
+  const row = $('party-row');
+  row.innerHTML = '';
+  const party = partyInstances(record);
+  for (let slot = PARTY_SIZE - 1; slot >= 0; slot--) {
+    const inst = party[slot];
+    const b = document.createElement('button');
+    b.className = 'party-slot' + (pickSlot === slot ? ' is-picking' : '');
+    b.innerHTML = (inst ? catIconHTML(inst, { small: true, extra: slot === 0 ? '<span class="ci-crown">👑</span>' : '' }) : '<span class="party-empty">＋</span>')
+      + `<span class="party-num">${slot + 1}問目</span>`;
+    b.addEventListener('click', () => {
+      pickSlot = pickSlot === slot ? -1 : slot;
+      renderCats();
+    });
+    row.append(b);
+  }
+  $('party-hint').textContent = pickSlot >= 0 ? `${pickSlot + 1}問目に入れるネコをタップ` : '右はしがリーダー👑';
+  $('party-hint').classList.toggle('is-picking', pickSlot >= 0);
+
+  document.querySelectorAll('.cat-sort').forEach(b => b.classList.toggle('is-active', b.dataset.sort === catSort));
+  const cats = record.cats.slice().sort((a, b) => {
+    const ca = findCat(a.id), cb = findCat(b.id);
+    if (catSort === 'rarity') return (RARITY_ORDER[ca.rarity] - RARITY_ORDER[cb.rarity]) || (b.exp - a.exp) || (a.id - b.id);
+    if (catSort === 'id') return (a.id - b.id) || (b.exp - a.exp);
+    return (b.exp - a.exp) || (b.koban - a.koban) || (RARITY_ORDER[ca.rarity] - RARITY_ORDER[cb.rarity]) || (a.id - b.id);
+  });
+  const box = $('cat-box');
+  box.innerHTML = '';
+  for (const inst of cats) {
+    const b = document.createElement('button');
+    const inParty = record.party.includes(inst.uid);
+    b.className = 'cat-cell' + (inParty ? ' in-party' : '');
+    b.setAttribute('aria-label', findCat(inst.id).name);
+    b.innerHTML = catIconHTML(inst);
+    b.addEventListener('click', () => {
+      if (pickSlot >= 0) {
+        setPartySlot(record, pickSlot, inst.uid);
+        pickSlot = -1;
+        renderCats();
+      } else {
+        showCatDetail(inst.uid);
+      }
+    });
+    box.append(b);
+  }
+  $('cat-box-empty').hidden = cats.length > 0;
+}
+
+function showCatDetail(uid) {
+  detailUid = uid;
+  renderCatDetail();
+  showScreen('catdetail');
+}
+
+function renderCatDetail(levelUp = false) {
+  const record = state.record;
+  const inst = findInstance(record, detailUid);
+  if (!inst) { showCats(); return; }
+  const cat = findCat(inst.id);
+  renderFoodPills();
+  const st = catStats(inst);
+  const lv = levelFromExp(inst.exp);
+  $('cd-icon').innerHTML = catIconHTML(inst);
+  $('cd-name').textContent = cat.name;
+  $('cd-level').textContent = lv.level;
+  const lvEl = $('cd-level');
+  if (levelUp) { lvEl.classList.remove('pop'); void lvEl.offsetWidth; lvEl.classList.add('pop'); }
+  const max = lv.level >= MAX_CAT_LEVEL;
+  $('cd-xp-fill').style.width = max ? '100%' : `${(lv.into / lv.need) * 100}%`;
+  const left = lv.need - lv.into;
+  $('cd-xp-note').textContent = max ? 'レベルMAX！' : `次のLvまで あと${left}（小${Math.ceil(left / FOOD_EXP.s)}個ぶん）`;
+  $('cd-kobans').innerHTML = Array.from({ length: MAX_KOBAN }, (_, i) => `<i class="${i < inst.koban ? 'on' : ''}"></i>`).join('');
+  for (const k of ['hp', 'atk', 'rcv']) {
+    $(`cd-${k}`).textContent = st[k].toLocaleString();
+    $(`cd-${k}-bar`).style.width = Math.min(st[k] / STAT_MAX[k], 1) * 100 + '%';
+  }
+  const skill = CAT_SKILLS[inst.id];
+  $('cd-skill').hidden = !skill;
+  if (skill) $('cd-skill').innerHTML = `<b>とくせい（リーダーのとき）</b><br>${escapeHtml(skillText(skill))}`;
+
+  const f = record.food;
+  $('feed-s-note').textContent = `あと${f.s}個（+${FOOD_EXP.s}）`;
+  $('feed-m-note').textContent = `あと${f.m}個（+${FOOD_EXP.m}）`;
+  $('btn-feed-s').disabled = max || f.s <= 0;
+  $('btn-feed-m').disabled = max || f.m <= 0;
+  $('btn-feed-next').disabled = max || (f.s <= 0 && f.m <= 0);
+  $('cd-food-hint').textContent = f.s + f.m === 0 ? 'フードは熟語とストーリーを解くともらえるよ' : '';
+
+  const mats = mergeMaterials(record, inst.uid);
+  $('btn-merge').disabled = inst.koban >= MAX_KOBAN || mats.length === 0;
+  $('merge-note').textContent = inst.koban >= MAX_KOBAN ? '小判MAX' : mats.length ? `同じネコが${mats.length}匹いる` : '同じネコがいない';
+  const inParty = record.party.includes(inst.uid);
+  $('btn-party-toggle').textContent = inParty ? 'パーティから外す' : 'パーティに入れる';
+  const isPartner = record.partner === inst.id;
+  $('btn-partner').textContent = isPartner ? '相棒です' : '相棒にする';
+  $('btn-partner').disabled = isPartner;
+}
+
+function feedDetail(size) {
+  const r = size === 'next' ? feedToNextLevel(state.record, detailUid) : feedCat(state.record, detailUid, size);
+  if (r > 0 && state.record.settings.sound) playCorrect();
+  renderCatDetail(r > 0);
+}
+
+function openMergeDialog() {
+  const inst = findInstance(state.record, detailUid);
+  const mat = mergeMaterials(state.record, detailUid)[0];
+  if (!inst || !mat) return;
+  const back = Math.floor(mat.exp / 2);
+  const m = Math.floor(back / FOOD_EXP.m), s = Math.floor((back % FOOD_EXP.m) / FOOD_EXP.s);
+  $('merge-preview').innerHTML = `${catIconHTML(mat)}<span class="merge-arrow">→</span>${catIconHTML(inst)}`;
+  $('merge-text').textContent = `Lv${levelFromExp(mat.exp).level}の${findCat(mat.id).name}を素材にします。素材のネコはいなくなり、小判が1つ増えます。`
+    + (s + m ? `素材に使っていたフード（小${s}・中${m}）が戻ります。` : '');
+  $('merge-dialog').hidden = false;
+}
+
+function confirmMerge() {
+  const mat = mergeMaterials(state.record, detailUid)[0];
+  $('merge-dialog').hidden = true;
+  if (!mat) return;
+  if (mergeCats(state.record, detailUid, mat.uid) && state.record.settings.sound) playCorrect();
+  renderCatDetail(true);
+}
+
+function togglePartyFromDetail() {
+  const record = state.record;
+  if (record.party.includes(detailUid)) {
+    removeFromParty(record, detailUid);
+  } else {
+    const party = partyInstances(record);
+    const empty = party.findIndex(p => !p);
+    if (empty < 0) {
+      $('cd-food-hint').textContent = 'パーティがいっぱいです。ネコ画面でパーティの場所をタップして入れかえてね';
+      return;
+    }
+    setPartySlot(record, empty, detailUid);
+  }
+  renderCatDetail();
 }
 
 // ---------- 単語一覧 ----------
@@ -1409,6 +1597,7 @@ async function pushToCloud({ allDates = false } = {}) {
       await cloudPushRecord(state.user.uid, state.record, [...new Set(dates)]);
       state.dirtyDates.clear();
       state.lastPushAt = Date.now();
+      await cloudPushRanking(state.user.uid, state.record); // 変わったときだけ送る
     } catch (e) {
       // 電波がない・無料枠の上限など。次のセットのときにまた送る
     } finally {
@@ -1535,6 +1724,23 @@ async function init() {
   $('btn-gacha-close').addEventListener('click', () => { closeGachaOverlay(); renderGachaButton(); });
   $('btn-gacha-to-zukan').addEventListener('click', () => { closeGachaOverlay(); showZukan(); });
   $('btn-zukan').addEventListener('click', showZukan);
+  $('btn-cats').addEventListener('click', () => showCats('home'));
+  $('btn-cats-back').addEventListener('click', () => { pushToCloud(); catsReturnTo === 'stages' ? showStages() : showHome(); });
+  initBattleUI();
+  $('btn-catdetail-back').addEventListener('click', showCats);
+  document.querySelectorAll('.cat-sort').forEach(b => b.addEventListener('click', () => { catSort = b.dataset.sort; renderCats(); }));
+  $('btn-feed-s').addEventListener('click', () => feedDetail('s'));
+  $('btn-feed-m').addEventListener('click', () => feedDetail('m'));
+  $('btn-feed-next').addEventListener('click', () => feedDetail('next'));
+  $('btn-merge').addEventListener('click', openMergeDialog);
+  $('btn-merge-cancel').addEventListener('click', () => { $('merge-dialog').hidden = true; });
+  $('btn-merge-ok').addEventListener('click', confirmMerge);
+  $('merge-dialog').addEventListener('click', e => { if (e.target === e.currentTarget) $('merge-dialog').hidden = true; });
+  $('btn-party-toggle').addEventListener('click', togglePartyFromDetail);
+  $('btn-partner').addEventListener('click', () => {
+    const inst = findInstance(state.record, detailUid);
+    if (inst) { setPartner(state.record, inst.id); renderCatDetail(); }
+  });
   $('partner-box').addEventListener('click', showZukan);
   $('btn-zukan-back').addEventListener('click', showHome);
   $('btn-card-close').addEventListener('click', closeCardDialog);

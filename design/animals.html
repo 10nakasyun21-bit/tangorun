@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>対戦の動物</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+  body { padding: 28px; background: #efe6d8; }
+  h1 { text-align: center; margin: 0 0 20px; font-size: 24px; }
+  .stages { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; max-width: 1240px; margin: 0 auto; }
+  .stage { background: #fff; border-radius: 18px; padding: 12px; }
+  .stage h2 { margin: 0 0 8px; font-size: 15px; }
+  .row { display: flex; gap: 6px; align-items: flex-end; justify-content: space-between; }
+  .a { text-align: center; font-size: 12px; font-weight: bold; }
+  .a .pic { width: 64px; height: 64px; border-radius: 12px; }
+  .a.boss .pic { width: 92px; height: 92px; }
+  .a.boss span { color: #c0394b; }
+  .pic svg { width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+<h1>対戦の相手（動物）　ステージごとのザコ2種とボス</h1>
+<div id="stages" class="stages"></div>
+<script src="../js/animalart.js"></script>
+<script>
+  const STAGES_PREVIEW = [
+    ['1 町はずれ', 'linear-gradient(#e6f3ff,#cfe6c4)', ['mouse', 'ネズミ'], ['sparrow', 'スズメ'], ['crow', 'カラス']],
+    ['2 はらっぱ', 'linear-gradient(#e0f4ff,#b9e39c)', ['rabbit', 'ウサギ'], ['frog', 'カエル'], ['tanuki', 'タヌキ']],
+    ['3 森', 'linear-gradient(#d6efd0,#7fbf72)', ['fox', 'キツネ'], ['raccoon', 'アライグマ'], ['boar', 'イノシシ']],
+    ['4 山', 'linear-gradient(#e2e8f0,#a7b59a)', ['monkey', 'サル'], ['snake', 'ヘビ'], ['wolf', 'オオカミ']],
+    ['5 川', 'linear-gradient(#dff2ff,#8fc8e8)', ['otter', 'カワウソ'], ['turtle', 'カメ'], ['crocodile', 'ワニ']],
+    ['6 海', 'linear-gradient(#c8ecff,#5aa8e0)', ['penguin', 'ペンギン'], ['seal', 'アザラシ'], ['shark', 'サメ']],
+    ['7 さばく', 'linear-gradient(#fff1cf,#f0c27a)', ['scorpion', 'サソリ'], ['camel', 'ラクダ'], ['cobra', 'コブラ']],
+    ['8 ジャングル', 'linear-gradient(#cfeccf,#3f9a5a)', ['gorilla', 'ゴリラ'], ['leopard', 'ヒョウ'], ['tiger', 'トラ']],
+    ['9 雪山', 'linear-gradient(#f2f8ff,#b9d4f0)', ['snowwolf', 'ギンロウ'], ['moose', 'ヘラジカ'], ['polarbear', 'シロクマ']],
+    ['10 サバンナの王座', 'linear-gradient(#ffe9b0,#e0a04a)', ['elephant', 'ゾウ'], ['rhino', 'サイ'], ['lion', 'ライオン王']],
+  ];
+  document.getElementById('stages').innerHTML = STAGES_PREVIEW.map(([name, bg, a, b, boss]) =>
+    `<div class="stage"><h2>${name}</h2><div class="row">`
+    + [a, b].map(([k, n]) => `<div class="a"><div class="pic" style="background:${bg}">${buildAnimalSVG(k)}</div><span>${n}</span></div>`).join('')
+    + `<div class="a boss"><div class="pic" style="background:${bg}">${buildAnimalSVG(boss[0])}</div><span>ボス ${boss[1]}</span></div>`
+    + `</div></div>`).join('');
+</script>
+</body>
+</html>
