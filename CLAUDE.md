@@ -116,7 +116,10 @@
 - ファイル：`data/idioms.json`（単語とは別。学習記録も record.idioms に分けて保存し、単語の記録には触れない）
 - 項目：id, idiom, meaning, type, example, example_ja, blank, blank_choices, rank
 - type は5種類：動詞の熟語／be動詞の熟語／前置詞の熟語／接続詞のような熟語／会話表現。どの種類も4個以上入れる
-- 公立高校入試・中学教科書の頻出熟語。偏差値50前後の生徒向けで、難しすぎるものは入れない。まず30個、最終的に150個程度
+- 572個（2026-10-18）。rank A＝中学・高校入試の熟語（377個・やさしいものも漏れなく）、B＝高校の熟語（137個）、C＝TOEIC・ビジネスの熟語（58個）。A から順に出るので、中学生がいきなり難しい熟語に当たらない
+- 4択のまちがいの選択肢は、同じ type で、同じかやさしい rank の熟語から選ぶ（js/quiz.js の makeIdiomChoices）
+- データの元は tools/src/idiom-base.json（最初の30個・id 1〜30 は学習記録とつながっているので変えない）と tools/src/idiom*.tsv。tools/build-idioms.ps1 で data/idioms.json を作る（blank が例文にちょうど1回あるか、選択肢が3つかをチェックする）。新しい熟語は TSV の最後に足す（途中に入れると id がずれる）
+- 単語・熟語一覧の熟語は rank（中学・高校・TOEIC）ごとにまとめて出す
 - 書き方は A・B と「～」（not only A but also B、How about ～?）
 - 例文と訳はオリジナル。市販の単語帳・熟語帳の例文や並び順は写さない。中学で習う単語と文法だけで作る
 - blank は例文の中にちょうど1回出てくる1語。blank_choices は間違えやすい語を3つ手で選ぶ（入れても文が正しくなる語は入れない：different to・in back of・for instance など）

@@ -1231,7 +1231,7 @@ function togglePartyFromDetail() {
 
 // 単語と熟語で同じ画面を使う。上の「単語・熟語」で切り替える
 const RANK_LABEL = { A: 'A　最頻出', B: 'B　頻出', C: 'C　標準' };
-const IDIOM_TYPES = ['動詞の熟語', 'be動詞の熟語', '前置詞の熟語', '接続詞のような熟語', '会話表現'];
+const IDIOM_RANK_LABEL = { A: '中学の熟語', B: '高校の熟語', C: 'TOEIC・ビジネスの熟語' };
 let wordListFilter = 'all';
 let wordListKind = 'words'; // 'words' | 'idioms'
 
@@ -1242,7 +1242,8 @@ function listConfig() {
       items: state.idioms, recs: state.record.idioms, unit: '個', title: '熟語一覧',
       text: it => it.idiom, sub: it => it.meaning, speakText: it => idiomSpeakText(it),
       // 熟語は種類ごとにまとめる
-      groups: IDIOM_TYPES.map(t => ({ label: t, match: it => it.type === t })),
+      // 熟語はレベル（中学→高校→TOEIC など）ごとにまとめる
+      groups: Object.entries(IDIOM_RANK_LABEL).map(([r, label]) => ({ label, match: it => it.rank === r })),
     };
   }
   return {

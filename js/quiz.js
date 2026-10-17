@@ -134,7 +134,7 @@ function buildWeakSet(kind, items, record) {
     if (kind === 'idioms') {
       return {
         idiom: item, level, practice: false, isNew: false,
-        choices: level < 3 ? makeChoices(item, items, IDIOM_KEYS) : null,
+        choices: level < 3 ? makeIdiomChoices(item, items) : null,
         blankChoices: level === 3 ? shuffle([item.blank, ...item.blank_choices]) : null,
       };
     }
@@ -143,6 +143,13 @@ function buildWeakSet(kind, items, record) {
 }
 
 // ---------- 熟語 ----------
+// rank A＝中学、B＝高校、C＝TOEIC など（A から順に出る）
+
+// 熟語の4択：まちがいの選択肢は同じ種類で、同じかやさしい rank の熟語から選ぶ（中学の問題に TOEIC の熟語を混ぜない）
+function makeIdiomChoices(idiom, idioms) {
+  const pool = idioms.filter(it => RANK_ORDER[it.rank] <= RANK_ORDER[idiom.rank]);
+  return makeChoices(idiom, pool, IDIOM_KEYS);
+}
 
 // 熟語の1セット（10問）。単語と同じ選び方（復習 → 新しい熟語は最大5個・rank A から → 練習）
 // レベル1・2は4択（意味 / 熟語）、レベル3は例文の穴うめ4択
@@ -156,7 +163,7 @@ function buildIdiomSet(idioms, record) {
       level,
       practice,
       isNew: !r,
-      choices: level < 3 ? makeChoices(idiom, idioms, IDIOM_KEYS) : null,
+      choices: level < 3 ? makeIdiomChoices(idiom, idioms) : null,
       blankChoices: level === 3 ? shuffle([idiom.blank, ...idiom.blank_choices]) : null,
     };
   });
