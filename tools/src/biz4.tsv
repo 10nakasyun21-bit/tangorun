@@ -1,0 +1,57 @@
+cost of goods sold	売上原価	名詞	Cost of goods sold rose with higher material prices.	材料価格の上昇で売上原価が増えた。	B
+gross profit	売上総利益	名詞	Gross profit equals sales minus cost of goods sold.	売上総利益は売上高から売上原価を引いたものである。	B
+operating income	営業利益	名詞	Operating income excludes interest and taxes.	営業利益には利息と税金が含まれない。	B
+net income	当期純利益	名詞	Net income increased by eight percent.	当期純利益は8パーセント増加した。	B
+comprehensive income	包括利益	名詞	Unrealized gains may be reported in other comprehensive income.	未実現利益はその他の包括利益に報告されることがある。	B
+unrealized	未実現の	形容詞	The company reported an unrealized loss on investments.	その会社は投資の未実現損失を報告した。	B
+realized	実現した	形容詞	A realized gain occurs when the asset is sold.	実現利益は資産を売却したときに生じる。	B
+accrual basis	発生主義	名詞	Most companies use the accrual basis of accounting.	ほとんどの会社は発生主義会計を採用している。	B
+cash basis	現金主義	名詞	Small businesses may use the cash basis.	小規模な事業は現金主義を使うことがある。	B
+FIFO	先入先出法	名詞	Under FIFO, the oldest inventory is sold first.	先入先出法では最も古い在庫が先に売られる。	B
+LIFO	後入先出法	名詞	LIFO is not allowed under IFRS.	後入先出法はIFRSでは認められていない。	B
+weighted average	加重平均	名詞	The weighted average method smooths out price changes.	加重平均法は価格変動をならす。	B
+job costing	個別原価計算	名詞	Job costing is used for custom products.	個別原価計算は特注品に使われる。	B
+process costing	総合原価計算	名詞	Process costing suits mass production.	総合原価計算は大量生産に向いている。	B
+activity-based costing	活動基準原価計算	名詞	Activity-based costing assigns overhead by activity.	活動基準原価計算は活動ごとに間接費を割り当てる。	B
+direct labor	直接労務費	名詞	Direct labor is part of product cost.	直接労務費は製品原価の一部である。	B
+direct materials	直接材料費	名詞	Direct materials are traced to each product.	直接材料費は各製品に直接跡づけられる。	B
+absorption costing	全部原価計算	名詞	Absorption costing includes fixed overhead in inventory.	全部原価計算では固定製造間接費を棚卸資産に含める。	B
+variable costing	直接原価計算	名詞	Variable costing treats fixed overhead as a period cost.	直接原価計算は固定製造間接費を期間費用として扱う。	B
+transfer price	振替価格	名詞	Divisions trade goods at a transfer price.	事業部間では振替価格で商品を取引する。	B
+payback period	回収期間	名詞	The payback period for the machine is three years.	その機械の回収期間は3年である。	B
+internal rate of return	内部収益率	名詞	The internal rate of return exceeds the hurdle rate.	内部収益率はハードル・レートを上回っている。	B
+hurdle rate	ハードル・レート（最低要求収益率）	名詞	The hurdle rate for new projects is 12 percent.	新規プロジェクトの最低要求収益率は12パーセントである。	B
+sunk cost	埋没費用	名詞	Ignore sunk costs when making decisions.	意思決定では埋没費用を無視しなさい。	B
+opportunity cost	機会費用	名詞	The opportunity cost is the value of the next best choice.	機会費用は次善の選択肢の価値である。	B
+balanced scorecard	バランスト・スコアカード	名詞	The balanced scorecard includes non-financial measures.	バランスト・スコアカードには非財務指標が含まれる。	B
+key performance indicator	重要業績評価指標	名詞	Customer retention is a key performance indicator.	顧客維持率は重要業績評価指標の1つである。	B
+enterprise risk management	全社的リスク管理	名詞	Enterprise risk management covers all types of risk.	全社的リスク管理はあらゆる種類のリスクを対象とする。	B
+cybersecurity	サイバーセキュリティ	名詞	Cybersecurity risk is a major concern for auditors.	サイバーセキュリティのリスクは監査人の大きな関心事だ。	B
+encryption	暗号化	名詞	Encryption protects sensitive data.	暗号化は機密データを守る。	B
+authentication	認証	名詞	Two-factor authentication improves security.	二要素認証はセキュリティを高める。	B
+backup	バックアップ	名詞	Daily backups reduce the risk of data loss.	毎日のバックアップはデータ消失のリスクを減らす。	B
+outsourcing	外部委託	名詞	Outsourcing payroll can reduce costs.	給与計算の外部委託はコストを下げ得る。	B
+agent	代理人	名詞	An agent can bind the principal to a contract.	代理人は本人を契約に拘束することができる。	B
+consideration	約因、対価	名詞	A valid contract requires consideration.	有効な契約には約因が必要である。	B
+breach	違反	名詞	The supplier was sued for breach of contract.	その業者は契約違反で訴えられた。	B
+damages	損害賠償金	名詞	The court awarded damages to the buyer.	裁判所は買主に損害賠償を認めた。	B
+negligence	過失	名詞	The auditor was sued for negligence.	監査人は過失で訴えられた。	C
+liable	責任がある	形容詞	Partners are personally liable for partnership debts.	パートナーはパートナーシップの債務に個人的な責任を負う。	C
+creditor	債権者	名詞	Secured creditors are paid first.	担保付債権者が最初に支払いを受ける。	C
+debtor	債務者	名詞	The debtor failed to make payments.	債務者は支払いをしなかった。	C
+guarantor	保証人	名詞	The guarantor must pay if the borrower defaults.	借り手が債務不履行になれば保証人が支払わなければならない。	C
+security interest	担保権	名詞	The bank holds a security interest in the equipment.	銀行はその設備に担保権をもっている。	C
+negotiable instrument	流通証券	名詞	A check is a negotiable instrument.	小切手は流通証券である。	C
+sole proprietorship	個人事業	名詞	A sole proprietorship has one owner.	個人事業の所有者は1人である。	C
+limited liability	有限責任	名詞	Shareholders have limited liability.	株主は有限責任である。	C
+nonprofit	非営利の	形容詞	Nonprofit organizations follow special reporting rules.	非営利組織は特別な報告ルールに従う。	C
+fund accounting	基金会計	名詞	Governments use fund accounting.	政府は基金会計を使う。	C
+appropriation	歳出予算	名詞	The city council approved the appropriation.	市議会は歳出予算を承認した。	C
+encumbrance	予算拘束額	名詞	An encumbrance is recorded when a purchase order is issued.	発注書を発行すると予算拘束額が計上される。	C
+fiduciary fund	受託基金	名詞	Pension trust funds are fiduciary funds.	年金信託基金は受託基金である。	C
+sustainability	持続可能性	名詞	Investors want more sustainability reporting.	投資家はサステナビリティ報告の充実を求めている。	C
+ESG	環境・社会・ガバナンス	名詞	ESG factors are part of the investment process.	ESG要因は投資プロセスの一部である。	C
+active management	アクティブ運用	名詞	Active management tries to beat the market.	アクティブ運用は市場を上回ろうとする。	C
+passive management	パッシブ運用	名詞	Passive management tracks an index.	パッシブ運用は指数に連動させる。	C
+behavioral finance	行動ファイナンス	名詞	Behavioral finance studies investor biases.	行動ファイナンスは投資家の偏りを研究する。	C
+efficient market	効率的市場	名詞	In an efficient market, prices reflect all information.	効率的市場では価格がすべての情報を反映する。	C

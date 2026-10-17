@@ -88,6 +88,11 @@ function buildSummary(record) {
     catsOwned: Object.values(record.collection || {}).filter(n => n > 0).length,
     coins: record.coins || 0,
     mastered: words.filter(w => w.mastered).length,
+    // 中学以外の単語の種類（管理者ページの詳細に出す）
+    wordSet: wordSetOf(record),
+    masteredHigh: countMastered(record, 'wordsHigh'),
+    masteredToeic: countMastered(record, 'wordsToeic'),
+    masteredBiz: countMastered(record, 'wordsBiz'),
     studiedWords: words.length,
     totalCorrect: words.reduce((n, w) => n + w.correct, 0),
     totalWrong: words.reduce((n, w) => n + w.wrong, 0),

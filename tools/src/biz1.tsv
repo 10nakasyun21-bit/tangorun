@@ -1,0 +1,95 @@
+asset	資産	名詞	Cash and inventory are current assets.	現金と棚卸資産は流動資産である。	A
+liability	負債	名詞	Accounts payable is a current liability.	買掛金は流動負債である。	A
+equity	純資産、株主資本	名詞	Total assets equal liabilities plus equity.	総資産は負債と純資産の合計に等しい。	A
+revenue	収益	名詞	Revenue is recognized when control transfers to the customer.	収益は支配が顧客に移転した時点で認識される。	A
+expense	費用	名詞	Rent expense is recorded monthly.	支払家賃は毎月計上される。	A
+accrual	発生主義、未払・未収計上	名詞	Under accrual accounting, revenue is recorded when earned.	発生主義会計では、収益は稼得時に計上される。	A
+deferral	繰延べ	名詞	Prepaid insurance is an example of a deferral.	前払保険料は繰延べの一例である。	A
+depreciation	減価償却	名詞	Depreciation spreads the cost of an asset over its useful life.	減価償却は資産の取得原価を耐用年数にわたって配分する。	A
+amortization	償却（無形資産など）	名詞	Patents are subject to amortization.	特許権は償却の対象となる。	A
+impairment	減損	名詞	The company recognized an impairment loss on goodwill.	その会社はのれんの減損損失を認識した。	A
+goodwill	のれん	名詞	Goodwill arises when a company pays more than fair value in an acquisition.	のれんは買収で公正価値を超える対価を支払ったときに生じる。	A
+inventory	棚卸資産	名詞	Inventory is reported at the lower of cost and net realizable value.	棚卸資産は原価と正味実現可能価額の低い方で報告される。	A
+receivable	売掛金、債権	名詞	Accounts receivable increased by ten percent.	売掛金が10パーセント増加した。	A
+payable	買掛金、債務	名詞	The company paid its accounts payable on time.	その会社は買掛金を期日どおりに支払った。	A
+ledger	元帳	名詞	All transactions are posted to the general ledger.	すべての取引は総勘定元帳に転記される。	A
+journal entry	仕訳	名詞	Prepare the journal entry for the sale.	その売上の仕訳を作成しなさい。	A
+debit	借方	名詞	Every debit must have an equal credit.	すべての借方には同額の貸方が必要である。	A
+credit	貸方、信用	名詞	Revenue accounts increase with a credit.	収益勘定は貸方で増加する。	A
+balance sheet	貸借対照表	名詞	The balance sheet shows the financial position at a point in time.	貸借対照表は一時点の財政状態を示す。	A
+income statement	損益計算書	名詞	Net income is reported on the income statement.	当期純利益は損益計算書に報告される。	A
+cash flow	キャッシュ・フロー	名詞	The statement of cash flows has three sections.	キャッシュ・フロー計算書には3つの区分がある。	A
+retained earnings	利益剰余金	名詞	Dividends reduce retained earnings.	配当は利益剰余金を減少させる。	A
+dividend	配当	名詞	The board declared a cash dividend.	取締役会は現金配当を宣言した。	A
+share	株式	名詞	The company issued one million new shares.	その会社は100万株の新株を発行した。	A
+stock	株式	名詞	Common stock gives voting rights.	普通株式は議決権を与える。	A
+bond	債券、社債	名詞	The bond pays interest twice a year.	その債券は年2回利息を支払う。	A
+interest	利息	名詞	Interest expense is reported separately.	支払利息は区分して報告される。	A
+principal	元本	名詞	The loan principal is due in five years.	借入金の元本は5年後に返済期限を迎える。	A
+coupon	表面利率、利札	名詞	The bond has a coupon rate of four percent.	その債券の表面利率は4パーセントである。	A
+yield	利回り	名詞	Bond yields rose after the announcement.	発表後、債券利回りが上昇した。	A
+maturity	満期	名詞	The bond reaches maturity in 2030.	その債券は2030年に満期を迎える。	A
+premium	プレミアム、打歩	名詞	The bond was issued at a premium.	その債券は打歩発行された。	A
+discount	割引	名詞	Bonds issued at a discount have a yield above the coupon rate.	割引発行された債券の利回りは表面利率を上回る。	A
+lease	リース	名詞	The lessee records a right-of-use asset for the lease.	借手はリースについて使用権資産を計上する。	A
+lessee	借手（リース）	名詞	The lessee makes monthly payments.	借手は毎月支払いを行う。	A
+lessor	貸手（リース）	名詞	The lessor retains ownership of the equipment.	貸手は設備の所有権を保持する。	A
+audit	監査	名詞	The audit was completed in March.	監査は3月に完了した。	A
+auditor	監査人	名詞	The auditor issued an unmodified opinion.	監査人は無限定適正意見を表明した。	A
+opinion	意見（監査）	名詞	A qualified opinion indicates a material misstatement.	限定付適正意見は重要な虚偽表示があることを示す。	A
+misstatement	虚偽表示	名詞	The error caused a material misstatement.	その誤りは重要な虚偽表示を引き起こした。	A
+materiality	重要性	名詞	Materiality depends on the size and nature of an item.	重要性は項目の金額と性質によって決まる。	A
+internal control	内部統制	名詞	Strong internal controls reduce the risk of fraud.	強固な内部統制は不正のリスクを減らす。	A
+fraud	不正	名詞	The auditor must consider the risk of fraud.	監査人は不正のリスクを考慮しなければならない。	A
+evidence	証拠	名詞	The auditor gathered sufficient appropriate evidence.	監査人は十分かつ適切な証拠を入手した。	A
+sampling	サンプリング	名詞	Statistical sampling is used to test transactions.	取引のテストには統計的サンプリングが使われる。	A
+assurance	保証	名詞	An audit provides reasonable assurance.	監査は合理的な保証を提供する。	A
+compliance	法令遵守、準拠性	名詞	The firm reviewed its compliance with tax laws.	その会社は税法の遵守状況を見直した。	A
+disclosure	開示	名詞	The notes include required disclosures.	注記には必要な開示が含まれる。	A
+footnote	注記	名詞	The footnotes explain the accounting policies.	注記は会計方針を説明している。	A
+recognition	認識	名詞	Revenue recognition follows a five-step model.	収益認識は5つのステップに従う。	A
+measurement	測定	名詞	Fair value measurement uses a three-level hierarchy.	公正価値測定は3つのレベルの階層を用いる。	A
+fair value	公正価値	名詞	The investment is reported at fair value.	その投資は公正価値で報告される。	A
+historical cost	取得原価	名詞	Land is recorded at historical cost.	土地は取得原価で計上される。	A
+consolidation	連結	名詞	Consolidation is required when a parent controls a subsidiary.	親会社が子会社を支配する場合は連結が必要である。	A
+subsidiary	子会社	名詞	The subsidiary is wholly owned by the parent.	その子会社は親会社の完全子会社である。	A
+parent company	親会社	名詞	The parent company prepares consolidated statements.	親会社は連結財務諸表を作成する。	A
+accounts	勘定、財務諸表	名詞	The accounts were closed at year-end.	勘定は期末に締め切られた。	A
+fiscal year	会計年度	名詞	The fiscal year ends on March 31.	会計年度は3月31日に終わる。	A
+accounting period	会計期間	名詞	Expenses are matched to the accounting period.	費用は会計期間に対応させる。	A
+tax return	税務申告書	名詞	The tax return is due on April 15.	税務申告書の提出期限は4月15日である。	A
+deduction	控除	名詞	Charitable contributions may be a deduction.	寄付金は控除の対象となり得る。	A
+taxable income	課税所得	名詞	Taxable income differs from book income.	課税所得は会計上の利益とは異なる。	A
+deferred tax	繰延税金	名詞	Temporary differences create deferred tax assets or liabilities.	一時差異は繰延税金資産または負債を生じさせる。	A
+exemption	免除、非課税	名詞	The organization qualifies for a tax exemption.	その団体は非課税の対象である。	A
+partnership	パートナーシップ	名詞	Income from a partnership flows through to the partners.	パートナーシップの所得はパートナーに直接配分される。	A
+corporation	法人、株式会社	名詞	A corporation is a separate legal entity.	法人は独立した法的主体である。	A
+entity	事業体	名詞	Each entity prepares its own financial statements.	各事業体は自らの財務諸表を作成する。	A
+basis	取得価額、基準	名詞	The partner's basis increases with contributions.	出資によってパートナーの持分の取得価額は増加する。	A
+capital gain	譲渡益	名詞	He reported a capital gain on the sale of stock.	彼は株式の売却による譲渡益を申告した。	A
+portfolio	ポートフォリオ	名詞	Diversification reduces portfolio risk.	分散投資はポートフォリオのリスクを減らす。	A
+return	収益率、リターン	名詞	The expected return on the stock is eight percent.	その株式の期待収益率は8パーセントである。	A
+risk	リスク	名詞	Higher returns usually come with higher risk.	高いリターンには通常高いリスクがともなう。	A
+volatility	変動性	名詞	Volatility is measured by standard deviation.	変動性は標準偏差で測定される。	A
+diversification	分散投資	名詞	Diversification cannot remove systematic risk.	分散投資では市場リスクを取りのぞけない。	A
+derivative	デリバティブ	名詞	A futures contract is a type of derivative.	先物契約はデリバティブの一種である。	A
+option	オプション	名詞	A call option gives the right to buy an asset.	コール・オプションは資産を買う権利を与える。	A
+hedge	ヘッジ	名詞	The company used a hedge against currency risk.	その会社は為替リスクに対してヘッジを行った。	A
+valuation	評価	名詞	Discounted cash flow is a common valuation method.	割引キャッシュ・フロー法は一般的な評価方法である。	A
+discount rate	割引率	名詞	A higher discount rate lowers present value.	割引率が高いほど現在価値は低くなる。	A
+present value	現在価値	名詞	Calculate the present value of future cash flows.	将来キャッシュ・フローの現在価値を計算しなさい。	A
+net present value	正味現在価値	名詞	Accept projects with a positive net present value.	正味現在価値がプラスの案件を採用しなさい。	A
+leverage	レバレッジ	名詞	High leverage increases financial risk.	高いレバレッジは財務リスクを高める。	A
+liquidity	流動性	名詞	The current ratio measures liquidity.	流動比率は流動性を測定する。	A
+solvency	支払能力	名詞	Solvency ratios focus on long-term debt.	支払能力の比率は長期債務に注目する。	A
+ratio	比率	名詞	The debt-to-equity ratio rose this year.	負債資本比率は今年上昇した。	A
+margin	利益率	名詞	The gross margin improved to 40 percent.	売上総利益率は40パーセントに改善した。	A
+earnings	利益	名詞	Earnings per share increased.	1株当たり利益が増加した。	A
+shareholder	株主	名詞	Shareholders elect the board of directors.	株主は取締役会を選任する。	A
+stakeholder	利害関係者	名詞	Financial statements serve many stakeholders.	財務諸表は多くの利害関係者に役立つ。	A
+board of directors	取締役会	名詞	The board of directors approved the merger.	取締役会は合併を承認した。	A
+governance	統治、ガバナンス	名詞	Good corporate governance protects investors.	よいコーポレート・ガバナンスは投資家を守る。	A
+ethics	倫理	名詞	The CFA Institute has a strict code of ethics.	CFA協会には厳格な倫理規定がある。	A
+fiduciary	受託者	名詞	A fiduciary must act in the client's best interest.	受託者は顧客の最善の利益のために行動しなければならない。	A
+independence	独立性	名詞	Auditors must maintain independence.	監査人は独立性を保たなければならない。	A
+conflict of interest	利益相反	名詞	Disclose any conflict of interest to your employer.	利益相反があれば雇用主に開示しなさい。	A

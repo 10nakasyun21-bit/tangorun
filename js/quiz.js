@@ -99,11 +99,11 @@ function pickForSet(items, recMap, perSet, maxNew, newOrder) {
   return picked;
 }
 
-// 単語の1セット（10問）
-function buildSet(words, record) {
-  const picked = pickForSet(words, record.words, QUESTIONS_PER_SET, MAX_NEW_PER_SET, byRankThenId);
+// 単語の1セット（10問）。recs はいま選んでいる種類の記録（record[wordKeyOf(record)]）
+function buildSet(words, recs) {
+  const picked = pickForSet(words, recs, QUESTIONS_PER_SET, MAX_NEW_PER_SET, byRankThenId);
   return shuffle(picked).map(({ item: word, practice }) => {
-    const r = record.words[word.id];
+    const r = recs[word.id];
     const level = r ? r.level : 1;
     return {
       word,
@@ -125,6 +125,7 @@ function weakItems(items, recMap) {
 }
 
 // ニガテだけのセット（最大10問）。まちがえたものは今日が復習日なので、正解すれば間隔もふつうに進む
+// kind：記録の置き場所（'idioms' か、単語なら wordKeyOf の値）
 function buildWeakSet(kind, items, record) {
   const recs = record[kind];
   const picked = shuffle(weakItems(items, recs).slice(0, QUESTIONS_PER_SET));
@@ -250,7 +251,7 @@ function normalizeAnswer(s) {
 
 // レベル3のヒント： "important" → "i＿＿＿＿＿＿＿＿"
 function spellingHint(word) {
-  return word[0] + word.slice(1).replace(/[^ ]/g, '＿');
+  return word[0] + word.slice(1).replace(/[^ \-]/g, '＿'); // 空白とハイフンはそのまま見せる
 }
 
 function normalizeSpelling(s) {

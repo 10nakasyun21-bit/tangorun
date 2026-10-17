@@ -1,7 +1,6 @@
 // 画面の切り替えとクイズの進行
 
 const NEXT_DELAY_MS = 800;
-const GOAL_WORDS = 800;
 const HOT_COMBO = 3; // この数以上の連続正解で表示を強調
 
 const TASK_TEXT = {
@@ -17,7 +16,9 @@ const PUSH_INTERVAL_MS = 60 * 1000; // アプリを閉じたときの送信は1�
 const state = {
   mode: 'words',     // 'words'（単語）・'idioms'（熟語）・'sentences'（文章）・'challenge'（1分チャレンジ）
   weak: false,       // ニガテだけのセットか
-  words: [],
+  words: [],         // いま選んでいる種類の単語（中学・高校・TOEIC・資格）
+  wordSet: null,     // state.words がどの種類か（読みこみ前は null）
+  wordCache: {},     // 一度読みこんだ種類の単語
   idioms: [],
   chapters: [],
   sentences: [],
@@ -47,6 +48,47 @@ const state = {
 
 const $ = id => document.getElementById(id);
 
+// ---------- 単語の種類 ----------
+
+// state.words の種類の記録の置き場所（'words' / 'wordsHigh' など）
+// 読みこみ中に設定が変わっても、出している単語と記録の場所がずれないよう state.wordSet を優先する
+function wordKey() {
+  return WORD_SETS[state.wordSet || wordSetOf(state.record)].key;
+}
+
+function wordRecs() {
+  return state.record[wordKey()];
+}
+
+// 設定で選んでいる種類の単語を読みこむ（読みこみ済みなら何もしない）。読みこめなければ例外
+async function loadWordSet() {
+  const set = wordSetOf(state.record);
+  if (state.wordSet === set) return;
+  if (!state.wordCache[set]) {
+    const res = await fetch(WORD_SETS[set].file);
+    if (!res.ok) throw new Error('load failed');
+    state.wordCache[set] = await res.json();
+  }
+  state.words = state.wordCache[set];
+  state.wordSet = set;
+}
+
+// 種類が変わっていたら読みこみ直してホームを描き直す（同期で別の端末の設定が来たときなど）
+async function ensureWordSet() {
+  if (state.wordSet === wordSetOf(state.record)) return;
+  $('btn-start').disabled = true;
+  try {
+    await loadWordSet();
+    $('home-error').hidden = true;
+  } catch (e) {
+    $('home-error').textContent = '単語データを読み込めませんでした。インターネットにつないでから開き直してください。';
+    $('home-error').hidden = false;
+    return;
+  }
+  $('btn-start').disabled = false;
+  if ($('screen-home').classList.contains('is-active')) showHome();
+}
+
 function showScreen(name) {
   clearTimeout(state.nextTimer); // 「やめる」などで抜けたら、自動で次へ進む予約を取り消す
   clearInterval(state.challengeTimer); // 1分チャレンジの途中で抜けたらタイマーも止める
@@ -73,10 +115,14 @@ function showHome() {
   $('streak-days').textContent = streak;
   $('streak').classList.toggle('is-zero', streak === 0);
 
-  const mastered = countMastered(state.record);
+  // メーターは設定で選んでいる種類の単語（中学以外は「覚えた単語（高校）」のように種類も出す）
+  const set = WORD_SETS[wordSetOf(state.record)];
+  const goal = set.goal;
+  const mastered = countMastered(state.record, set.key);
+  $('meter-set').textContent = set.key === 'words' ? '' : `（${set.label}）`;
   $('mastered-count').textContent = mastered;
-  $('goal-count').textContent = GOAL_WORDS;
-  $('remaining-count').textContent = Math.max(GOAL_WORDS - mastered, 0);
+  $('goal-count').textContent = goal;
+  $('remaining-count').textContent = Math.max(goal - mastered, 0);
   $('idiom-mastered').textContent = countMastered(state.record, 'idioms');
   $('idiom-total').textContent = state.idioms.length;
   renderStoryCard();
@@ -90,8 +136,9 @@ function showHome() {
   showScreen('home');
   // 画面が出てからバーを伸ばす（アニメーションさせるため）
   requestAnimationFrame(() => {
-    $('meter-fill').style.width = Math.min(mastered / GOAL_WORDS, 1) * 100 + '%';
+    $('meter-fill').style.width = Math.min(mastered / goal, 1) * 100 + '%';
   });
+  if (state.words.length) ensureWordSet(); // 単語を読みこんだあとで種類が変わっていたら読みこみ直す
 }
 
 // いま進めている章と、その章で正解した文の数
@@ -110,7 +157,7 @@ function renderStoryCard() {
 }
 
 function renderChallengeCard() {
-  const met = Object.keys(state.record.words).length;
+  const met = Object.keys(wordRecs()).length;
   const ready = state.words.length > 0 && met >= CHALLENGE_MIN_WORDS;
   $('btn-challenge').disabled = !ready;
   $('challenge-sub').textContent = ready
@@ -144,14 +191,16 @@ function startSet(mode = state.mode, { weak = false } = {}) {
   state.mode = mode;
   state.weak = weak && weakCount(mode) > 0;
   if (state.weak) {
-    state.questions = buildWeakSet(mode, mode === 'idioms' ? state.idioms : state.words, state.record);
+    state.questions = mode === 'idioms'
+      ? buildWeakSet('idioms', state.idioms, state.record)
+      : buildWeakSet(wordKey(), state.words, state.record);
   } else if (mode === 'sentences') {
     state.openBefore = unlockedChapterIds(state.chapters, state.sentences, state.record).length;
     state.questions = buildSentenceSet(state.chapters, state.sentences, state.record);
   } else if (mode === 'idioms') {
     state.questions = buildIdiomSet(state.idioms, state.record);
   } else {
-    state.questions = buildSet(state.words, state.record);
+    state.questions = buildSet(state.words, wordRecs());
   }
   beginRound();
   $('q-total').textContent = state.questions.length;
@@ -186,7 +235,8 @@ const CHALLENGE_NEXT_WRONG_MS = 900;
 function startChallenge() {
   unlockAudio();
   state.mode = 'challenge';
-  const met = state.words.filter(w => state.record.words[w.id]);
+  const recs = wordRecs();
+  const met = state.words.filter(w => recs[w.id]);
   state.challengePool = shuffle(met);
   state.questions = [];
   beginRound();
@@ -206,7 +256,8 @@ function nextChallengeQuestion() {
   // 用意した単語を出し切ったら、並べ直してもう一周（直前と同じ単語が続かないようにする）
   if (!state.challengePool.length) {
     const last = state.questions.length ? state.questions[state.questions.length - 1].word.id : null;
-    const met = state.words.filter(w => state.record.words[w.id]);
+    const recs = wordRecs();
+    const met = state.words.filter(w => recs[w.id]);
     state.challengePool = shuffle(met);
     if (state.challengePool.length > 1 && state.challengePool[0].id === last) state.challengePool.push(state.challengePool.shift());
   }
@@ -293,8 +344,17 @@ function renderQuestion() {
 
   if (q.level === 3) {
     box.hidden = true;
-    $('spell-hint').hidden = false;
-    $('spell-hint').textContent = spellingHint(q.word.word);
+    const hint = $('spell-hint');
+    hint.hidden = false;
+    hint.innerHTML = '';
+    // 語ごとに区切って、1つの語の途中で折り返さないようにする（資格の用語は2〜3語のものがある）
+    spellingHint(q.word.word).split(' ').forEach((part, i) => {
+      if (i) hint.append(' ');
+      const span = document.createElement('span');
+      span.textContent = part;
+      hint.append(span);
+    });
+    hint.classList.toggle('is-long', q.word.word.length > 10);
     openSpellForm();
   } else {
     form.hidden = true;
@@ -570,7 +630,7 @@ function finishAnswer(isCorrect, dunno = false) {
   $('progress-fill').style.width = ((state.index + 1) / state.questions.length) * 100 + '%';
   if (q.sentence) recordAnswer(state.record, q.sentence.id, isCorrect, q.practice, 'sentences');
   else if (q.idiom) recordAnswer(state.record, q.idiom.id, isCorrect, q.practice, 'idioms', dunno);
-  else recordAnswer(state.record, q.word.id, isCorrect, q.practice, 'words', dunno);
+  else recordAnswer(state.record, q.word.id, isCorrect, q.practice, wordKey(), dunno);
 
   // 「わからない」は正直に押したので、ブーという音は鳴らさない
   if (settings.sound && !dunno) isCorrect ? playCorrect() : playWrong();
@@ -998,7 +1058,7 @@ function listConfig() {
     };
   }
   return {
-    items: state.words, recs: state.record.words, unit: '語', title: '単語一覧',
+    items: state.words, recs: wordRecs(), unit: '語', title: `単語一覧（${WORD_SETS[state.wordSet || 'junior'].label}）`,
     text: w => w.word, sub: w => `${w.meaning}（${w.pos}）`, speakText: w => w.word,
     groups: ['A', 'B', 'C'].map(r => ({ label: RANK_LABEL[r], match: w => w.rank === r })),
   };
@@ -1078,7 +1138,7 @@ function renderWordList() {
 let weakKind = 'words'; // 'words' | 'idioms'
 
 function weakList(kind) {
-  return kind === 'idioms' ? weakItems(state.idioms, state.record.idioms) : weakItems(state.words, state.record.words);
+  return kind === 'idioms' ? weakItems(state.idioms, state.record.idioms) : weakItems(state.words, wordRecs());
 }
 
 function weakCount(kind) {
@@ -1181,7 +1241,40 @@ function showSettings() {
   $('set-speak').checked = state.record.settings.autoSpeak;
   $('account-box').hidden = !state.user;
   if (state.user) $('account-name').textContent = state.user.name || 'あなた';
+  renderWordSetOptions();
   showScreen('settings');
+}
+
+// 単語の種類のボタン（中学・高校・TOEIC・資格）。記録は種類ごとに残るので、いつ切りかえてもよい
+function renderWordSetOptions() {
+  const box = $('word-set-options');
+  box.innerHTML = '';
+  const current = wordSetOf(state.record);
+  for (const id of WORD_SET_IDS) {
+    const set = WORD_SETS[id];
+    const b = document.createElement('button');
+    b.className = 'word-set-option' + (id === current ? ' is-active' : '');
+    b.setAttribute('role', 'radio');
+    b.setAttribute('aria-checked', id === current);
+    b.innerHTML = `<strong></strong><small></small>`;
+    b.querySelector('strong').textContent = set.label;
+    b.querySelector('small').textContent = `${set.goal}語`;
+    b.addEventListener('click', () => chooseWordSet(id));
+    box.append(b);
+  }
+  $('word-set-note').textContent = `いま：${WORD_SETS[current].name}。切りかえても、それぞれの記録は消えません`;
+}
+
+async function chooseWordSet(id) {
+  if (wordSetOf(state.record) === id) return;
+  updateSettings(state.record, { wordSet: id });
+  renderWordSetOptions();
+  pushToCloud();
+  try {
+    await loadWordSet();
+  } catch (e) {
+    $('word-set-note').textContent = '単語データを読み込めませんでした。インターネットにつないでからもう一度選んでください。';
+  }
 }
 
 function openResetDialog() {
@@ -1486,9 +1579,8 @@ async function init() {
   }
 
   try {
-    const [wordsRes, sentRes, idiomRes] = await Promise.all([fetch('data/words.json'), fetch('data/sentences.json'), fetch('data/idioms.json')]);
-    if (!wordsRes.ok || !sentRes.ok || !idiomRes.ok) throw new Error('load failed');
-    state.words = await wordsRes.json();
+    const [, sentRes, idiomRes] = await Promise.all([loadWordSet(), fetch('data/sentences.json'), fetch('data/idioms.json')]);
+    if (!sentRes.ok || !idiomRes.ok) throw new Error('load failed');
     const story = await sentRes.json();
     state.chapters = story.chapters;
     state.sentences = story.sentences;
@@ -1498,8 +1590,7 @@ async function init() {
     $('btn-start-idiom').disabled = false;
     $('btn-start-story').disabled = false;
     $('idiom-total').textContent = state.idioms.length;
-    renderStoryCard();
-    renderChallengeCard();
+    if ($('screen-home').classList.contains('is-active')) showHome(); // ニガテの数などを単語がそろった状態で出し直す
   } catch (e) {
     $('btn-start').textContent = 'スタート';
     $('home-error').textContent = '単語データを読み込めませんでした。ページを再読み込みしてください。';

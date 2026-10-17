@@ -379,6 +379,9 @@ button { font: inherit; color: inherit; }
   color: var(--sub);
   word-break: break-all;
 }
+/* 熟語・用語（2語以上や長い語）：小さくして、語の途中では折り返さない */
+.spell-hint.is-long { font-size: 22px; letter-spacing: 0.1em; word-break: normal; }
+.spell-hint span { white-space: nowrap; }
 .spell-input {
   width: 100%;
   min-height: 64px;
@@ -893,6 +896,34 @@ button { font: inherit; color: inherit; }
 
 /* 設定 */
 #screen-settings { gap: 24px; }
+/* 設定：単語の種類（2×2のボタン） */
+.word-set-box {
+  padding: 14px 16px;
+  background: var(--card);
+  border: 2px solid var(--line);
+  border-radius: 16px;
+}
+.word-set-title { margin: 0 0 10px; font-size: 19px; font-weight: bold; }
+.word-set-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.word-set-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+.word-set-option strong { font-size: 18px; }
+.word-set-option small { color: var(--sub); font-size: 13px; }
+.word-set-option.is-active { border-color: var(--primary); background: var(--primary); color: #fff; }
+.word-set-option.is-active small { color: #fff; }
+.word-set-note { margin: 10px 0 0; color: var(--sub); font-size: 13px; }
+
 .settings-list {
   background: var(--card);
   border: 2px solid var(--line);

@@ -1,0 +1,91 @@
+accounts receivable	売掛金	名詞	Accounts receivable are reported net of an allowance.	売掛金は貸倒引当金控除後で報告される。	B
+accounts payable	買掛金	名詞	Accounts payable decreased during the year.	買掛金は期中に減少した。	B
+allowance	引当金	名詞	The allowance for doubtful accounts was increased.	貸倒引当金が増額された。	B
+provision	引当金、規定	名詞	A provision was recognized for warranty costs.	製品保証費用について引当金が認識された。	B
+contingency	偶発事象	名詞	A loss contingency is accrued if it is probable.	損失の偶発事象は発生の可能性が高ければ計上される。	B
+accrued expense	未払費用	名詞	Salaries owed at year-end are accrued expenses.	期末に未払いの給料は未払費用である。	B
+prepaid expense	前払費用	名詞	Prepaid rent is a prepaid expense.	前払家賃は前払費用である。	B
+unearned revenue	前受収益	名詞	Customer deposits are recorded as unearned revenue.	顧客からの前受金は前受収益として計上される。	B
+salvage value	残存価額	名詞	The machine has a salvage value of $5,000.	その機械の残存価額は5,000ドルである。	B
+useful life	耐用年数	名詞	The building has a useful life of 40 years.	その建物の耐用年数は40年である。	B
+straight-line	定額法の	形容詞	The company uses the straight-line method.	その会社は定額法を使っている。	B
+accelerated	加速償却の	形容詞	Accelerated depreciation records more expense early.	加速償却は初期により多くの費用を計上する。	B
+capitalize	資産計上する	動詞	Interest during construction may be capitalized.	建設中の利息は資産計上されることがある。	B
+expense	費用処理する	動詞	Research costs are expensed as incurred.	研究費は発生時に費用処理される。	B
+accrue	見越し計上する	動詞	Accrue interest at the end of each month.	毎月末に利息を見越し計上しなさい。	B
+defer	繰り延べる	動詞	The company deferred revenue until delivery.	その会社は引き渡しまで収益を繰り延べた。	B
+recognize	認識する	動詞	Revenue is recognized when the obligation is satisfied.	収益は履行義務が充足されたときに認識される。	B
+allocate	配分する	動詞	Overhead is allocated based on machine hours.	製造間接費は機械時間に基づいて配分される。	B
+reconcile	照合する、調整する	動詞	Reconcile the bank statement each month.	毎月銀行取引明細書を照合しなさい。	B
+post	転記する	動詞	Post the journal entries to the ledger.	仕訳を元帳に転記しなさい。	B
+audit	監査する	動詞	The financial statements were audited by a CPA firm.	財務諸表はCPA事務所によって監査された。	B
+disclose	開示する	動詞	The company must disclose related party transactions.	会社は関連当事者取引を開示しなければならない。	B
+issue	発行する	動詞	The firm issued bonds to raise capital.	その会社は資金調達のために社債を発行した。	B
+redeem	償還する	動詞	The bonds were redeemed before maturity.	その社債は満期前に償還された。	B
+amortize	償却する	動詞	The bond premium is amortized over its life.	社債の打歩は期間にわたって償却される。	B
+depreciate	減価償却する	動詞	Equipment is depreciated over five years.	設備は5年で減価償却される。	B
+impair	減損させる	動詞	The asset was impaired due to lower demand.	需要の減少によりその資産は減損した。	B
+consolidate	連結する	動詞	The parent must consolidate its subsidiaries.	親会社は子会社を連結しなければならない。	B
+eliminate	消去する	動詞	Intercompany sales are eliminated in consolidation.	連結では会社間売上が消去される。	B
+diversify	分散させる	動詞	Investors diversify to reduce risk.	投資家はリスクを減らすために分散投資する。	B
+discount	割り引く	動詞	Discount the cash flows at ten percent.	キャッシュ・フローを10パーセントで割り引きなさい。	B
+compound	複利で計算する	動詞	Interest is compounded monthly.	利息は毎月複利で計算される。	B
+hedge	ヘッジする	動詞	The firm hedged its exposure to interest rates.	その会社は金利リスクをヘッジした。	B
+appreciate	価値が上がる	動詞	The yen appreciated against the dollar.	円はドルに対して上昇した。	B
+default	債務不履行になる	動詞	The borrower defaulted on the loan.	借り手はローンの返済を怠った。	B
+comply	準拠する	動詞	The statements comply with GAAP.	その財務諸表はGAAPに準拠している。	B
+attest	証明する	動詞	The auditor attests to the fairness of the statements.	監査人は財務諸表の適正性を証明する。	B
+verify	検証する	動詞	The auditor verified the existence of inventory.	監査人は棚卸資産の実在性を検証した。	B
+substantiate	立証する	動詞	Expenses must be substantiated with receipts.	経費は領収書で立証されなければならない。	B
+withhold	源泉徴収する	動詞	Employers withhold income tax from wages.	雇用主は賃金から所得税を源泉徴収する。	B
+file	申告する、提出する	動詞	Corporations must file an annual tax return.	法人は毎年税務申告書を提出しなければならない。	B
+assess	査定する、課す	動詞	The IRS assessed additional tax.	内国歳入庁は追加の税を課した。	B
+current	流動の	形容詞	Current liabilities are due within one year.	流動負債は1年以内に返済期限が来る。	B
+noncurrent	固定の、非流動の	形容詞	Long-term debt is a noncurrent liability.	長期借入金は固定負債である。	B
+tangible	有形の	形容詞	Buildings are tangible assets.	建物は有形資産である。	B
+intangible	無形の	形容詞	Trademarks are intangible assets.	商標権は無形資産である。	B
+material	重要な	形容詞	The error was not material to the statements.	その誤りは財務諸表にとって重要ではなかった。	B
+contingent	偶発的な	形容詞	A contingent liability depends on a future event.	偶発債務は将来の事象に左右される。	B
+taxable	課税対象の	形容詞	Interest income is generally taxable.	受取利息は一般に課税対象である。	B
+deductible	控除可能な	形容詞	Business expenses are usually deductible.	事業経費は通常控除可能である。	B
+fiscal	会計の、財政の	形容詞	Fiscal policy affects government spending.	財政政策は政府支出に影響する。	B
+monetary	金融の、通貨の	形容詞	The central bank sets monetary policy.	中央銀行が金融政策を決める。	B
+nominal	名目の	形容詞	Nominal interest rates include expected inflation.	名目金利は期待インフレ率を含む。	B
+real	実質の	形容詞	Real GDP adjusts for inflation.	実質GDPはインフレを調整したものである。	B
+systematic	体系的な、市場全体の	形容詞	Systematic risk affects the whole market.	システマティック・リスクは市場全体に影響する。	B
+unsystematic	個別の（リスク）	形容詞	Unsystematic risk can be diversified away.	個別リスクは分散投資で取りのぞける。	B
+marginal	限界の	形容詞	Marginal cost is the cost of one more unit.	限界費用は1単位追加するための費用である。	B
+fixed	固定の	形容詞	Rent is a fixed cost.	家賃は固定費である。	B
+variable	変動の	形容詞	Raw materials are a variable cost.	原材料は変動費である。	B
+overhead	製造間接費	名詞	Factory overhead includes utilities and rent.	製造間接費には光熱費や家賃が含まれる。	B
+variance	差異、分散	名詞	The labor variance was unfavorable.	労務費差異は不利差異だった。	B
+budgeting	予算編成	名詞	Capital budgeting evaluates long-term projects.	資本予算は長期プロジェクトを評価する。	B
+break-even	損益分岐点	名詞	The company reached break-even in its second year.	その会社は2年目に損益分岐点に達した。	B
+contribution margin	貢献利益	名詞	Contribution margin equals sales minus variable costs.	貢献利益は売上高から変動費を引いたものである。	B
+standard cost	標準原価	名詞	Standard costs are set at the start of the year.	標準原価は期首に設定される。	B
+inflation	インフレ	名詞	Inflation reduces purchasing power.	インフレは購買力を低下させる。	B
+recession	景気後退	名詞	Unemployment rises during a recession.	景気後退期には失業が増える。	B
+exchange rate	為替レート	名詞	The exchange rate affects export prices.	為替レートは輸出価格に影響する。	B
+currency	通貨	名詞	The functional currency is the U.S. dollar.	機能通貨は米ドルである。	B
+equilibrium	均衡	名詞	The market price moves toward equilibrium.	市場価格は均衡に向かう。	B
+elasticity	弾力性	名詞	Price elasticity measures how demand responds to price.	価格弾力性は需要が価格にどう反応するかを測る。	B
+monopoly	独占	名詞	A monopoly can set prices above marginal cost.	独占企業は限界費用より高い価格を設定できる。	B
+benchmark	基準、ベンチマーク	名詞	The fund performed better than its benchmark.	そのファンドはベンチマークを上回った。	B
+index	指数	名詞	The stock index fell three percent.	株価指数は3パーセント下落した。	B
+beta	ベータ	名詞	A beta of 1.2 means higher risk than the market.	ベータ1.2は市場より高いリスクを意味する。	B
+alpha	アルファ	名詞	The manager generated positive alpha.	その運用者はプラスのアルファを生み出した。	B
+standard deviation	標準偏差	名詞	Standard deviation measures total risk.	標準偏差は総リスクを測定する。	B
+correlation	相関	名詞	Low correlation improves diversification.	低い相関は分散効果を高める。	B
+regression	回帰	名詞	Regression analysis estimates the relationship between variables.	回帰分析は変数間の関係を推定する。	B
+probability	確率	名詞	The probability of default is two percent.	デフォルトの確率は2パーセントである。	B
+hypothesis	仮説	名詞	We reject the null hypothesis at the five percent level.	5パーセント水準で帰無仮説を棄却する。	B
+annuity	年金、定額の連続支払い	名詞	An annuity pays a fixed amount each period.	年金は各期に一定額を支払う。	B
+perpetuity	永久年金	名詞	A perpetuity has no maturity date.	永久年金には満期がない。	B
+duration	デュレーション	名詞	Duration measures a bond's sensitivity to interest rates.	デュレーションは債券の金利感応度を測る。	B
+convexity	コンベクシティ	名詞	Convexity improves the estimate from duration.	コンベクシティはデュレーションによる推定を改善する。	B
+spread	スプレッド、利回り差	名詞	The credit spread widened during the crisis.	危機の間に信用スプレッドが拡大した。	B
+default	債務不履行	名詞	The risk of default is higher for junk bonds.	ジャンク債はデフォルトのリスクが高い。	B
+collateral	担保	名詞	The loan is secured by collateral.	そのローンは担保で保全されている。	B
+covenant	財務制限条項	名詞	The company violated a debt covenant.	その会社は財務制限条項に違反した。	B
+issuer	発行体	名詞	The issuer pays interest to bondholders.	発行体は債券保有者に利息を支払う。	B
+underwriter	引受業者	名詞	The underwriter sold the shares to investors.	引受業者は株式を投資家に販売した。	B

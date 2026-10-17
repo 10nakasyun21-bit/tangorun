@@ -78,17 +78,41 @@ function takeLegacyRecord() {
   }
 }
 
+// ---------- 単語の種類 ----------
+// 設定で切りかえる。key は学習記録の置き場所（中学は前からの words のまま）。記録は種類ごとに別々
+const WORD_SETS = {
+  junior: { label: '中学', name: '中学英語', file: 'data/words.json', key: 'words', goal: 800 },
+  high: { label: '高校', name: '高校英語', file: 'data/words_high.json', key: 'wordsHigh', goal: 800 },
+  toeic: { label: 'TOEIC', name: 'TOEIC', file: 'data/words_toeic.json', key: 'wordsToeic', goal: 400 },
+  biz: { label: '資格', name: 'ビジネス資格（USCPA・CFA）', file: 'data/words_biz.json', key: 'wordsBiz', goal: 300 },
+};
+const WORD_SET_IDS = Object.keys(WORD_SETS);
+const WORD_KEYS_ALL = WORD_SET_IDS.map(id => WORD_SETS[id].key);
+
+// いま選んでいる単語の種類（'junior' など）
+function wordSetOf(record) {
+  return WORD_SETS[record.settings.wordSet] ? record.settings.wordSet : 'junior';
+}
+
+// いま選んでいる種類の学習記録の置き場所（'words' / 'wordsHigh' など）
+function wordKeyOf(record) {
+  return WORD_SETS[wordSetOf(record)].key;
+}
+
 // ---------- 記録の形 ----------
 
 function defaultSettings() {
-  return { sound: true, autoSpeak: true };
+  return { sound: true, autoSpeak: true, wordSet: 'junior' };
 }
 
 function emptyRecord(settings = defaultSettings()) {
   return {
     version: STORAGE_VERSION,
     updatedAt: 0, // 学習内容を最後に変えた時刻（端末どうしで、どちらが新しいかを比べる）
-    words: {},
+    words: {},      // 中学の単語の記録
+    wordsHigh: {},  // 高校の単語
+    wordsToeic: {}, // TOEIC の単語
+    wordsBiz: {},   // ビジネス資格の単語
     sentences: {}, // 文章の記録（単語と同じ形）
     idioms: {},    // 熟語の記録（単語と同じ形。単語の記録とは別の場所に置く）
     stats: { setsCompleted: 0, lastPlayedDate: null, streakDays: 0, lastStreakDate: null, storyChapter: 1, challengeBest: 0 },
@@ -134,8 +158,10 @@ function parseRecord(data) {
   record.collection = { ...data.collection };
   record.fragments = normalizeFragments(data.fragments);
   record.partner = data.partner || null;
-  for (const [id, w] of Object.entries(data.words || {})) {
-    record.words[id] = normalizeWord(w);
+  for (const key of WORD_KEYS_ALL) {
+    for (const [id, w] of Object.entries(data[key] || {})) {
+      record[key][id] = normalizeWord(w);
+    }
   }
   for (const [id, s] of Object.entries(data.sentences || {})) {
     record.sentences[id] = normalizeWord(s);
@@ -178,11 +204,12 @@ function touchRecord(record) {
 // ---------- 学習の記録 ----------
 
 // 日ごとの記録の名前の頭（wordLevelUps・sentenceMastered・idiomSets など）
-const USAGE_PREFIX = { words: 'word', sentences: 'sentence', idioms: 'idiom' };
+// 単語はどの種類でも 'word'（ミッションや「今日覚えた」は種類をまとめて数える）
+const USAGE_PREFIX = { words: 'word', wordsHigh: 'word', wordsToeic: 'word', wordsBiz: 'word', sentences: 'sentence', idioms: 'idiom' };
 
 // 1問答えたときの記録
 // isPractice：復習日より前に「数合わせ」で出した問題。正解しても復習の間隔は進めない
-// kind：'words'（単語）・'sentences'（文章）・'idioms'（熟語）。どれも同じ間隔反復とレベルの決まりを使う
+// kind：'words' など単語の置き場所（wordKeyOf）・'sentences'（文章）・'idioms'（熟語）。どれも同じ間隔反復とレベルの決まりを使う
 // dunno：「わからない」を押した（不正解と同じあつかい）
 function recordAnswer(record, wordId, isCorrect, isPractice = false, kind = 'words', dunno = false) {
   const today = localDate();
@@ -320,7 +347,7 @@ function currentStreak(record) {
 }
 
 function countMastered(record, kind = 'words') {
-  return Object.values(record[kind]).filter(w => w.mastered).length;
+  return Object.values(record[kind] || {}).filter(w => w.mastered).length;
 }
 
 function updateSettings(record, changes) {

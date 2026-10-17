@@ -57,7 +57,7 @@
 
       <div class="meter">
         <div class="meter-head">
-          <div class="meter-label">覚えた単語 <strong id="mastered-count">0</strong> 語</div>
+          <div class="meter-label">覚えた単語<span id="meter-set"></span> <strong id="mastered-count">0</strong> 語</div>
           <div class="meter-idioms">熟語 <strong id="idiom-mastered">0</strong>/<span id="idiom-total">30</span></div>
         </div>
         <div class="meter-bar"><div id="meter-fill" class="meter-fill"></div></div>
@@ -285,6 +285,12 @@
       </button>
       <h2 class="screen-title">設定</h2>
       <span class="icon-btn-spacer"></span>
+    </div>
+
+    <div class="word-set-box">
+      <p class="word-set-title">単語の種類</p>
+      <div id="word-set-options" class="word-set-options" role="radiogroup" aria-label="単語の種類"></div>
+      <p id="word-set-note" class="word-set-note"></p>
     </div>
 
     <div class="settings-list">

@@ -63,6 +63,7 @@ body.admin { min-height: 100vh; }
 }
 .kpi-label { flex-basis: 100%; color: var(--sub); font-size: 14px; }
 .kpi strong { font-size: 28px; }
+.kpi strong.kpi-text { font-size: 17px; }
 .kpi-unit { color: var(--sub); font-size: 15px; }
 
 .toolbar {

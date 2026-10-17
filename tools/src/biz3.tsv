@@ -1,0 +1,77 @@
+futures	先物	名詞	Futures contracts are traded on an exchange.	先物契約は取引所で取引される。	C
+forward contract	先渡契約	名詞	A forward contract is customized between two parties.	先渡契約は2者間で個別に設計される。	C
+swap	スワップ	名詞	The firm entered into an interest rate swap.	その会社は金利スワップ契約を結んだ。	C
+arbitrage	裁定取引	名詞	Arbitrage removes price differences between markets.	裁定取引は市場間の価格差をなくす。	C
+underlying	原資産	名詞	The option's value depends on the underlying.	オプションの価値は原資産に依存する。	C
+strike price	行使価格	名詞	The call option has a strike price of $50.	そのコール・オプションの行使価格は50ドルである。	C
+expiration	満期、失効	名詞	The option has no value at expiration.	そのオプションは満期時に価値がない。	C
+mutual fund	投資信託	名詞	She invests in a low-cost mutual fund.	彼女は低コストの投資信託に投資している。	C
+hedge fund	ヘッジファンド	名詞	Hedge funds often use leverage.	ヘッジファンドはしばしばレバレッジを使う。	C
+private equity	プライベート・エクイティ	名詞	Private equity firms buy companies to improve them.	プライベート・エクイティ会社は企業を買収して改善する。	C
+real estate	不動産	名詞	Real estate is an alternative investment.	不動産はオルタナティブ投資である。	C
+commodity	商品（コモディティ）	名詞	Gold is a commodity.	金はコモディティである。	C
+asset allocation	資産配分	名詞	Asset allocation drives most of a portfolio's return.	資産配分がポートフォリオのリターンの大部分を決める。	C
+rebalancing	リバランス	名詞	Rebalancing keeps the portfolio near its target weights.	リバランスはポートフォリオを目標比率の近くに保つ。	C
+risk premium	リスク・プレミアム	名詞	The equity risk premium is about five percent.	株式のリスク・プレミアムは約5パーセントである。	C
+cost of capital	資本コスト	名詞	Projects must earn more than the cost of capital.	プロジェクトは資本コスト以上を稼がなければならない。	C
+WACC	加重平均資本コスト	名詞	WACC combines the costs of debt and equity.	WACCは負債と株主資本のコストを組み合わせる。	C
+free cash flow	フリー・キャッシュ・フロー	名詞	Free cash flow is available to all investors.	フリー・キャッシュ・フローはすべての投資家に帰属し得る。	C
+terminal value	継続価値	名詞	The terminal value is a large part of the valuation.	継続価値は評価額の大きな部分を占める。	C
+multiple	倍率	名詞	The stock trades at a high earnings multiple.	その株式は高い利益倍率で取引されている。	C
+book value	簿価	名詞	The market value exceeds the book value.	市場価値が簿価を上回っている。	C
+market capitalization	時価総額	名詞	Market capitalization is share price times shares outstanding.	時価総額は株価に発行済株式数を掛けたものである。	C
+outstanding	発行済みの	形容詞	There are ten million shares outstanding.	発行済株式は1,000万株である。	C
+treasury stock	自己株式	名詞	Treasury stock reduces total equity.	自己株式は純資産合計を減少させる。	C
+stock split	株式分割	名詞	A stock split increases the number of shares.	株式分割は株式数を増加させる。	C
+preferred stock	優先株式	名詞	Preferred stock pays a fixed dividend.	優先株式は固定配当を支払う。	C
+convertible	転換可能な	形容詞	Convertible bonds can be exchanged for shares.	転換社債は株式に転換できる。	C
+callable	期限前償還可能な	形容詞	A callable bond can be repaid early by the issuer.	コーラブル債は発行体が期限前に償還できる。	C
+pension plan	年金制度	名詞	The company has a defined benefit pension plan.	その会社には確定給付型年金制度がある。	C
+obligation	債務、義務	名詞	The pension obligation increased this year.	年金債務は今年増加した。	C
+performance obligation	履行義務	名詞	Identify each performance obligation in the contract.	契約の各履行義務を識別しなさい。	C
+transaction price	取引価格	名詞	Allocate the transaction price to each obligation.	取引価格を各履行義務に配分しなさい。	C
+segment	セグメント、事業部門	名詞	The company reports three operating segments.	その会社は3つの事業セグメントを報告している。	C
+related party	関連当事者	名詞	Sales to a related party must be disclosed.	関連当事者への売上は開示しなければならない。	C
+going concern	継続企業	名詞	The auditor doubted the company's ability to continue as a going concern.	監査人はその会社の継続企業としての能力に疑問をもった。	C
+subsequent event	後発事象	名詞	A subsequent event occurred after the balance sheet date.	貸借対照表日後に後発事象が発生した。	C
+engagement	監査契約	名詞	The engagement letter defines the scope of the audit.	監査契約書は監査の範囲を定める。	C
+working papers	監査調書	名詞	Auditors keep detailed working papers.	監査人は詳細な監査調書を保管する。	C
+confirmation	確認状	名詞	The auditor sent confirmations to customers.	監査人は顧客に確認状を送った。	C
+substantive procedure	実証手続	名詞	Substantive procedures detect material misstatements.	実証手続は重要な虚偽表示を発見する。	C
+test of controls	運用評価手続	名詞	A test of controls checks if controls work.	運用評価手続は統制が機能しているかを確かめる。	C
+segregation of duties	職務の分離	名詞	Segregation of duties helps prevent fraud.	職務の分離は不正の防止に役立つ。	C
+inherent risk	固有リスク	名詞	Inherent risk is high for complex estimates.	複雑な見積もりは固有リスクが高い。	C
+control risk	統制リスク	名詞	Weak controls increase control risk.	弱い統制は統制リスクを高める。	C
+detection risk	発見リスク	名詞	More testing lowers detection risk.	テストを増やすと発見リスクが下がる。	C
+skepticism	懐疑心	名詞	Auditors must use professional skepticism.	監査人は職業的懐疑心を用いなければならない。	C
+attestation	証明業務	名詞	A review is a type of attestation engagement.	レビューは証明業務の一種である。	C
+regulator	規制当局	名詞	The regulator fined the bank.	規制当局はその銀行に罰金を科した。	C
+SEC	米国証券取引委員会	名詞	Public companies file reports with the SEC.	上場企業はSECに報告書を提出する。	C
+GAAP	一般に公正妥当と認められた会計原則	名詞	U.S. GAAP differs from IFRS in some areas.	米国GAAPはいくつかの点でIFRSと異なる。	C
+IFRS	国際財務報告基準	名詞	More than 140 countries use IFRS.	140以上の国がIFRSを使っている。	C
+IRS	米国内国歳入庁	名詞	The IRS audits some tax returns each year.	IRSは毎年一部の税務申告書を調査する。	C
+gross income	総所得	名詞	Gross income includes wages and interest.	総所得には賃金と利息が含まれる。	C
+adjusted gross income	調整後総所得	名詞	Some deductions depend on adjusted gross income.	一部の控除は調整後総所得に左右される。	C
+estate	遺産	名詞	The estate tax applies to large estates.	遺産税は多額の遺産に適用される。	C
+gift tax	贈与税	名詞	Gifts above the annual exclusion may trigger gift tax.	年間非課税枠を超える贈与には贈与税がかかることがある。	C
+depletion	減耗償却	名詞	Depletion applies to natural resources such as oil.	減耗償却は石油などの天然資源に適用される。	C
+write-off	貸倒償却、帳消し	名詞	The bad debt write-off reduced receivables.	貸倒償却によって売掛金が減少した。	C
+accounts	口座	名詞	Separate client accounts from firm accounts.	顧客の口座と会社の口座を分けなさい。	C
+fiduciary duty	受託者責任	名詞	Advisers owe a fiduciary duty to clients.	助言者は顧客に対して受託者責任を負う。	C
+insider trading	インサイダー取引	名詞	Insider trading is illegal.	インサイダー取引は違法である。	C
+material nonpublic information	重要な未公表情報	名詞	Do not trade on material nonpublic information.	重要な未公表情報に基づいて取引してはならない。	C
+due diligence	デュー・ディリジェンス（適正な調査）	名詞	Analysts must perform due diligence before recommending a stock.	アナリストは株式を推奨する前に適正な調査をしなければならない。	C
+suitability	適合性	名詞	Consider suitability before making a recommendation.	推奨する前に適合性を考慮しなさい。	C
+misrepresentation	不実表示	名詞	Misrepresentation of performance violates the Standards.	運用成績の不実表示は基準に違反する。	C
+plagiarism	盗用	名詞	Using another analyst's report without credit is plagiarism.	他のアナリストのレポートを出典なしに使うのは盗用である。	C
+soft dollars	ソフトダラー	名詞	Soft dollars must benefit the client.	ソフトダラーは顧客の利益にならなければならない。	C
+yield curve	イールド・カーブ	名詞	An inverted yield curve may signal a recession.	逆イールドは景気後退の兆候となり得る。	C
+credit rating	信用格付け	名詞	The company's credit rating was downgraded.	その会社の信用格付けが引き下げられた。	C
+liquidation	清算	名詞	In liquidation, creditors are paid before shareholders.	清算では債権者が株主より先に支払いを受ける。	C
+bankruptcy	破産	名詞	The firm filed for bankruptcy.	その会社は破産を申請した。	C
+restructuring	事業再編	名詞	The restructuring cost was reported separately.	事業再編費用は区分して報告された。	C
+working capital	運転資本	名詞	Working capital equals current assets minus current liabilities.	運転資本は流動資産から流動負債を引いたものである。	C
+turnover	回転率	名詞	Inventory turnover measures how fast inventory is sold.	棚卸資産回転率は在庫が売れる速さを測る。	C
+return on equity	自己資本利益率	名詞	Return on equity rose to 15 percent.	自己資本利益率は15パーセントに上昇した。	C
+return on assets	総資産利益率	名詞	Return on assets compares net income with total assets.	総資産利益率は純利益を総資産と比較する。	C
+EBITDA	利払い・税・償却前利益	名詞	EBITDA is often used to compare companies.	EBITDAは企業の比較によく使われる。	C

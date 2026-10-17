@@ -264,6 +264,10 @@ function renderDetailHeader() {
   $('d-challenge').textContent = (sum && sum.challengeBest) || 0;
   $('d-cats').textContent = (sum && sum.catsOwned) || 0;
   $('d-idioms').textContent = (sum && sum.idiomsMastered) || 0;
+  $('d-high').textContent = (sum && sum.masteredHigh) || 0;
+  $('d-toeic').textContent = (sum && sum.masteredToeic) || 0;
+  $('d-biz').textContent = (sum && sum.masteredBiz) || 0;
+  $('d-wordset').textContent = WORD_SETS[(sum && sum.wordSet) || 'junior'].name;
   $('d-rate').textContent = sum ? formatRate(sum.totalCorrect, sum.totalCorrect + sum.totalWrong) : '-';
   $('btn-toggle-active').textContent = s.active ? '利用停止にする' : '利用を再開する';
 }
